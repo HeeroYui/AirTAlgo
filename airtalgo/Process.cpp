@@ -19,17 +19,18 @@ airtalgo::Process::Process() {
 }
 
 bool airtalgo::Process::push(std::chrono::system_clock::time_point& _time,
-                                    void* _data,
-                                    size_t _nbChunk) {
+                             void* _data,
+                             size_t _nbChunk) {
 	void* out = nullptr;
 	size_t nbChunkOut;
 	AIRTALGO_VERBOSE("        Interface DIRECT ");
 	process(_time, _data, _nbChunk, out, nbChunkOut);
+	return true;
 }
 
 bool airtalgo::Process::pull(std::chrono::system_clock::time_point& _time,
-                                    void*& _data,
-                                    size_t& _nbChunk) {
+                             void*& _data,
+                             size_t& _nbChunk) {
 	void* in = nullptr;
 	size_t nbChunkIn = _nbChunk;
 	void* out = nullptr;
@@ -46,13 +47,14 @@ bool airtalgo::Process::pull(std::chrono::system_clock::time_point& _time,
 		nbChunkIn = 32;
 	}
 	process(_time, in, nbChunkIn, _data, _nbChunk);
+	return true;
 }
 
 bool airtalgo::Process::process(std::chrono::system_clock::time_point& _time,
-                                       void* _inData,
-                                       size_t _inNbChunk,
-                                       void*& _outData,
-                                       size_t& _outNbChunk) {
+                                void* _inData,
+                                size_t _inNbChunk,
+                                void*& _outData,
+                                size_t& _outNbChunk) {
 	if (m_listAlgo.size() == 0) {
 		_outData = _inData;
 		_outNbChunk = _inNbChunk;
@@ -66,6 +68,7 @@ bool airtalgo::Process::process(std::chrono::system_clock::time_point& _time,
 			_inNbChunk = _outNbChunk;
 		}
 	}
+	return true;
 }
 
 void airtalgo::Process::pushBack(const std::shared_ptr<airtalgo::Algo>& _algo) {

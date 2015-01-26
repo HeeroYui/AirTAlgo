@@ -68,6 +68,25 @@ namespace airtalgo{
 			void clear() {
 				m_listAlgo.clear();
 			}
+			template<typename T> void removeIfFirst() {
+				if (m_listAlgo.size() > 0) {
+					std::shared_ptr<T> algoEP = std::dynamic_pointer_cast<T>(m_listAlgo[0]);
+					if (algoEP != nullptr) {
+						m_listAlgo.erase(m_listAlgo.begin());
+					}
+				}
+			}
+			template<typename T> void removeIfLast() {
+				if (m_listAlgo.size() > 0) {
+					std::shared_ptr<T> algoEP = std::dynamic_pointer_cast<T>(m_listAlgo[m_listAlgo.size()-1]);
+					if (algoEP != nullptr) {
+						m_listAlgo.erase(m_listAlgo.begin()+m_listAlgo.size()-1);
+					}
+				}
+			}
+			template<typename T> std::shared_ptr<T> get(int32_t _id) {
+				return std::dynamic_pointer_cast<T>(m_listAlgo[_id]);
+			}
 	};
 };
 
