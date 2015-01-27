@@ -12,11 +12,14 @@
 #include <functional>
 
 namespace airtalgo{
-	typedef std::function<void (const std::chrono::system_clock::time_point& _playTime, const size_t& _nbChunk, const std::vector<airtalgo::channel>& _map)> writeNeedDataFunction_int16_t;
+	typedef std::function<void (const std::chrono::system_clock::time_point& _playTime,
+	                            const size_t& _nbChunk,
+	                            const std::vector<airtalgo::channel>& _map,
+	                            enum airtalgo::format _type)> needDataFunctionWrite;
 	class EndPointWrite : public EndPoint {
 		private:
-			std::vector<int16_t> m_tmpData;
-			writeNeedDataFunction_int16_t m_function;
+			std::vector<int8_t> m_tmpData;
+			needDataFunctionWrite m_function;
 			std::mutex m_mutex;
 		public:
 			/**
@@ -34,7 +37,7 @@ namespace airtalgo{
 			                     void*& _output,
 			                     size_t& _outputNbChunk);
 			virtual void write(const void* _value, size_t _nbChunk);
-			virtual void setCallback(writeNeedDataFunction_int16_t _function) {
+			virtual void setCallback(needDataFunctionWrite _function) {
 				m_function = _function;
 			}
 	};
