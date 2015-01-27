@@ -7,16 +7,17 @@
 #include "debug.h"
 #include <airtalgo/EndPointCallback.h>
 
-airtalgo::EndPointCallback::EndPointCallback(needDataFunction _callback, enum formatDataType _dataFormat) :
-  m_dataFormat(_dataFormat),
-  m_output(_callback),
-  m_input(nullptr) {
+#undef __class__
+#define __class__ "EndPointCallback"
+
+airtalgo::EndPointCallback::EndPointCallback(needDataFunction _callback) :
+  m_outputFunction(_callback),
+  m_inputFunction(nullptr) {
 	
 }
-airtalgo::EndPointCallback::EndPointCallback(haveNewDataFunction _callback, enum formatDataType _dataFormat) :
-  m_dataFormat(_dataFormat),
-  m_output(nullptr),
-  m_input(_callback) {
+airtalgo::EndPointCallback::EndPointCallback(haveNewDataFunction _callback) :
+  m_outputFunction(nullptr),
+  m_inputFunction(_callback) {
 	
 }
 
@@ -33,33 +34,34 @@ bool airtalgo::EndPointCallback::process(std::chrono::system_clock::time_point& 
                                          void*& _output,
                                          size_t& _outputNbChunk){
 	airtalgo::autoLogInOut("EndPointCallback");
-	/*
-	if (m_output != nullptr) {
+	if (m_outputFunction != nullptr) {
+		// update buffer size ...
+		m_outputData.resize(_inputNbChunk*m_output.getMap().size()*m_formatSize);
 		// call user
-		AIRTALGO_INFO("call user get I16*" << _inputNbChunk << "*" << airtalgo::Algo::m_output.getMap().size() << " " << airtalgo::Algo::m_output.getMap());
-				m_data = m_output(_time, _inputNbChunk, airtalgo::Algo::m_output.getMap());
-		if (m_data.size() != _inputNbChunk*airtalgo::Algo::m_output.getMap().size()) {
-			//ERROR
+		AIRTALGO_VERBOSE("call user get I16*" << _inputNbChunk << "*" << m_output.getMap().size() << " " << m_output.getMap());
+		m_outputFunction(_time,
+		                 _inputNbChunk,
+		                 m_output.getMap(),
+		                 &m_outputData[0],
+		                 m_output.getFormat());
+		if (m_outputData.size() != _inputNbChunk*m_output.getMap().size()*m_formatSize) {
+			AIRTALGO_ERROR(" can not get enough data from user ... " << m_outputData.size() << " != " << _inputNbChunk*m_output.getMap().size());
 			return false;
 		}
-		_output = &m_data[0];
+		_output = &m_outputData[0];
 		_outputNbChunk = _inputNbChunk;
 		return true;
 	}
-	if (m_input != nullptr) {
-		// convert in data :
-		// TODO  : ...
-		m_data.resize(_inputNbChunk*airtalgo::Algo::m_input.getMap().size());
-		int16_t* data = static_cast<int16_t*>(_input);
-		for (size_t iii; iii<m_data.size(); ++iii) {
-			m_data[iii] = *data++;
-		}
+	if (m_inputFunction != nullptr) {
 		// Call user ...
-		AIRTALGO_INFO("call user set I16*" << _inputNbChunk << "*" << airtalgo::Algo::m_input.getMap().size());
-		m_input(_time, _inputNbChunk, airtalgo::Algo::m_input.getMap(), m_data);
+		AIRTALGO_VERBOSE("call user set I16*" << _inputNbChunk << "*" << m_input.getMap().size());
+		m_inputFunction(_time,
+		                _inputNbChunk,
+		                m_input.getMap(),
+		                _input,
+		                m_input.getFormat());
 		return true;
 	}
-	*/
 	return false;
 }
 

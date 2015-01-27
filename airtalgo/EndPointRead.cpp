@@ -7,6 +7,9 @@
 #include "debug.h"
 #include <airtalgo/EndPointRead.h>
 
+#undef __class__
+#define __class__ "EndPointRead"
+
 airtalgo::EndPointRead::EndPointRead() {
 	
 }

@@ -14,6 +14,9 @@
 #include <airtalgo/Process.h>
 #include <chrono>
 
+#undef __class__
+#define __class__ "Process"
+
 airtalgo::Process::Process() {
 	
 }
@@ -60,6 +63,7 @@ bool airtalgo::Process::process(std::chrono::system_clock::time_point& _time,
 		_outNbChunk = _inNbChunk;
 		return true;
 	}
+	AIRTALGO_VERBOSE(" process : " << m_listAlgo.size() << " algos");
 	for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
 		//std::cout << "            Algo " << iii+1 << "/" << m_listAlgo.size() << std::endl;
 		if (m_listAlgo[iii] != nullptr) {

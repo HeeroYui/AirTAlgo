@@ -12,24 +12,27 @@
 
 
 namespace airtalgo {
-	enum formatDataType {
-		formatDataTypeInt16,
-		formatDataTypeInt32,
-	};
-	typedef std::function<void (const std::chrono::system_clock::time_point& _playTime, size_t _nbChunk, const std::vector<airtalgo::channel>& _map, void* _data, enum formatDataType& _type)> needDataFunction;
-	typedef std::function<void (const std::chrono::system_clock::time_point& _readTime, size_t _nbChunk, const std::vector<airtalgo::channel>& _map, const void* _data, enum formatDataType& _type)> haveNewDataFunction;
+	typedef std::function<void (const std::chrono::system_clock::time_point& _playTime,
+	                            size_t _nbChunk,
+	                            const std::vector<airtalgo::channel>& _map,
+	                            void* _data,
+	                            enum airtalgo::format _type)> needDataFunction;
+	typedef std::function<void (const std::chrono::system_clock::time_point& _readTime,
+	                            size_t _nbChunk,
+	                            const std::vector<airtalgo::channel>& _map,
+	                            const void* _data,
+	                            enum airtalgo::format _type)> haveNewDataFunction;
 	class EndPointCallback : public EndPoint {
 		private:
-			enum formatDataType m_dataFormat;
-			needDataFunction m_output;
-			haveNewDataFunction m_input;
+			needDataFunction m_outputFunction;
+			haveNewDataFunction m_inputFunction;
 			std::vector<uint8_t> m_data;
 		public:
 			/**
 			 * @brief Constructor
 			 */
-			EndPointCallback(needDataFunction _callback, enum formatDataType _dataFormat);
-			EndPointCallback(haveNewDataFunction _callback, enum formatDataType _dataFormat);
+			EndPointCallback(needDataFunction _callback);
+			EndPointCallback(haveNewDataFunction _callback);
 			/**
 			 * @brief Destructor
 			 */

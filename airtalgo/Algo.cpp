@@ -7,6 +7,8 @@
 #include <functional>
 #include "debug.h"
 
+#undef __class__
+#define __class__ "Algo"
 
 airtalgo::Algo::Algo() :
   m_outputData(),

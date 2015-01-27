@@ -8,6 +8,9 @@
 #include <airtalgo/FormatUpdate.h>
 #include <iostream>
 
+#undef __class__
+#define __class__ "FormatUpdate"
+
 #ifndef INT16_MAX
 	#define INT16_MAX 0x7fff
 #endif
@@ -234,7 +237,7 @@ bool airtalgo::FormatUpdate::process(std::chrono::system_clock::time_point& _tim
                                             size_t _inputNbChunk,
                                             void*& _output,
                                             size_t& _outputNbChunk) {
-	//airtalgo::autoLogInOut("FormatUpdate");
+	airtalgo::autoLogInOut("FormatUpdate");
 	// chack if we need to process:
 	if (m_needProcess == false) {
 		_output = _input;

@@ -33,7 +33,7 @@ namespace airtalgo{
 			                     size_t _inputNbChunk,
 			                     void*& _output,
 			                     size_t& _outputNbChunk);
-			virtual void write(const int16_t* _value, size_t _nbValue);
+			virtual void write(const void* _value, size_t _nbChunk);
 			virtual void setCallback(writeNeedDataFunction_int16_t _function) {
 				m_function = _function;
 			}

@@ -6,6 +6,10 @@
 #include "debug.h"
 #include <airtalgo/EndPointWrite.h>
 
+
+#undef __class__
+#define __class__ "EndPointWrite"
+
 airtalgo::EndPointWrite::EndPointWrite() :
   m_function(nullptr) {
 	
@@ -23,7 +27,7 @@ bool airtalgo::EndPointWrite::process(std::chrono::system_clock::time_point& _ti
                                              size_t _inputNbChunk,
                                              void*& _output,
                                              size_t& _outputNbChunk){
-	//airtalgo::autoLogInOut("EndPointWrite");
+	airtalgo::autoLogInOut("EndPointWrite");
 	//AIRTALGO_INFO("                              nb Sample in buffer : " << m_tmpData.size());
 	if (m_function != nullptr) {
 		if (m_tmpData.size() <= 20000) {
@@ -48,18 +52,21 @@ bool airtalgo::EndPointWrite::process(std::chrono::system_clock::time_point& _ti
 	AIRTALGO_INFO("Write " << _outputNbChunk << " chunks");
 	// check if we have enought data:
 	int32_t nbChunkToCopy = std::min(_inputNbChunk, m_outputData.size()/m_output.getMap().size());
+	
+	AIRTALGO_INFO("      " << nbChunkToCopy << " chunks ==> " << nbChunkToCopy*m_output.getMap().size()*m_formatSize << " Byte");
 	// copy data to the output:
 	memcpy(_output, &m_tmpData[0], nbChunkToCopy*m_output.getMap().size()*m_formatSize);
 	// remove old data:
-	m_tmpData.erase(m_tmpData.begin(), m_tmpData.begin()+nbChunkToCopy*m_output.getMap().size());
+	m_tmpData.erase(m_tmpData.begin(), m_tmpData.begin() + nbChunkToCopy*m_output.getMap().size()*m_formatSize);
 	//AIRTALGO_INFO("                              nb Sample in buffer : " << m_tmpData.size());
 	return true;
 }
 
-void airtalgo::EndPointWrite::write(const int16_t* _value, size_t _nbValue) {
+void airtalgo::EndPointWrite::write(const void* _value, size_t _nbChunk) {
 	std::unique_lock<std::mutex> lock(m_mutex);
-	AIRTALGO_INFO("[ASYNC] Get data : " << _nbValue << " ==> " << _nbValue/m_output.getMap().size() << " chumks");
-	for (size_t iii=0; iii<_nbValue; ++iii) {
-		m_tmpData.push_back(*_value++);
+	AIRTALGO_INFO("[ASYNC] Get data : " << _nbChunk << " chunks ==> " << _nbChunk*m_output.getMap().size() << " samples formatSize=" << int32_t(m_formatSize));
+	const int8_t* value = static_cast<const int8_t*>(_value);
+	for (size_t iii=0; iii<_nbChunk*m_formatSize; ++iii) {
+		m_tmpData.push_back(*value++);
 	}
 }

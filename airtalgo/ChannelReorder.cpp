@@ -10,6 +10,8 @@
 #include "debug.h"
 
 
+#undef __class__
+#define __class__ "ChannelReorder"
 
 airtalgo::ChannelReorder::ChannelReorder() {
 	
@@ -40,9 +42,9 @@ bool airtalgo::ChannelReorder::process(std::chrono::system_clock::time_point& _t
                                               size_t _inputNbChunk,
                                               void*& _output,
                                               size_t& _outputNbChunk) {
-	//airtalgo::autoLogInOut("ChannelReorder");
+	airtalgo::autoLogInOut("ChannelReorder");
 	_outputNbChunk = _inputNbChunk;
-	// chack if we need to process:
+	// check if we need to process:
 	if (m_needProcess == false) {
 		_output = _input;
 		return true;

@@ -8,6 +8,8 @@
 #include <airtalgo/Resampler.h>
 #include <iostream>
 
+#undef __class__
+#define __class__ "Resampler"
 
 airtalgo::Resampler::Resampler() :
   #ifdef HAVE_SPEEX_DSP_RESAMPLE
@@ -64,11 +66,11 @@ void airtalgo::Resampler::configurationChange() {
 
 
 bool airtalgo::Resampler::process(std::chrono::system_clock::time_point& _time,
-                                         void* _input,
-                                         size_t _inputNbChunk,
-                                         void*& _output,
-                                         size_t& _outputNbChunk) {
-	//airtalgo::autoLogInOut("Resampler");
+                                  void* _input,
+                                  size_t _inputNbChunk,
+                                  void*& _output,
+                                  size_t& _outputNbChunk) {
+	airtalgo::autoLogInOut("Resampler");
 	_outputNbChunk = 2048;
 	// chack if we need to process:
 	if (m_needProcess == false) {

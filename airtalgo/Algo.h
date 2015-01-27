@@ -24,10 +24,10 @@ namespace airtalgo{
 		public:
 			autoLogInOut(const std::string& _value) :
 			  m_value(_value) {
-				AIRTALGO_DEBUG("                 '" << m_value << "' [START]");
+				AIRTALGO_VERBOSE("                 '" << m_value << "' [START]");
 			}
 			~autoLogInOut() {
-				AIRTALGO_DEBUG("                 '" << m_value << "' [STOP]");
+				AIRTALGO_VERBOSE("                 '" << m_value << "' [STOP]");
 			}
 	};
 	class IOFormatInterface {
