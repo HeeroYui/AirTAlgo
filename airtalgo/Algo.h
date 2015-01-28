@@ -113,7 +113,7 @@ namespace airtalgo{
 		protected:
 			std::function<void()> m_ioChangeFunctor; //!< function pointer on the upper class
 			void configurationChange() {
-				if (m_ioChangeFunctor != NULL) {
+				if (m_ioChangeFunctor != nullptr) {
 					m_ioChangeFunctor();
 				}
 			}
@@ -140,7 +140,7 @@ namespace airtalgo{
 			/**
 			 * @brief Destructor
 			 */
-			virtual ~Algo() {};
+			virtual ~Algo();
 		protected:
 			bool m_needProcess; //!< if no change, then no need to process, just forward buffer...
 			IOFormatInterface m_input; //!< Input audio property

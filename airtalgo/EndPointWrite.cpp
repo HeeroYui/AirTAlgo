@@ -16,6 +16,11 @@ airtalgo::EndPointWrite::EndPointWrite() :
 }
 
 
+airtalgo::EndPointWrite::~EndPointWrite() {
+	AIRTALGO_INFO("Remove EndPointWrite");
+	
+}
+
 void airtalgo::EndPointWrite::configurationChange() {
 	airtalgo::EndPoint::configurationChange();
 	m_needProcess = true;

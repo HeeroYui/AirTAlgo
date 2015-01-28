@@ -26,8 +26,9 @@ def create(target):
 		'airtalgo/Resampler.cpp'
 		])
 	
-	
-	myModule.add_module_depend(['etk'])
+	# TODO: myModule.add_optionnal_module_depend('speexdsp', "HAVE_SPEEX_DSP_RESAMPLE")
+	myModule.compile_flags_CC("-DHAVE_SPEEX_DSP_RESAMPLE")
+	myModule.add_module_depend(['etk', 'speexdsp'])
 	myModule.add_export_path(tools.get_current_path(__file__))
 	
 	# add the currrent module at the 

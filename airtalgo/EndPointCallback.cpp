@@ -20,10 +20,14 @@ airtalgo::EndPointCallback::EndPointCallback(haveNewDataFunction _callback) :
   m_inputFunction(_callback) {
 	
 }
+airtalgo::EndPointCallback::~EndPointCallback() {
+	AIRTALGO_INFO("Remove EndPointCallback");
+}
 
 
 void airtalgo::EndPointCallback::configurationChange() {
 	airtalgo::EndPoint::configurationChange();
+	AIRTALGO_INFO("update : format=" << m_output.getFormat() << " map=" << m_input.getMap() << " freq=" << m_input.getFrequency() << " size=" << int32_t(m_formatSize));
 	m_needProcess = true;
 }
 
@@ -38,7 +42,7 @@ bool airtalgo::EndPointCallback::process(std::chrono::system_clock::time_point& 
 		// update buffer size ...
 		m_outputData.resize(_inputNbChunk*m_output.getMap().size()*m_formatSize);
 		// call user
-		AIRTALGO_VERBOSE("call user get I16*" << _inputNbChunk << "*" << m_output.getMap().size() << " " << m_output.getMap());
+		AIRTALGO_VERBOSE("call user get " << _inputNbChunk << "*" << m_output.getMap().size() << " map=" << m_output.getMap() << " datasize=" << int32_t(m_formatSize));
 		m_outputFunction(_time,
 		                 _inputNbChunk,
 		                 m_output.getMap(),
@@ -54,7 +58,7 @@ bool airtalgo::EndPointCallback::process(std::chrono::system_clock::time_point& 
 	}
 	if (m_inputFunction != nullptr) {
 		// Call user ...
-		AIRTALGO_VERBOSE("call user set I16*" << _inputNbChunk << "*" << m_input.getMap().size());
+		AIRTALGO_VERBOSE("call user set " << _inputNbChunk << "*" << m_input.getMap().size());
 		m_inputFunction(_time,
 		                _inputNbChunk,
 		                m_input.getMap(),

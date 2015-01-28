@@ -18,7 +18,7 @@ namespace airtalgo {
 			/**
 			 * @brief Destructor
 			 */
-			virtual ~FormatUpdate() {};
+			virtual ~FormatUpdate();
 		protected:
 			virtual void configurationChange();
 		public:

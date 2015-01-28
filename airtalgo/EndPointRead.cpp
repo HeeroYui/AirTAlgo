@@ -14,6 +14,10 @@ airtalgo::EndPointRead::EndPointRead() {
 	
 }
 
+airtalgo::EndPointRead::~EndPointRead() {
+	AIRTALGO_INFO("Remove EndPointRead");
+}
+
 
 void airtalgo::EndPointRead::configurationChange() {
 	airtalgo::EndPoint::configurationChange();

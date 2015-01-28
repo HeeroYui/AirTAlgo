@@ -19,7 +19,7 @@ namespace airtalgo{
 			/**
 			 * @brief Destructor
 			 */
-			virtual ~ChannelReorder() {};
+			virtual ~ChannelReorder();
 		protected:
 			virtual void configurationChange();
 		public:

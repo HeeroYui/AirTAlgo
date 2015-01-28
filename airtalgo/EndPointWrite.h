@@ -29,7 +29,7 @@ namespace airtalgo{
 			/**
 			 * @brief Destructor
 			 */
-			virtual ~EndPointWrite() {};
+			virtual ~EndPointWrite();
 			virtual void configurationChange();
 			virtual bool process(std::chrono::system_clock::time_point& _time,
 			                     void* _input,

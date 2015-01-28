@@ -26,7 +26,6 @@ namespace airtalgo {
 		private:
 			needDataFunction m_outputFunction;
 			haveNewDataFunction m_inputFunction;
-			std::vector<uint8_t> m_data;
 		public:
 			/**
 			 * @brief Constructor
@@ -36,7 +35,7 @@ namespace airtalgo {
 			/**
 			 * @brief Destructor
 			 */
-			virtual ~EndPointCallback() {};
+			virtual ~EndPointCallback();
 			virtual void configurationChange();
 			virtual bool process(std::chrono::system_clock::time_point& _time,
 			                     void* _input,

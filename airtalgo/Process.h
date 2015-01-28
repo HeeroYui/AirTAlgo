@@ -21,6 +21,7 @@ namespace airtalgo{
 	class Process {
 		public:
 			Process();
+			virtual ~Process();
 		public:
 			/**
 			 * @brief Push data in the algo stream.

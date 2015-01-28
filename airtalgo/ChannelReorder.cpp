@@ -16,6 +16,10 @@
 airtalgo::ChannelReorder::ChannelReorder() {
 	
 }
+airtalgo::ChannelReorder::~ChannelReorder() {
+	AIRTALGO_INFO("Remove ChannelReorder");
+}
+
 
 void airtalgo::ChannelReorder::configurationChange() {
 	airtalgo::autoLogInOut("ChannelReorder (config)");
@@ -62,7 +66,7 @@ bool airtalgo::ChannelReorder::process(std::chrono::system_clock::time_point& _t
 		default:
 		case format_int16:
 			{
-				AIRTALGO_INFO("convert " << m_input.getMap() << " ==> " << m_output.getMap());
+				AIRTALGO_VERBOSE("convert " << m_input.getMap() << " ==> " << m_output.getMap() << " format=" << int32_t(m_formatSize));
 				int16_t* in = static_cast<int16_t*>(_input);
 				int16_t* out = static_cast<int16_t*>(_output);
 				for (size_t kkk=0; kkk<m_output.getMap().size(); ++kkk) {
@@ -78,6 +82,7 @@ bool airtalgo::ChannelReorder::process(std::chrono::system_clock::time_point& _t
 							}
 						}
 					}
+					AIRTALGO_VERBOSE("    " << convertId << " ==> " << kkk);
 					if (convertId == -1) {
 						for (size_t iii=0; iii<_outputNbChunk; ++iii) {
 							out[iii*m_output.getMap().size()+kkk] = 0;
@@ -94,7 +99,7 @@ bool airtalgo::ChannelReorder::process(std::chrono::system_clock::time_point& _t
 		case format_int32:
 		case format_float:
 			{
-				AIRTALGO_INFO("convert (2) " << m_input.getMap() << " ==> " << m_output.getMap());
+				AIRTALGO_VERBOSE("convert (2) " << m_input.getMap() << " ==> " << m_output.getMap());
 				uint32_t* in = static_cast<uint32_t*>(_input);
 				uint32_t* out = static_cast<uint32_t*>(_output);
 				for (size_t kkk=0; kkk<m_output.getMap().size(); ++kkk) {

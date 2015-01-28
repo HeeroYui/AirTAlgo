@@ -20,6 +20,11 @@
 airtalgo::Process::Process() {
 	
 }
+airtalgo::Process::~Process() {
+	for (auto &it : m_listAlgo) {
+		it.reset();
+	}
+}
 
 bool airtalgo::Process::push(std::chrono::system_clock::time_point& _time,
                              void* _data,
@@ -63,7 +68,7 @@ bool airtalgo::Process::process(std::chrono::system_clock::time_point& _time,
 		_outNbChunk = _inNbChunk;
 		return true;
 	}
-	AIRTALGO_VERBOSE(" process : " << m_listAlgo.size() << " algos");
+	AIRTALGO_VERBOSE(" process : " << m_listAlgo.size() << " algos nbChunk=" << _outNbChunk);
 	for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
 		//std::cout << "            Algo " << iii+1 << "/" << m_listAlgo.size() << std::endl;
 		if (m_listAlgo[iii] != nullptr) {

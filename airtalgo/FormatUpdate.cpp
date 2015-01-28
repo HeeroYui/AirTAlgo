@@ -103,7 +103,7 @@ static void convert__float__to__int16(void* _input, void* _output, size_t _nbSam
 		float value = in[iii] * static_cast<float>(INT16_MAX);
 		value = std::min(std::max(static_cast<float>(INT16_MIN), value), static_cast<float>(INT16_MAX));
 		out[iii] = static_cast<int16_t>(value);
-		//AIRTALGO_VERBOSE(" in=" << in[iii] << " out=" << out[iii]);
+		//AIRTALGO_DEBUG(iii << " in=" << in[iii] << " out=" << out[iii]);
 	}
 }
 static void convert__float__to__int16_on_int32(void* _input, void* _output, size_t _nbSample) {
@@ -129,6 +129,9 @@ static void convert__float__to__int32(void* _input, void* _output, size_t _nbSam
 airtalgo::FormatUpdate::FormatUpdate() :
   m_functionConvert(NULL) {
 	
+}
+airtalgo::FormatUpdate::~FormatUpdate() {
+	AIRTALGO_INFO("Remove FormatUpdate");
 }
 
 void airtalgo::FormatUpdate::configurationChange() {

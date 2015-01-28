@@ -14,11 +14,15 @@ airtalgo::Algo::Algo() :
   m_outputData(),
   m_formatSize(0),
   m_needProcess(false) {
+	AIRTALGO_VERBOSE("CREATE ALGO");
 	// set notification callback :
 	m_input.setCallback(std::bind(&airtalgo::Algo::configurationChange, this));
 	m_output.setCallback(std::bind(&airtalgo::Algo::configurationChange, this));
 	// first configure ==> update the internal parameters
 	configurationChange();
+}
+airtalgo::Algo::~Algo() {
+	AIRTALGO_VERBOSE("Remove ALGO");
 }
 
 void airtalgo::Algo::configurationChange() {
@@ -48,6 +52,7 @@ void airtalgo::Algo::configurationChange() {
 
 size_t airtalgo::Algo::needInputData(size_t _output) {
 	size_t input = _output;
+	/* NOT good at all ...
 	if (m_input.getFormat() != m_output.getFormat()) {
 		int32_t inputSize = 3;
 		switch (m_input.getFormat()) {
@@ -67,10 +72,13 @@ size_t airtalgo::Algo::needInputData(size_t _output) {
 			input /= m_formatSize;
 		}
 	}
+	*/
+	/*
 	if (m_input.getMap().size() != m_output.getMap().size()) {
 		input *= m_input.getMap().size();
 		input /= m_output.getMap().size();
 	}
+	*/
 	
 	if (m_input.getFrequency() != m_output.getFrequency()) {
 		input *= m_input.getFrequency();
