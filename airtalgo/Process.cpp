@@ -31,7 +31,7 @@ bool airtalgo::Process::push(std::chrono::system_clock::time_point& _time,
                              size_t _nbChunk) {
 	void* out = nullptr;
 	size_t nbChunkOut;
-	AIRTALGO_VERBOSE("        Interface DIRECT ");
+	AIRTALGO_VERBOSE("        Process push");
 	process(_time, _data, _nbChunk, out, nbChunkOut);
 	return true;
 }

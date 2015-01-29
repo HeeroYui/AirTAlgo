@@ -127,11 +127,18 @@ static void convert__float__to__int32(void* _input, void* _output, size_t _nbSam
 
 
 airtalgo::FormatUpdate::FormatUpdate() :
-  m_functionConvert(NULL) {
+  m_functionConvert(nullptr) {
 	
 }
-airtalgo::FormatUpdate::~FormatUpdate() {
-	AIRTALGO_INFO("Remove FormatUpdate");
+
+void airtalgo::FormatUpdate::init() {
+	airtalgo::Algo::init();
+}
+
+std::shared_ptr<airtalgo::FormatUpdate> airtalgo::FormatUpdate::create() {
+	std::shared_ptr<airtalgo::FormatUpdate> tmp(new airtalgo::FormatUpdate());
+	tmp->init();
+	return tmp;
 }
 
 void airtalgo::FormatUpdate::configurationChange() {
@@ -240,7 +247,7 @@ bool airtalgo::FormatUpdate::process(std::chrono::system_clock::time_point& _tim
                                             size_t _inputNbChunk,
                                             void*& _output,
                                             size_t& _outputNbChunk) {
-	airtalgo::autoLogInOut("FormatUpdate");
+	airtalgo::autoLogInOut tmpLog("FormatUpdate");
 	// chack if we need to process:
 	if (m_needProcess == false) {
 		_output = _input;

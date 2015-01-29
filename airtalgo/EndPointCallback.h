@@ -26,16 +26,20 @@ namespace airtalgo {
 		private:
 			needDataFunction m_outputFunction;
 			haveNewDataFunction m_inputFunction;
-		public:
+		protected:
 			/**
 			 * @brief Constructor
 			 */
-			EndPointCallback(needDataFunction _callback);
-			EndPointCallback(haveNewDataFunction _callback);
+			EndPointCallback();
+			void init(needDataFunction _callback);
+			void init(haveNewDataFunction _callback);
+		public:
+			static std::shared_ptr<EndPointCallback> create(needDataFunction _callback);
+			static std::shared_ptr<EndPointCallback> create(haveNewDataFunction _callback);
 			/**
 			 * @brief Destructor
 			 */
-			virtual ~EndPointCallback();
+			virtual ~EndPointCallback() {};
 			virtual void configurationChange();
 			virtual bool process(std::chrono::system_clock::time_point& _time,
 			                     void* _input,

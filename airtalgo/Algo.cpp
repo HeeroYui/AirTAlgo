@@ -15,14 +15,14 @@ airtalgo::Algo::Algo() :
   m_formatSize(0),
   m_needProcess(false) {
 	AIRTALGO_VERBOSE("CREATE ALGO");
+}
+
+void airtalgo::Algo::init() {
 	// set notification callback :
 	m_input.setCallback(std::bind(&airtalgo::Algo::configurationChange, this));
 	m_output.setCallback(std::bind(&airtalgo::Algo::configurationChange, this));
 	// first configure ==> update the internal parameters
 	configurationChange();
-}
-airtalgo::Algo::~Algo() {
-	AIRTALGO_VERBOSE("Remove ALGO");
 }
 
 void airtalgo::Algo::configurationChange() {

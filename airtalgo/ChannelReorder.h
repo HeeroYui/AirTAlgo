@@ -11,15 +11,18 @@
 
 namespace airtalgo{
 	class ChannelReorder : public Algo {
-		public:
+		protected:
 			/**
 			 * @brief Constructor
 			 */
 			ChannelReorder();
+			void init();
+		public:
+			static std::shared_ptr<ChannelReorder> create();
 			/**
 			 * @brief Destructor
 			 */
-			virtual ~ChannelReorder();
+			virtual ~ChannelReorder() {};
 		protected:
 			virtual void configurationChange();
 		public:

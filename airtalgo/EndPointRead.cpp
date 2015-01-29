@@ -14,10 +14,16 @@ airtalgo::EndPointRead::EndPointRead() {
 	
 }
 
-airtalgo::EndPointRead::~EndPointRead() {
-	AIRTALGO_INFO("Remove EndPointRead");
+
+void airtalgo::EndPointRead::init() {
+	airtalgo::EndPoint::init();
 }
 
+std::shared_ptr<airtalgo::EndPointRead> airtalgo::EndPointRead::create() {
+	std::shared_ptr<airtalgo::EndPointRead> tmp(new airtalgo::EndPointRead());
+	tmp->init();
+	return tmp;
+}
 
 void airtalgo::EndPointRead::configurationChange() {
 	airtalgo::EndPoint::configurationChange();
@@ -30,7 +36,7 @@ bool airtalgo::EndPointRead::process(std::chrono::system_clock::time_point& _tim
                                             size_t _inputNbChunk,
                                             void*& _output,
                                             size_t& _outputNbChunk){
-	airtalgo::autoLogInOut("EndPointRead");
+	airtalgo::autoLogInOut tmpLog("EndPointRead");
 	return false;
 }
 

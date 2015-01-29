@@ -10,15 +10,18 @@
 
 namespace airtalgo {
 	class FormatUpdate : public Algo {
-		public:
+		protected:
 			/**
 			 * @brief Constructor
 			 */
 			FormatUpdate();
+			void init();
+		public:
+			static std::shared_ptr<FormatUpdate> create();
 			/**
 			 * @brief Destructor
 			 */
-			virtual ~FormatUpdate();
+			virtual ~FormatUpdate() {};
 		protected:
 			virtual void configurationChange();
 		public:

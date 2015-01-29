@@ -21,11 +21,14 @@ namespace airtalgo {
 			#endif
 			size_t m_positionRead; //!< For residual data in the buffer last read number of chunk
 			size_t m_positionWrite; //!< Current pointer of writing new output data of resampler
-		public:
+		protected:
 			/**
 			 * @brief Constructor
 			 */
 			Resampler();
+			void init();
+		public:
+			static std::shared_ptr<Resampler> create();
 			/**
 			 * @brief Destructor
 			 */

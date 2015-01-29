@@ -21,15 +21,18 @@ namespace airtalgo{
 			std::vector<int8_t> m_tmpData;
 			needDataFunctionWrite m_function;
 			std::mutex m_mutex;
-		public:
+		protected:
 			/**
 			 * @brief Constructor
 			 */
 			EndPointWrite();
+			void init();
+		public:
+			static std::shared_ptr<EndPointWrite> create();
 			/**
 			 * @brief Destructor
 			 */
-			virtual ~EndPointWrite();
+			virtual ~EndPointWrite() {};
 			virtual void configurationChange();
 			virtual bool process(std::chrono::system_clock::time_point& _time,
 			                     void* _input,

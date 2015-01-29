@@ -15,6 +15,7 @@
 #include <airtalgo/channel.h>
 #include <chrono>
 #include <functional>
+#include <memory>
 #include "debug.h"
 
 namespace airtalgo{
@@ -128,19 +129,20 @@ namespace airtalgo{
 			
 	};
 	
-	class Algo {
+	class Algo : public std::enable_shared_from_this<Algo> {
 		protected:
 			std::vector<int8_t> m_outputData;
 			int8_t m_formatSize; //!< sample size
-		public:
 			/**
 			 * @brief Constructor
 			 */
 			Algo();
+			void init();
+		public:
 			/**
 			 * @brief Destructor
 			 */
-			virtual ~Algo();
+			virtual ~Algo() {};
 		protected:
 			bool m_needProcess; //!< if no change, then no need to process, just forward buffer...
 			IOFormatInterface m_input; //!< Input audio property

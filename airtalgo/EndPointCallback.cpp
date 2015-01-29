@@ -10,20 +10,32 @@
 #undef __class__
 #define __class__ "EndPointCallback"
 
-airtalgo::EndPointCallback::EndPointCallback(needDataFunction _callback) :
-  m_outputFunction(_callback),
+airtalgo::EndPointCallback::EndPointCallback() :
+  m_outputFunction(nullptr),
   m_inputFunction(nullptr) {
 	
 }
-airtalgo::EndPointCallback::EndPointCallback(haveNewDataFunction _callback) :
-  m_outputFunction(nullptr),
-  m_inputFunction(_callback) {
-	
+
+void airtalgo::EndPointCallback::init(needDataFunction _callback) {
+	m_outputFunction = _callback;
+	airtalgo::EndPoint::init();
 }
-airtalgo::EndPointCallback::~EndPointCallback() {
-	AIRTALGO_INFO("Remove EndPointCallback");
+void airtalgo::EndPointCallback::init(haveNewDataFunction _callback) {
+	m_inputFunction = _callback;
+	airtalgo::EndPoint::init();
 }
 
+std::shared_ptr<airtalgo::EndPointCallback> airtalgo::EndPointCallback::create(needDataFunction _callback) {
+	std::shared_ptr<airtalgo::EndPointCallback> tmp(new airtalgo::EndPointCallback());
+	tmp->init(_callback);
+	return tmp;
+}
+
+std::shared_ptr<airtalgo::EndPointCallback> airtalgo::EndPointCallback::create(haveNewDataFunction _callback) {
+	std::shared_ptr<airtalgo::EndPointCallback> tmp(new airtalgo::EndPointCallback());
+	tmp->init(_callback);
+	return tmp;
+}
 
 void airtalgo::EndPointCallback::configurationChange() {
 	airtalgo::EndPoint::configurationChange();
@@ -37,7 +49,7 @@ bool airtalgo::EndPointCallback::process(std::chrono::system_clock::time_point& 
                                          size_t _inputNbChunk, // requested number of sample ...
                                          void*& _output,
                                          size_t& _outputNbChunk){
-	airtalgo::autoLogInOut("EndPointCallback");
+	airtalgo::autoLogInOut tmpLog("EndPointCallback");
 	if (m_outputFunction != nullptr) {
 		// update buffer size ...
 		m_outputData.resize(_inputNbChunk*m_output.getMap().size()*m_formatSize);

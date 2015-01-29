@@ -16,10 +16,17 @@
 airtalgo::ChannelReorder::ChannelReorder() {
 	
 }
-airtalgo::ChannelReorder::~ChannelReorder() {
-	AIRTALGO_INFO("Remove ChannelReorder");
+
+
+void airtalgo::ChannelReorder::init() {
+	airtalgo::Algo::init();
 }
 
+std::shared_ptr<airtalgo::ChannelReorder> airtalgo::ChannelReorder::create() {
+	std::shared_ptr<airtalgo::ChannelReorder> tmp(new airtalgo::ChannelReorder());
+	tmp->init();
+	return tmp;
+}
 
 void airtalgo::ChannelReorder::configurationChange() {
 	airtalgo::autoLogInOut("ChannelReorder (config)");
@@ -46,7 +53,7 @@ bool airtalgo::ChannelReorder::process(std::chrono::system_clock::time_point& _t
                                               size_t _inputNbChunk,
                                               void*& _output,
                                               size_t& _outputNbChunk) {
-	airtalgo::autoLogInOut("ChannelReorder");
+	airtalgo::autoLogInOut tmpLog("ChannelReorder");
 	_outputNbChunk = _inputNbChunk;
 	// check if we need to process:
 	if (m_needProcess == false) {

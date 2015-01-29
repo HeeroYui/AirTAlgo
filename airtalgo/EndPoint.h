@@ -11,11 +11,15 @@
 
 namespace airtalgo{
 	class EndPoint : public Algo {
-		public:
+		protected:
 			/**
 			 * @brief Constructor
 			 */
 			EndPoint() {};
+			void init() {
+				airtalgo::Algo::init();
+			};
+		public:
 			/**
 			 * @brief Destructor
 			 */

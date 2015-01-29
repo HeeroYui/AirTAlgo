@@ -15,10 +15,14 @@ airtalgo::EndPointWrite::EndPointWrite() :
 	
 }
 
+void airtalgo::EndPointWrite::init() {
+	airtalgo::EndPoint::init();
+}
 
-airtalgo::EndPointWrite::~EndPointWrite() {
-	AIRTALGO_INFO("Remove EndPointWrite");
-	
+std::shared_ptr<airtalgo::EndPointWrite> airtalgo::EndPointWrite::create() {
+	std::shared_ptr<airtalgo::EndPointWrite> tmp(new airtalgo::EndPointWrite());
+	tmp->init();
+	return tmp;
 }
 
 void airtalgo::EndPointWrite::configurationChange() {
@@ -32,7 +36,7 @@ bool airtalgo::EndPointWrite::process(std::chrono::system_clock::time_point& _ti
                                              size_t _inputNbChunk,
                                              void*& _output,
                                              size_t& _outputNbChunk){
-	airtalgo::autoLogInOut("EndPointWrite");
+	airtalgo::autoLogInOut tmpLog("EndPointWrite");
 	//AIRTALGO_INFO("                              nb Sample in buffer : " << m_tmpData.size());
 	if (m_function != nullptr) {
 		if (m_tmpData.size() <= 20000) {

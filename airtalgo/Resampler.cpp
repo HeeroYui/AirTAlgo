@@ -19,8 +19,18 @@ airtalgo::Resampler::Resampler() :
   m_positionWrite(0) {
 	
 }
+
+void airtalgo::Resampler::init() {
+	airtalgo::Algo::init();
+}
+
+std::shared_ptr<airtalgo::Resampler> airtalgo::Resampler::create() {
+	std::shared_ptr<airtalgo::Resampler> tmp(new airtalgo::Resampler());
+	tmp->init();
+	return tmp;
+}
+
 airtalgo::Resampler::~Resampler() {
-	AIRTALGO_INFO("Remove Resampler");
 	#ifdef HAVE_SPEEX_DSP_RESAMPLE
 		if (m_speexResampler != nullptr) {
 			speex_resampler_destroy(m_speexResampler);
@@ -71,7 +81,7 @@ bool airtalgo::Resampler::process(std::chrono::system_clock::time_point& _time,
                                   size_t _inputNbChunk,
                                   void*& _output,
                                   size_t& _outputNbChunk) {
-	airtalgo::autoLogInOut("Resampler");
+	airtalgo::autoLogInOut tmpLog("Resampler");
 	_outputNbChunk = 2048;
 	// chack if we need to process:
 	if (m_needProcess == false) {
@@ -95,7 +105,7 @@ bool airtalgo::Resampler::process(std::chrono::system_clock::time_point& _time,
 		AIRTALGO_VERBOSE("                               Frame duration=" << nbInputTime);
 		AIRTALGO_VERBOSE("                               nbInput chunk=" << _inputNbChunk << " nbOutputChunk=" << nbOutputSample);
 		
-		m_outputData.resize(_outputNbChunk*m_output.getMap().size()*m_formatSize);
+		m_outputData.resize(_outputNbChunk*m_output.getMap().size()*m_formatSize*16);
 		_output = &(m_outputData[0]);
 		if (m_speexResampler == nullptr) {
 			AIRTALGO_ERROR("                               No speex resampler");

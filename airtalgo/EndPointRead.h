@@ -11,15 +11,18 @@
 
 namespace airtalgo{
 	class EndPointRead : public EndPoint {
-		public:
+		protected:
 			/**
 			 * @brief Constructor
 			 */
 			EndPointRead();
+			void init();
+		public:
+			static std::shared_ptr<EndPointRead> create();
 			/**
 			 * @brief Destructor
 			 */
-			virtual ~EndPointRead();
+			virtual ~EndPointRead() {};
 			virtual void configurationChange();
 			virtual bool process(std::chrono::system_clock::time_point& _time,
 			                     void* _input,
