@@ -130,6 +130,15 @@ namespace airtalgo{
 	};
 	
 	class Algo : public std::enable_shared_from_this<Algo> {
+		private:
+			std::string m_name;
+		public:
+			const std::string& getName() const {
+				return m_name;
+			}
+			void setName(const std::string& _name) {
+				m_name = _name;
+			}
 		protected:
 			std::vector<int8_t> m_outputData;
 			int8_t m_formatSize; //!< sample size

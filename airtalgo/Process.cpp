@@ -37,8 +37,10 @@ bool airtalgo::Process::push(std::chrono::system_clock::time_point& _time,
 }
 
 bool airtalgo::Process::pull(std::chrono::system_clock::time_point& _time,
-                             void*& _data,
-                             size_t& _nbChunk) {
+                             void* _data,
+                             size_t _nbChunk,
+                             size_t _chunkSize) {
+	#if 0
 	void* in = nullptr;
 	size_t nbChunkIn = _nbChunk;
 	void* out = nullptr;
@@ -54,9 +56,55 @@ bool airtalgo::Process::pull(std::chrono::system_clock::time_point& _time,
 	if (nbChunkIn < 32) {
 		nbChunkIn = 32;
 	}
+	AIRTALGO_VERBOSE("process pull : request out=" << _nbChunk << " input slot request=" << nbChunkIn);
 	process(_time, in, nbChunkIn, _data, _nbChunk);
+	AIRTALGO_VERBOSE("process pull : real get " << _nbChunk);
+	#else
+	//std::cout << "        Interface DIRECT " << std::endl;
+	while(m_data.size()<_nbChunk*_chunkSize) {
+		void* in = NULL;
+		size_t nbChunkIn = _nbChunk - m_data.size()/_chunkSize;
+		void* out = NULL;
+		size_t nbChunkOut;
+		if (nbChunkIn < 128) {
+			nbChunkIn = 128;
+		}
+		// TODO : maybe remove this for input data ...
+		for (int32_t iii=m_listAlgo.size()-1; iii >=0; --iii) {
+			if (m_listAlgo[iii] != NULL) {
+				nbChunkIn = m_listAlgo[iii]->needInputData(nbChunkIn);
+			}
+		}
+		if (nbChunkIn < 32) {
+			nbChunkIn = 32;
+		}
+		
+		// get data from the upstream
+		//std::cout << "         * request " << nbChunkIn << " chunk" << std::endl;
+		process(_time, in, nbChunkIn, out, nbChunkOut);
+		//std::cout << "         * get " << nbChunkOut << " chunk" << std::endl;
+		if (nbChunkOut > 0) {
+			size_t position = m_data.size();
+			m_data.resize(m_data.size() + nbChunkOut*_chunkSize);
+			memcpy(&m_data[position], out, nbChunkOut*_chunkSize);
+		} else {
+			// TODO : ERROR ...
+			break;
+		}
+	}
+	if (m_data.size()>=_nbChunk*_chunkSize) {
+		//std::cout << "         * copy needed data" << std::endl;
+		memcpy(_data, &m_data[0], _nbChunk*_chunkSize);
+		m_data.erase(m_data.begin(), m_data.begin()+_nbChunk*_chunkSize);
+	} else {
+		//std::cout << "         * soft underflow" << std::endl;
+		// ERROR
+		m_data.clear();
+	}
+	#endif
 	return true;
 }
+
 
 bool airtalgo::Process::process(std::chrono::system_clock::time_point& _time,
                                 void* _inData,

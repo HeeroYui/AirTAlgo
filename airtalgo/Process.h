@@ -19,6 +19,8 @@
 
 namespace airtalgo{
 	class Process {
+		protected:
+			std::vector<int8_t> m_data; //!< temporary overlap output buffer (change size of the output data)
 		public:
 			Process();
 			virtual ~Process();
@@ -39,12 +41,14 @@ namespace airtalgo{
 			 * @param[in] _time Time of the first sample requested.
 			 * @param[in] _data Pointer on the data pushed.
 			 * @param[in,out] _nbChunk Number of chunk present in the pointer (set at the number of chunk requested(hope)).
+			 * @param[out] _chunkSize size of a single chunk. TODO : Not needed ... Remove it ...
 			 * @return true The procress is done corectly.
 			 * @return false An error occured.
 			 */
 			bool pull(std::chrono::system_clock::time_point& _time,
-			          void*& _data,
-			          size_t& _nbChunk);
+			          void* _data,
+			          size_t _nbChunk,
+			          size_t _chunkSize);
 			/**
 			 * @brief Push data in the algo stream.
 			 * @param[in] _time Time of the first sample pushed.
