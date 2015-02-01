@@ -60,7 +60,19 @@ std::string airtalgo::getChannelString(const std::vector<enum airtalgo::channel>
 }
 
 
-std::ostream& airtalgo::operator <<(std::ostream& _os, std::vector<enum airtalgo::channel> _obj) {
+std::ostream& airtalgo::operator <<(std::ostream& _os, const std::vector<enum airtalgo::channel>& _obj) {
+	_os << std::string("{");
+	for (size_t iii=0; iii<_obj.size(); ++iii) {
+		if (iii!=0) {
+			_os << std::string(";");
+		}
+		_os << _obj[iii];
+	}
+	_os << std::string("}");
+	return _os;
+}
+
+std::ostream& airtalgo::operator <<(std::ostream& _os, const std::vector<std::vector<enum airtalgo::channel>>& _obj) {
 	_os << std::string("{");
 	for (size_t iii=0; iii<_obj.size(); ++iii) {
 		if (iii!=0) {

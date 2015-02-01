@@ -12,13 +12,16 @@
 #define __class__ "Volume"
 
 airtalgo::Volume::Volume() :
-  m_volume(0.0f),
+  m_volumedB(0.0f),
   m_volumeAppli(1.0f) {
 	
 }
 
 void airtalgo::Volume::init() {
 	airtalgo::Algo::init();
+	m_type = "Volume";
+	m_supportedFormat.push_back(format_int16);
+	m_supportedFormat.push_back(format_int16_on_int32);
 }
 
 std::shared_ptr<airtalgo::Volume> airtalgo::Volume::create() {
@@ -46,16 +49,26 @@ void airtalgo::Volume::configurationChange() {
 	m_needProcess = false;
 }
 
+std::vector<airtalgo::format> airtalgo::Volume::getFormatSupportedInput() {
+	return m_supportedFormat;
+};
+
+std::vector<airtalgo::format> airtalgo::Volume::getFormatSupportedOutput() {
+	return m_supportedFormat;
+};
+
+
+
 bool airtalgo::Volume::process(std::chrono::system_clock::time_point& _time,
-                                  void* _input,
-                                  size_t _inputNbChunk,
-                                  void*& _output,
-                                  size_t& _outputNbChunk) {
+                               void* _input,
+                               size_t _inputNbChunk,
+                               void*& _output,
+                               size_t& _outputNbChunk) {
 	airtalgo::autoLogInOut tmpLog("Volume");
 	if (m_volumeAppli == 1.0f) {
 		_output = _input;
 		_outputNbChunk = _inputNbChunk;
 		return true;
 	}
-	
+	return true;
 }

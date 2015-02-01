@@ -17,6 +17,7 @@ airtalgo::EndPointRead::EndPointRead() {
 
 void airtalgo::EndPointRead::init() {
 	airtalgo::EndPoint::init();
+	m_type = "EndPointRead";
 }
 
 std::shared_ptr<airtalgo::EndPointRead> airtalgo::EndPointRead::create() {

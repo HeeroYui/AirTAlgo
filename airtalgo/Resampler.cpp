@@ -22,6 +22,7 @@ airtalgo::Resampler::Resampler() :
 
 void airtalgo::Resampler::init() {
 	airtalgo::Algo::init();
+	m_type = "Resampler";
 }
 
 std::shared_ptr<airtalgo::Resampler> airtalgo::Resampler::create() {

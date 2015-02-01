@@ -20,6 +20,7 @@ airtalgo::ChannelReorder::ChannelReorder() {
 
 void airtalgo::ChannelReorder::init() {
 	airtalgo::Algo::init();
+	m_type = "ChannelReorder";
 }
 
 std::shared_ptr<airtalgo::ChannelReorder> airtalgo::ChannelReorder::create() {

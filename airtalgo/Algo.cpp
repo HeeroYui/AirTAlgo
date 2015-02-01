@@ -7,10 +7,25 @@
 #include <functional>
 #include "debug.h"
 
+
+std::ostream& airtalgo::operator <<(std::ostream& _os, const IOFormatInterface& _obj) {
+	_os << "{";
+	if (_obj.getConfigured() == false) {
+		_os << "Not configured";
+	} else {
+		_os << "format=" << _obj.getFormat();
+		_os << ", frequency=" << _obj.getFrequency();
+		_os << ", map=" << _obj.getMap();
+	}
+	_os << "}";
+	return _os;
+}
+
 #undef __class__
 #define __class__ "Algo"
 
 airtalgo::Algo::Algo() :
+  m_temporary(false),
   m_outputData(),
   m_formatSize(0),
   m_needProcess(false) {
@@ -19,8 +34,8 @@ airtalgo::Algo::Algo() :
 
 void airtalgo::Algo::init() {
 	// set notification callback :
-	m_input.setCallback(std::bind(&airtalgo::Algo::configurationChange, this));
-	m_output.setCallback(std::bind(&airtalgo::Algo::configurationChange, this));
+	m_input.setCallback(std::bind(&airtalgo::Algo::configurationChangeLocal, this));
+	m_output.setCallback(std::bind(&airtalgo::Algo::configurationChangeLocal, this));
 	// first configure ==> update the internal parameters
 	configurationChange();
 }
@@ -46,6 +61,10 @@ void airtalgo::Algo::configurationChange() {
 			break;
 		case format_float:
 			m_formatSize = sizeof(float);
+			break;
+		case format_unknow:
+			AIRTALGO_ERROR("format not configured...");
+			m_formatSize = 8;
 			break;
 	}
 }

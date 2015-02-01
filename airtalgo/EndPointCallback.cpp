@@ -19,10 +19,12 @@ airtalgo::EndPointCallback::EndPointCallback() :
 void airtalgo::EndPointCallback::init(needDataFunction _callback) {
 	m_outputFunction = _callback;
 	airtalgo::EndPoint::init();
+	m_type = "EndPointCallback";
 }
 void airtalgo::EndPointCallback::init(haveNewDataFunction _callback) {
 	m_inputFunction = _callback;
 	airtalgo::EndPoint::init();
+	m_type = "EndPointCallback";
 }
 
 std::shared_ptr<airtalgo::EndPointCallback> airtalgo::EndPointCallback::create(needDataFunction _callback) {

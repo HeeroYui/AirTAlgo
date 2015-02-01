@@ -17,6 +17,7 @@ airtalgo::EndPointWrite::EndPointWrite() :
 
 void airtalgo::EndPointWrite::init() {
 	airtalgo::EndPoint::init();
+	m_type = "EndPoint";
 }
 
 std::shared_ptr<airtalgo::EndPointWrite> airtalgo::EndPointWrite::create() {

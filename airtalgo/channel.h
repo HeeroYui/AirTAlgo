@@ -27,7 +27,8 @@ namespace airtalgo{
 	std::string getChannelString(const std::vector<enum airtalgo::channel>&);
 	std::vector<enum airtalgo::channel> getChannelFromString(const std::string& _value);
 	std::ostream& operator <<(std::ostream& _os, enum airtalgo::channel _obj);
-	std::ostream& operator <<(std::ostream& _os, std::vector<enum airtalgo::channel> _obj);
+	std::ostream& operator <<(std::ostream& _os, const std::vector<enum airtalgo::channel>& _obj);
+	std::ostream& operator <<(std::ostream& _os, const std::vector<std::vector<enum airtalgo::channel>>& _obj);
 };
 
 

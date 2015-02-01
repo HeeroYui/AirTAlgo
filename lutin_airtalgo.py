@@ -23,7 +23,8 @@ def create(target):
 		'airtalgo/format.cpp',
 		'airtalgo/FormatUpdate.cpp',
 		'airtalgo/Process.cpp',
-		'airtalgo/Resampler.cpp'
+		'airtalgo/Resampler.cpp',
+		'airtalgo/Volume.cpp'
 		])
 	
 	# TODO: myModule.add_optionnal_module_depend('speexdsp', "HAVE_SPEEX_DSP_RESAMPLE")

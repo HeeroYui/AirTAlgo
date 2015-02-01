@@ -69,7 +69,6 @@ namespace airtalgo{
 		public:
 			void pushBack(const std::shared_ptr<airtalgo::Algo>& _algo);
 			void pushFront(const std::shared_ptr<airtalgo::Algo>& _algo);
-			void updateInterAlgo();
 			void clear() {
 				m_listAlgo.clear();
 			}
@@ -92,6 +91,17 @@ namespace airtalgo{
 			template<typename T> std::shared_ptr<T> get(int32_t _id) {
 				return std::dynamic_pointer_cast<T>(m_listAlgo[_id]);
 			}
+			template<typename T> bool hasType() {
+				for (auto &it : m_listAlgo) {
+					std::shared_ptr<T> tmp = std::dynamic_pointer_cast<T>(it);
+					if (tmp != nullptr) {
+						return true;
+					}
+				}
+				return false;
+			}
+			void updateInterAlgo();
+			void removeAlgoDynamic();
 	};
 };
 

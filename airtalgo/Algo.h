@@ -34,17 +34,49 @@ namespace airtalgo{
 	class IOFormatInterface {
 		public:
 			IOFormatInterface() :
-			  m_format(airtalgo::format_int16),
+			  m_configured(false),
+			  m_format(airtalgo::format_unknow),
 			  m_map(),
-			  m_frequency(48000) {
+			  m_frequency(0) {
 				m_map.push_back(airtalgo::channel_frontLeft);
 				m_map.push_back(airtalgo::channel_frontRight);
 			}
-			IOFormatInterface(std::vector<airtalgo::channel> _map, airtalgo::format _format=airtalgo::format_int16, float _frequency=48000) :
+			IOFormatInterface(std::vector<airtalgo::channel> _map, airtalgo::format _format=airtalgo::format_int16, float _frequency=48000.0f) :
+			  m_configured(true),
 			  m_format(_format),
 			  m_map(_map),
 			  m_frequency(_frequency) {
 				
+				AIRTALGO_WARNING(" plop : " << m_map << " " << m_format << " " << m_frequency);
+			}
+			void set(std::vector<airtalgo::channel> _map, airtalgo::format _format=airtalgo::format_int16, float _frequency=48000.0f) {
+				bool hasChange = false;
+				if (m_map != _map) {
+					m_map = _map;
+					hasChange = true;
+				}
+				if (m_format != _format) {
+					m_format = _format;
+					hasChange = true;
+				}
+				if (m_frequency == _frequency) {
+					m_frequency = _frequency;
+					hasChange = true;
+				}
+				if (hasChange == true) {
+					m_configured = true;
+					configurationChange();
+				}
+				AIRTALGO_WARNING(" plop : " << m_map << " " << m_format << " " << m_frequency);
+			}
+		protected:
+			bool m_configured;
+		public:
+			void setConfigured(bool _value) {
+				m_configured = _value;
+			}
+			bool getConfigured() const {
+				return m_configured;
 			}
 		protected:
 			airtalgo::format m_format; //!< input Algo Format
@@ -65,6 +97,7 @@ namespace airtalgo{
 					return;
 				}
 				m_format = _value;
+				m_configured = true;
 				configurationChange();
 			}
 		protected:
@@ -87,6 +120,7 @@ namespace airtalgo{
 					return;
 				}
 				m_map = _value;
+				m_configured = true;
 				AIRTALGO_DEBUG(" base2 : " << m_map);
 				configurationChange();
 			}
@@ -108,6 +142,7 @@ namespace airtalgo{
 				if (m_frequency == _value) {
 					return;
 				}
+				m_configured = true;
 				m_frequency = _value;
 				configurationChange();
 			}
@@ -128,6 +163,7 @@ namespace airtalgo{
 			}
 			
 	};
+	std::ostream& operator <<(std::ostream& _os, const IOFormatInterface& _obj);
 	
 	class Algo : public std::enable_shared_from_this<Algo> {
 		private:
@@ -138,6 +174,24 @@ namespace airtalgo{
 			}
 			void setName(const std::string& _name) {
 				m_name = _name;
+			}
+		protected:
+			std::string m_type;
+		public:
+			const std::string& getType() const {
+				return m_type;
+			}
+			void setType(const std::string& _name) {
+				m_type = _name;
+			}
+		private:
+			bool m_temporary;
+		public:
+			void setTemporary() {
+				m_temporary = true;
+			}
+			bool getTemporary() const {
+				return m_temporary;
 			}
 		protected:
 			std::vector<int8_t> m_outputData;
@@ -157,24 +211,36 @@ namespace airtalgo{
 			IOFormatInterface m_input; //!< Input audio property
 		public:
 			void setInputFormat(const IOFormatInterface& _format) {
-				m_input.setFormat(_format.getFormat());
-				m_input.setFrequency(_format.getFrequency());
-				m_input.setMap(_format.getMap());
+				AIRTALGO_WARNING(" plopp : " << _format.getMap() << " " << _format.getFormat() << " " << _format.getFrequency());
+				m_input.set(_format.getMap(), _format.getFormat(), _format.getFrequency());
 			}
 			const IOFormatInterface& getInputFormat() const {
+				return m_input;
+			}
+			IOFormatInterface& getInputFormat() {
 				return m_input;
 			}
 		protected:
 			IOFormatInterface m_output; //!< Output audio property
 		public:
 			void setOutputFormat(const IOFormatInterface& _format) {
-				m_output.setFormat(_format.getFormat());
-				m_output.setFrequency(_format.getFrequency());
-				m_output.setMap(_format.getMap());
+				AIRTALGO_WARNING(" plopp : " << _format.getMap() << " " << _format.getFormat() << " " << _format.getFrequency());
+				m_output.set(_format.getMap(), _format.getFormat(), _format.getFrequency());
 			}
 			const IOFormatInterface& getOutputFormat() const {
 				return m_output;
 			}
+			IOFormatInterface& getOutputFormat() {
+				return m_output;
+			}
+		private:
+			void configurationChangeLocal() {
+				if (    m_output.getConfigured() == true
+				     && m_output.getConfigured() == true) {
+					configurationChange();
+				}
+			}
+		public:
 			/**
 			 * @brief Called when a parameter change
 			 */
@@ -201,6 +267,63 @@ namespace airtalgo{
 			 * @return number of sample needed to have nearly the good number of sample
 			 */
 			virtual size_t needInputData(size_t _output);
+		protected: // note when nothing ==> support all type
+			std::vector<airtalgo::format> m_supportedFormat;
+		public:
+			virtual std::vector<airtalgo::format> getFormatSupportedInput() {
+				if (m_output.getConfigured() == true) {
+					std::vector<airtalgo::format> out;
+					out.push_back(m_output.getFormat());
+					return out;
+				}
+				return m_supportedFormat;
+			};
+			virtual std::vector<airtalgo::format> getFormatSupportedOutput() {
+				if (m_input.getConfigured() == true) {
+					std::vector<airtalgo::format> out;
+					out.push_back(m_input.getFormat());
+					return out;
+				}
+				return m_supportedFormat;
+			};
+		protected: // note when nothing ==> support all type
+			std::vector<std::vector<airtalgo::channel>> m_supportedMap;
+		public:
+			virtual std::vector<std::vector<airtalgo::channel>> getMapSupportedInput() {
+				if (m_output.getConfigured() == true) {
+					std::vector<std::vector<airtalgo::channel>> out;
+					out.push_back(m_output.getMap());
+					return out;
+				}
+				return m_supportedMap;
+			};
+			virtual std::vector<std::vector<airtalgo::channel>> getMapSupportedOutput() {
+				if (m_input.getConfigured() == true) {
+					std::vector<std::vector<airtalgo::channel>> out;
+					out.push_back(m_input.getMap());
+					return out;
+				}
+				return m_supportedMap;
+			};
+		protected: // note when nothing ==> support all type
+			std::vector<float> m_supportedFrequency;
+		public:
+			virtual std::vector<float> getFrequencySupportedInput() {
+				if (m_output.getConfigured() == true) {
+					std::vector<float> out;
+					out.push_back(m_output.getFrequency());
+					return out;
+				}
+				return m_supportedFrequency;
+			};
+			virtual std::vector<float> getFrequencySupportedOutput() {
+				if (m_input.getConfigured() == true) {
+					std::vector<float> out;
+					out.push_back(m_input.getFrequency());
+					return out;
+				}
+				return m_supportedFrequency;
+			};
 	};
 };
 #include "debugRemove.h"

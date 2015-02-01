@@ -38,6 +38,9 @@ namespace airtalgo {
 			                     size_t _inputNbChunk,
 			                     void*& _output,
 			                     size_t& _outputNbChunk);
+		public:
+			virtual std::vector<airtalgo::format> getFormatSupportedInput();
+			virtual std::vector<airtalgo::format> getFormatSupportedOutput();
 	};
 };
 

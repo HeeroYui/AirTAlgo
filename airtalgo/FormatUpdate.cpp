@@ -133,6 +133,7 @@ airtalgo::FormatUpdate::FormatUpdate() :
 
 void airtalgo::FormatUpdate::init() {
 	airtalgo::Algo::init();
+	m_type = "FormatUpdate";
 }
 
 std::shared_ptr<airtalgo::FormatUpdate> airtalgo::FormatUpdate::create() {
