@@ -30,7 +30,7 @@ std::shared_ptr<airtalgo::ChannelReorder> airtalgo::ChannelReorder::create() {
 }
 
 void airtalgo::ChannelReorder::configurationChange() {
-	airtalgo::autoLogInOut("ChannelReorder (config)");
+	airtalgo::AutoLogInOut("ChannelReorder (config)");
 	airtalgo::Algo::configurationChange();
 	if (m_input.getFormat() != m_output.getFormat()) {
 		AIRTALGO_ERROR("can not support Format Change ...");
@@ -54,7 +54,7 @@ bool airtalgo::ChannelReorder::process(std::chrono::system_clock::time_point& _t
                                               size_t _inputNbChunk,
                                               void*& _output,
                                               size_t& _outputNbChunk) {
-	airtalgo::autoLogInOut tmpLog("ChannelReorder");
+	airtalgo::AutoLogInOut tmpLog("ChannelReorder");
 	_outputNbChunk = _inputNbChunk;
 	// check if we need to process:
 	if (m_needProcess == false) {

@@ -248,14 +248,14 @@ bool airtalgo::FormatUpdate::process(std::chrono::system_clock::time_point& _tim
                                             size_t _inputNbChunk,
                                             void*& _output,
                                             size_t& _outputNbChunk) {
-	airtalgo::autoLogInOut tmpLog("FormatUpdate");
+	airtalgo::AutoLogInOut tmpLog("FormatUpdate");
 	// chack if we need to process:
 	if (m_needProcess == false) {
 		_output = _input;
 		_outputNbChunk = _inputNbChunk;
 		return true;
 	}
-	if (_input == NULL) {
+	if (_input == nullptr) {
 		_output = &(m_outputData[0]);
 		_outputNbChunk = 0;
 		AIRTALGO_ERROR("null pointer input ... ");
@@ -264,7 +264,7 @@ bool airtalgo::FormatUpdate::process(std::chrono::system_clock::time_point& _tim
 	_outputNbChunk = _inputNbChunk;
 	m_outputData.resize(_outputNbChunk*m_input.getMap().size()*m_formatSize);
 	_output = &(m_outputData[0]);
-	if (m_functionConvert == NULL) {
+	if (m_functionConvert == nullptr) {
 		AIRTALGO_ERROR("null function ptr");
 		return false;
 	}

@@ -24,10 +24,12 @@ def create(target):
 		'airtalgo/FormatUpdate.cpp',
 		'airtalgo/Process.cpp',
 		'airtalgo/Resampler.cpp',
-		'airtalgo/Volume.cpp'
+		'airtalgo/Volume.cpp',
+		'airtalgo/IOFormatInterface.cpp',
+		'airtalgo/AutoLogInOut.cpp'
 		])
 	
-	# TODO: myModule.add_optionnal_module_depend('speexdsp', "HAVE_SPEEX_DSP_RESAMPLE")
+	# TODO: myModule.add_optional_module_depend('speexdsp', "HAVE_SPEEX_DSP_RESAMPLE")
 	myModule.compile_flags_CC("-DHAVE_SPEEX_DSP_RESAMPLE")
 	myModule.add_module_depend(['etk', 'speexdsp'])
 	myModule.add_export_path(tools.get_current_path(__file__))

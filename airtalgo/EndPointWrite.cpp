@@ -37,7 +37,7 @@ bool airtalgo::EndPointWrite::process(std::chrono::system_clock::time_point& _ti
                                              size_t _inputNbChunk,
                                              void*& _output,
                                              size_t& _outputNbChunk){
-	airtalgo::autoLogInOut tmpLog("EndPointWrite");
+	airtalgo::AutoLogInOut tmpLog("EndPointWrite");
 	//AIRTALGO_INFO("                              nb Sample in buffer : " << m_tmpData.size());
 	if (m_function != nullptr) {
 		if (m_tmpData.size() <= 20000) {
@@ -72,9 +72,10 @@ bool airtalgo::EndPointWrite::process(std::chrono::system_clock::time_point& _ti
 
 void airtalgo::EndPointWrite::write(const void* _value, size_t _nbChunk) {
 	std::unique_lock<std::mutex> lock(m_mutex);
-	AIRTALGO_INFO("[ASYNC] Get data : " << _nbChunk << " chunks"
+	AIRTALGO_INFO("[ASYNC] Write data : " << _nbChunk << " chunks"
 	              << " ==> " << _nbChunk*m_output.getMap().size() << " samples"
-	              << " formatSize=" << int32_t(m_formatSize));
+	              << " formatSize=" << int32_t(m_formatSize)
+	              << " bufferSize=" << m_tmpData.size());
 	const int8_t* value = static_cast<const int8_t*>(_value);
 	for (size_t iii=0; iii<_nbChunk*m_formatSize*m_output.getMap().size(); ++iii) {
 		m_tmpData.push_back(*value++);

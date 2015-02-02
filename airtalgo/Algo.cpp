@@ -8,19 +8,6 @@
 #include "debug.h"
 
 
-std::ostream& airtalgo::operator <<(std::ostream& _os, const IOFormatInterface& _obj) {
-	_os << "{";
-	if (_obj.getConfigured() == false) {
-		_os << "Not configured";
-	} else {
-		_os << "format=" << _obj.getFormat();
-		_os << ", frequency=" << _obj.getFrequency();
-		_os << ", map=" << _obj.getMap();
-	}
-	_os << "}";
-	return _os;
-}
-
 #undef __class__
 #define __class__ "Algo"
 

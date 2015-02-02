@@ -70,6 +70,7 @@ namespace airtalgo{
 			void pushBack(const std::shared_ptr<airtalgo::Algo>& _algo);
 			void pushFront(const std::shared_ptr<airtalgo::Algo>& _algo);
 			void clear() {
+				m_isConfigured = false;
 				m_listAlgo.clear();
 			}
 			template<typename T> void removeIfFirst() {
@@ -100,6 +101,9 @@ namespace airtalgo{
 				}
 				return false;
 			}
+		private:
+			bool m_isConfigured;
+		public:
 			void updateInterAlgo();
 			void removeAlgoDynamic();
 	};

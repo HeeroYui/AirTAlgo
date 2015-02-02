@@ -37,7 +37,7 @@ bool airtalgo::EndPointRead::process(std::chrono::system_clock::time_point& _tim
                                             size_t _inputNbChunk,
                                             void*& _output,
                                             size_t& _outputNbChunk){
-	airtalgo::autoLogInOut tmpLog("EndPointRead");
+	airtalgo::AutoLogInOut tmpLog("EndPointRead");
 	return false;
 }
 

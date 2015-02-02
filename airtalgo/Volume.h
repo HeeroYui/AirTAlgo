@@ -14,10 +14,21 @@
 #include <memory>
 
 namespace airtalgo {
+	// TODO: Optimisation
+	// TODO: Zero crossing
+	// TODO: Continuous update volume
+	// TODO: Manage multiple volume
+	// TODO: Manage set volume
 	class Volume : public Algo {
 		private:
 			float m_volumedB;
+			// for float input :
 			float m_volumeAppli;
+			// for integer input :
+			int32_t m_volumeDecalage; // Volume to apply is simple as : X * m_coef >> m_coef
+			int32_t m_volumeCoef;
+			// convertion function:
+			void (*m_functionConvert)(void* _input, void* _output, size_t _nbSample, int32_t _volumeCoef, int32_t _volumeDecalage, float _volumeAppli);
 		protected:
 			/**
 			 * @brief Constructor
@@ -41,6 +52,8 @@ namespace airtalgo {
 		public:
 			virtual std::vector<airtalgo::format> getFormatSupportedInput();
 			virtual std::vector<airtalgo::format> getFormatSupportedOutput();
+		protected:
+			virtual void updateVolumeValues();
 	};
 };
 

@@ -16,155 +16,11 @@
 #include <chrono>
 #include <functional>
 #include <memory>
+#include "AutoLogInOut.h"
+#include "IOFormatInterface.h"
 #include "debug.h"
 
 namespace airtalgo{
-	class autoLogInOut {
-		private:
-			std::string m_value;
-		public:
-			autoLogInOut(const std::string& _value) :
-			  m_value(_value) {
-				AIRTALGO_VERBOSE("                 '" << m_value << "' [START]");
-			}
-			~autoLogInOut() {
-				AIRTALGO_VERBOSE("                 '" << m_value << "' [STOP]");
-			}
-	};
-	class IOFormatInterface {
-		public:
-			IOFormatInterface() :
-			  m_configured(false),
-			  m_format(airtalgo::format_unknow),
-			  m_map(),
-			  m_frequency(0) {
-				m_map.push_back(airtalgo::channel_frontLeft);
-				m_map.push_back(airtalgo::channel_frontRight);
-			}
-			IOFormatInterface(std::vector<airtalgo::channel> _map, airtalgo::format _format=airtalgo::format_int16, float _frequency=48000.0f) :
-			  m_configured(true),
-			  m_format(_format),
-			  m_map(_map),
-			  m_frequency(_frequency) {
-				
-				AIRTALGO_WARNING(" plop : " << m_map << " " << m_format << " " << m_frequency);
-			}
-			void set(std::vector<airtalgo::channel> _map, airtalgo::format _format=airtalgo::format_int16, float _frequency=48000.0f) {
-				bool hasChange = false;
-				if (m_map != _map) {
-					m_map = _map;
-					hasChange = true;
-				}
-				if (m_format != _format) {
-					m_format = _format;
-					hasChange = true;
-				}
-				if (m_frequency == _frequency) {
-					m_frequency = _frequency;
-					hasChange = true;
-				}
-				if (hasChange == true) {
-					m_configured = true;
-					configurationChange();
-				}
-				AIRTALGO_WARNING(" plop : " << m_map << " " << m_format << " " << m_frequency);
-			}
-		protected:
-			bool m_configured;
-		public:
-			void setConfigured(bool _value) {
-				m_configured = _value;
-			}
-			bool getConfigured() const {
-				return m_configured;
-			}
-		protected:
-			airtalgo::format m_format; //!< input Algo Format
-		public:
-			/**
-			 * @brief Get the algo format.
-			 * @return the current Format.
-			 */
-			airtalgo::format getFormat() const {
-				return m_format;
-			}
-			/**
-			 * @brief Set the algo format.
-			 * @param[in] _value New Format.
-			 */
-			void setFormat(airtalgo::format _value) {
-				if (m_format == _value) {
-					return;
-				}
-				m_format = _value;
-				m_configured = true;
-				configurationChange();
-			}
-		protected:
-			std::vector<airtalgo::channel> m_map; //!< input channel Map
-		public:
-			/**
-			 * @brief Get the algo channel Map.
-			 * @return the current channel Map.
-			 */
-			const std::vector<airtalgo::channel>& getMap() const{
-				return m_map;
-			}
-			/**
-			 * @brief Set the algo channel Map.
-			 * @param[in] _value New channel Map.
-			 */
-			void setMap(const std::vector<airtalgo::channel>& _value) {
-				AIRTALGO_DEBUG(" base : " << m_map << " " << _value);
-				if (m_map == _value) {
-					return;
-				}
-				m_map = _value;
-				m_configured = true;
-				AIRTALGO_DEBUG(" base2 : " << m_map);
-				configurationChange();
-			}
-		protected:
-			float m_frequency; //!< input Algo Format
-		public:
-			/**
-			 * @brief Get the algo frequency.
-			 * @return the current frequency.
-			 */
-			float getFrequency() const{
-				return m_frequency;
-			}
-			/**
-			 * @brief Set the algo frequency.
-			 * @param[in] _value New frequency.
-			 */
-			void setFrequency(float _value) {
-				if (m_frequency == _value) {
-					return;
-				}
-				m_configured = true;
-				m_frequency = _value;
-				configurationChange();
-			}
-		protected:
-			std::function<void()> m_ioChangeFunctor; //!< function pointer on the upper class
-			void configurationChange() {
-				if (m_ioChangeFunctor != nullptr) {
-					m_ioChangeFunctor();
-				}
-			}
-		public:
-			/**
-			 * @brief Set the callback function to be notify when the arameter change.
-			 * @param[in] _functor Function to call.
-			 */
-			void setCallback(const std::function<void()>& _functor) {
-				m_ioChangeFunctor = _functor;
-			}
-			
-	};
-	std::ostream& operator <<(std::ostream& _os, const IOFormatInterface& _obj);
-	
 	class Algo : public std::enable_shared_from_this<Algo> {
 		private:
 			std::string m_name;
@@ -211,7 +67,6 @@ namespace airtalgo{
 			IOFormatInterface m_input; //!< Input audio property
 		public:
 			void setInputFormat(const IOFormatInterface& _format) {
-				AIRTALGO_WARNING(" plopp : " << _format.getMap() << " " << _format.getFormat() << " " << _format.getFrequency());
 				m_input.set(_format.getMap(), _format.getFormat(), _format.getFrequency());
 			}
 			const IOFormatInterface& getInputFormat() const {
@@ -224,7 +79,6 @@ namespace airtalgo{
 			IOFormatInterface m_output; //!< Output audio property
 		public:
 			void setOutputFormat(const IOFormatInterface& _format) {
-				AIRTALGO_WARNING(" plopp : " << _format.getMap() << " " << _format.getFormat() << " " << _format.getFrequency());
 				m_output.set(_format.getMap(), _format.getFormat(), _format.getFrequency());
 			}
 			const IOFormatInterface& getOutputFormat() const {

@@ -12,12 +12,16 @@
 #include <airtalgo/format.h>
 #include <airtalgo/channel.h>
 #include <airtalgo/Process.h>
+#include <airtalgo/ChannelReorder.h>
+#include <airtalgo/FormatUpdate.h>
+#include <airtalgo/Resampler.h>
 #include <chrono>
 
 #undef __class__
 #define __class__ "Process"
 
-airtalgo::Process::Process() {
+airtalgo::Process::Process() :
+  m_isConfigured(false) {
 	
 }
 airtalgo::Process::~Process() {
@@ -108,10 +112,12 @@ bool airtalgo::Process::process(std::chrono::system_clock::time_point& _time,
 }
 
 void airtalgo::Process::pushBack(const std::shared_ptr<airtalgo::Algo>& _algo) {
+	removeAlgoDynamic();
 	m_listAlgo.push_back(_algo);
 }
 
 void airtalgo::Process::pushFront(const std::shared_ptr<airtalgo::Algo>& _algo) {
+	removeAlgoDynamic();
 	m_listAlgo.insert(m_listAlgo.begin(), _algo);
 }
 
@@ -151,6 +157,10 @@ template<typename T> std::vector<T> getUnion(const std::vector<T>& _out, const s
 }
 
 void airtalgo::Process::updateInterAlgo() {
+	if (m_isConfigured == true) {
+		// cahin is already configured
+		return ;
+	}
 	AIRTALGO_INFO(" display properties : nbAlgo : " << m_listAlgo.size());
 	for (auto &it : m_listAlgo) {
 		AIRTALGO_INFO("    [" << it->getType() << "] '" << it->getName() << "'");
@@ -175,33 +185,155 @@ void airtalgo::Process::updateInterAlgo() {
 	for (size_t iii=1; iii<m_listAlgo.size(); ++iii) {
 		if (    m_listAlgo[iii-1]->getOutputFormat().getConfigured() == false
 		     && m_listAlgo[iii]->getInputFormat().getConfigured() == false) {
-			std::vector<float> freq;
-			std::vector<std::vector<airtalgo::channel>> map;
-			std::vector<airtalgo::format> format;
 			// step 1 : check frequency:
-			freq = getUnion<float>(m_listAlgo[iii-1]->getFrequencySupportedOutput(),
-			                       m_listAlgo[iii]->getFrequencySupportedInput());
+			std::vector<float> freqOut = m_listAlgo[iii-1]->getFrequencySupportedOutput();
+			std::vector<float> freqIn = m_listAlgo[iii]->getFrequencySupportedInput();
+			std::vector<float> freq = getUnion<float>(freqOut, freqIn);
 			// step 2 : Check map:
-			map = getUnion<std::vector<airtalgo::channel>>(m_listAlgo[iii-1]->getMapSupportedOutput(),
-			                                               m_listAlgo[iii]->getMapSupportedInput());
+			std::vector<std::vector<airtalgo::channel>> mapOut = m_listAlgo[iii-1]->getMapSupportedOutput();
+			std::vector<std::vector<airtalgo::channel>> mapIn = m_listAlgo[iii]->getMapSupportedInput();
+			std::vector<std::vector<airtalgo::channel>> map = getUnion<std::vector<airtalgo::channel>>(mapOut, mapIn);
 			// step 3 : Check Format:
-			format = getUnion<airtalgo::format>(m_listAlgo[iii-1]->getFormatSupportedOutput(),
-			                                    m_listAlgo[iii]->getFormatSupportedInput());
+			std::vector<airtalgo::format> formatOut = m_listAlgo[iii-1]->getFormatSupportedOutput();
+			std::vector<airtalgo::format> formatIn = m_listAlgo[iii]->getFormatSupportedInput();
+			std::vector<airtalgo::format> format = getUnion<airtalgo::format>(formatOut, formatIn);
 			
-			if (    freq.size() == 1
-			     && map.size() == 1
-			     && format.size() == 1) {
+			if (    freq.size() >= 1
+			     && map.size() >= 1
+			     && format.size() >= 1) {
 				AIRTALGO_INFO("        find 1 compatibility :{format=" << format << ",frequency=" << freq << ",map=" << map << "}");
 				airtalgo::IOFormatInterface tmp(map[0], format[0], freq[0]);
 				m_listAlgo[iii-1]->setOutputFormat(tmp);
 				m_listAlgo[iii]->setInputFormat(tmp);
 				continue;
 			}
-			
+			// create mapping to transform:
+			airtalgo::IOFormatInterface out;
+			airtalgo::IOFormatInterface in;
+			if (freq.size() > 0) {
+				out.setFrequency(freq[0]);
+				in.setFrequency(freq[0]);
+			} else {
+				if (freqOut.size() == 0) {
+					if (freqIn.size() == 0) {
+						out.setFrequency(m_listAlgo[iii-1]->getInputFormat().getFrequency());
+						in.setFrequency(m_listAlgo[iii-1]->getInputFormat().getFrequency());
+					} else {
+						out.setFrequency(freqIn[0]);
+						in.setFrequency(freqIn[0]);
+					}
+				} else {
+					if (freqIn.size() == 0) {
+						out.setFrequency(freqOut[0]);
+						in.setFrequency(freqOut[0]);
+					} else {
+						out.setFrequency(freqOut[0]);
+						in.setFrequency(freqIn[0]);
+					}
+				}
+			}
+			if (map.size() > 0) {
+				out.setMap(map[0]);
+				in.setMap(map[0]);
+			} else {
+				if (mapOut.size() == 0) {
+					if (mapIn.size() == 0) {
+						out.setMap(m_listAlgo[iii-1]->getInputFormat().getMap());
+						in.setMap(m_listAlgo[iii-1]->getInputFormat().getMap());
+					} else {
+						out.setMap(mapIn[0]);
+						in.setMap(mapIn[0]);
+					}
+				} else {
+					if (mapIn.size() == 0) {
+						out.setMap(mapOut[0]);
+						in.setMap(mapOut[0]);
+					} else {
+						out.setMap(mapOut[0]);
+						in.setMap(mapIn[0]);
+					}
+				}
+			}
+			if (format.size() > 0) {
+				out.setFormat(format[0]);
+				in.setFormat(format[0]);
+			} else {
+				if (formatOut.size() == 0) {
+					if (formatIn.size() == 0) {
+						out.setFormat(m_listAlgo[iii-1]->getInputFormat().getFormat());
+						in.setFormat(m_listAlgo[iii-1]->getInputFormat().getFormat());
+					} else {
+						out.setFormat(formatIn[0]);
+						in.setFormat(formatIn[0]);
+					}
+				} else {
+					if (formatIn.size() == 0) {
+						out.setFormat(formatOut[0]);
+						in.setFormat(formatOut[0]);
+					} else {
+						out.setFormat(formatOut[0]);
+						in.setFormat(formatIn[0]);
+					}
+				}
+			}
 			AIRTALGO_INFO("        union:");
 			AIRTALGO_INFO("            format : " << format);
 			AIRTALGO_INFO("            frequency : " << freq);
 			AIRTALGO_INFO("            map : " << map);
+			AIRTALGO_INFO("        update: out=" << out);
+			AIRTALGO_INFO("                in=" << in);
+			m_listAlgo[iii-1]->setOutputFormat(out);
+			m_listAlgo[iii]->setInputFormat(in);
+			// TODO : Add updater with an optimisation of CPU
+			if (out.getFrequency() != in.getFrequency()) {
+				
+				// TODO : Do it better: special check for resampler : only support int16_t
+				if (    out.getFormat() != format_int16
+				     /* && out.getFormat() != format_float */) {
+					// need add a format Updater
+					std::shared_ptr<airtalgo::FormatUpdate> algo = airtalgo::FormatUpdate::create();
+					algo->setTemporary();
+					algo->setInputFormat(out);
+					out.setFormat(format_int16);
+					algo->setOutputFormat(out);
+					m_listAlgo.insert(m_listAlgo.begin()+iii, algo);
+					AIRTALGO_INFO("convert " << out.getFormat() << " -> " << in.getFormat());
+					iii++;
+				}
+				// need add a resampler
+				std::shared_ptr<airtalgo::Resampler> algo = airtalgo::Resampler::create();
+				algo->setTemporary();
+				algo->setInputFormat(out);
+				out.setFrequency(in.getFrequency());
+				algo->setOutputFormat(out);
+				m_listAlgo.insert(m_listAlgo.begin()+iii, algo);
+				AIRTALGO_INFO("convert " << out.getFrequency() << " -> " << in.getFrequency());
+				out.setFrequency(in.getFrequency());
+				iii++;
+			}
+			if (out.getMap() != in.getMap()) {
+				// need add a channel Reorder
+				std::shared_ptr<airtalgo::ChannelReorder> algo = airtalgo::ChannelReorder::create();
+				algo->setTemporary();
+				algo->setInputFormat(out);
+				out.setMap(in.getMap());
+				algo->setOutputFormat(out);
+				m_listAlgo.insert(m_listAlgo.begin()+iii, algo);
+				AIRTALGO_INFO("convert " << out.getMap() << " -> " << in.getMap());
+				iii++;
+			}
+			if (out.getFormat() != in.getFormat()) {
+				// need add a format Updater
+				std::shared_ptr<airtalgo::FormatUpdate> algo = airtalgo::FormatUpdate::create();
+				algo->setTemporary();
+				algo->setInputFormat(out);
+				out.setFormat(in.getFormat());
+				algo->setOutputFormat(out);
+				m_listAlgo.insert(m_listAlgo.begin()+iii, algo);
+				AIRTALGO_INFO("convert " << out.getFormat() << " -> " << in.getFormat());
+				iii++;
+			}
+			
 		} else if (    m_listAlgo[iii-1]->getOutputFormat().getConfigured() == false
 		            || m_listAlgo[iii]->getInputFormat().getConfigured() == false) {
 			AIRTALGO_ERROR(" configuration error mode in " << iii-1 << " && " << iii );
@@ -221,10 +353,14 @@ void airtalgo::Process::updateInterAlgo() {
 			AIRTALGO_ERROR("        Output : Not configured");
 		}
 	}
-	
+	m_isConfigured = true;
 	//exit(-1);
 }
 
 void airtalgo::Process::removeAlgoDynamic() {
-	
+	if (m_isConfigured == true) {
+		// chain is already unconfigured.
+		return;
+	}
+	m_isConfigured = false;
 }

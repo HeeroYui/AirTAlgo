@@ -23,6 +23,7 @@ airtalgo::Resampler::Resampler() :
 void airtalgo::Resampler::init() {
 	airtalgo::Algo::init();
 	m_type = "Resampler";
+	m_supportedFormat.push_back(format_int16);
 }
 
 std::shared_ptr<airtalgo::Resampler> airtalgo::Resampler::create() {
@@ -82,7 +83,7 @@ bool airtalgo::Resampler::process(std::chrono::system_clock::time_point& _time,
                                   size_t _inputNbChunk,
                                   void*& _output,
                                   size_t& _outputNbChunk) {
-	airtalgo::autoLogInOut tmpLog("Resampler");
+	airtalgo::AutoLogInOut tmpLog("Resampler");
 	_outputNbChunk = 2048;
 	// chack if we need to process:
 	if (m_needProcess == false) {

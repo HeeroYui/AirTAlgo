@@ -51,7 +51,7 @@ bool airtalgo::EndPointCallback::process(std::chrono::system_clock::time_point& 
                                          size_t _inputNbChunk, // requested number of sample ...
                                          void*& _output,
                                          size_t& _outputNbChunk){
-	airtalgo::autoLogInOut tmpLog("EndPointCallback");
+	airtalgo::AutoLogInOut tmpLog("EndPointCallback");
 	if (m_outputFunction != nullptr) {
 		// update buffer size ...
 		m_outputData.resize(_inputNbChunk*m_output.getMap().size()*m_formatSize);
