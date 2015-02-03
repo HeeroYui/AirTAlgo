@@ -178,6 +178,27 @@ namespace airtalgo{
 				}
 				return m_supportedFrequency;
 			};
+		public:
+			/**
+			 * @brief Set a parameter in the stream flow
+			 * @param[in] _parameter Parameter name.
+			 * @param[in] _value Value to set.
+			 * @return true set done
+			 * @return false An error occured
+			 */
+			virtual bool setParameter(const std::string& _parameter, const std::string& _value) { return false; }
+			/**
+			 * @brief Get a parameter value
+			 * @param[in] _parameter Parameter name.
+			 * @return The requested value.
+			 */
+			virtual std::string getParameter(const std::string& _parameter) const { return "[ERROR]"; }
+			/**
+			 * @brief Get a parameter value
+			 * @param[in] _parameter Parameter name.
+			 * @return The requested value.
+			 */
+			virtual std::string getParameterProperty(const std::string& _parameter) const { return "[ERROR]"; };
 	};
 };
 #include "debugRemove.h"

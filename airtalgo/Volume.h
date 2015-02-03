@@ -14,6 +14,30 @@
 #include <memory>
 
 namespace airtalgo {
+	// data structure.
+	class VolumeElement {
+		public:
+			VolumeElement(const std::string& _name="ERROR-VOLUME-NAME", float _volumedB=0.0f) :
+			  m_name(_name),
+			  m_volumedB(_volumedB) {
+				
+			}
+		private:
+			std::string m_name;
+		public:
+			std::string getName() const {
+				return m_name;
+			}
+		private:
+			float m_volumedB;
+		public:
+			float getVolume() const {
+				return m_volumedB;
+			}
+			void setVolume(float _volumedB) {
+				m_volumedB = _volumedB;
+			}
+	};
 	// TODO: Optimisation
 	// TODO: Zero crossing
 	// TODO: Continuous update volume
@@ -21,7 +45,7 @@ namespace airtalgo {
 	// TODO: Manage set volume
 	class Volume : public Algo {
 		private:
-			float m_volumedB;
+			std::vector<std::shared_ptr<airtalgo::VolumeElement>> m_volumeList;
 			// for float input :
 			float m_volumeAppli;
 			// for integer input :
@@ -54,6 +78,11 @@ namespace airtalgo {
 			virtual std::vector<airtalgo::format> getFormatSupportedOutput();
 		protected:
 			virtual void updateVolumeValues();
+		public:
+			virtual void addVolumeStage(const std::shared_ptr<airtalgo::VolumeElement>& _volume);
+			virtual bool setParameter(const std::string& _parameter, const std::string& _value);
+			virtual std::string getParameter(const std::string& _parameter) const;
+			virtual std::string getParameterProperty(const std::string& _parameter) const;
 	};
 };
 

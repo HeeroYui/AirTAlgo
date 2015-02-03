@@ -12,7 +12,6 @@
 #define __class__ "Volume"
 
 airtalgo::Volume::Volume() :
-  m_volumedB(0.0f),
   m_volumeAppli(1.0f),
   m_functionConvert(nullptr) {
 	
@@ -35,6 +34,13 @@ airtalgo::Volume::~Volume() {
 	
 }
 
+static int32_t neareastsss(float _val) {
+	int32_t out = 0;
+	while (_val > float(1<<out)) {
+		out++;
+	}
+	return std::min(16,out);
+}
 
 
 static void convert__int16__to__int16(void* _input, void* _output, size_t _nbSample, int32_t _volumeCoef, int32_t _volumeDecalage, float _volumeAppli) {
@@ -146,7 +152,16 @@ void airtalgo::Volume::configurationChange() {
 
 void airtalgo::Volume::updateVolumeValues() {
 	//m_volumeAppli = 20 * log(m_volumedB);
-	m_volumeAppli = std::pow(10.0f, m_volumedB/20.0f);
+	float volumedB = 0.0f;
+	for (auto &it : m_volumeList) {
+		if (it == nullptr) {
+			continue;
+		}
+		volumedB += it->getVolume();
+		AIRTALGO_DEBUG("append volume : '" << it->getName() << " vol=" << it->getVolume() << "dB");
+	}
+	AIRTALGO_DEBUG(" Total volume : " << volumedB << "dB nbVolume=" << m_volumeList.size());
+	m_volumeAppli = std::pow(10.0f, volumedB/20.0f);
 	switch (m_input.getFormat()) {
 		default:
 		case format_int16:
@@ -282,13 +297,6 @@ std::vector<airtalgo::format> airtalgo::Volume::getFormatSupportedOutput() {
 	return tmp;
 };
 
-static int32_t neareastsss(float _val) {
-	int32_t out = 0;
-	while (_val > float(1<<out)) {
-		out++;
-	}
-	return std::min(16,out);
-}
 
 bool airtalgo::Volume::process(std::chrono::system_clock::time_point& _time,
                                void* _input,
@@ -320,4 +328,75 @@ bool airtalgo::Volume::process(std::chrono::system_clock::time_point& _time,
 	//AIRTALGO_WARNING("Apply volume : " << m_volumedB << "dB " << m_volumeAppli << " ==> x*" << m_volumeCoef << ">>" << m_volumeDecalage << " ex:50*C>>D=" << (50*m_volumeCoef>>m_volumeDecalage) );
 	m_functionConvert(_input, _output, _outputNbChunk*m_input.getMap().size(), m_volumeCoef, m_volumeDecalage, m_volumeAppli);
 	return true;
+}
+
+void airtalgo::Volume::addVolumeStage(const std::shared_ptr<VolumeElement>& _volume) {
+	if (_volume == nullptr) {
+		return;
+	}
+	for (auto &it : m_volumeList) {
+		if (it == nullptr) {
+			continue;
+		}
+		if (it == _volume) {
+			return;
+		}
+		if (it->getName() == _volume->getName()) {
+			return;
+		}
+	}
+	m_volumeList.push_back(_volume);
+}
+
+bool airtalgo::Volume::setParameter(const std::string& _parameter, const std::string& _value) {
+	if (_parameter == "FLOW") {
+		// set Volume ...
+		for (auto &it : m_volumeList) {
+			if (it == nullptr) {
+				continue;
+			}
+			if (it->getName() == "FLOW") {
+				float value = 0;
+				sscanf(_value.c_str(), "%fdB", &value);
+				// TODO : Check if out of range ...
+				it->setVolume(value);
+				AIRTALGO_DEBUG("Set volume : FLOW = " << value << " dB (from:" << _value << ")");
+				return true;
+			}
+		}
+	}
+	AIRTALGO_ERROR("unknow set Parameter : '" << _parameter << "' with Value: '" << _value << "'");
+	return false;
+}
+
+std::string airtalgo::Volume::getParameter(const std::string& _parameter) const {
+	if (_parameter == "FLOW") {
+		// set Volume ...
+		for (auto &it : m_volumeList) {
+			if (it == nullptr) {
+				continue;
+			}
+			if (it->getName() == "FLOW") {
+				return std::to_string(it->getVolume()) + "dB";
+			}
+		}
+	}
+	AIRTALGO_ERROR("unknow get Parameter : '" << _parameter << "'");
+	return "[ERROR]";
+}
+
+std::string airtalgo::Volume::getParameterProperty(const std::string& _parameter) const {
+	if (_parameter == "FLOW") {
+		// set Volume ...
+		for (auto &it : m_volumeList) {
+			if (it == nullptr) {
+				continue;
+			}
+			if (it->getName() == "FLOW") {
+				return "[-300..300]dB";
+			}
+		}
+	}
+	AIRTALGO_ERROR("unknow Parameter property for: '" << _parameter << "'");
+	return "[ERROR]";
 }
