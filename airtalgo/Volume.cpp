@@ -158,7 +158,7 @@ void airtalgo::Volume::updateVolumeValues() {
 			continue;
 		}
 		volumedB += it->getVolume();
-		AIRTALGO_DEBUG("append volume : '" << it->getName() << " vol=" << it->getVolume() << "dB");
+		AIRTALGO_VERBOSE("append volume : '" << it->getName() << " vol=" << it->getVolume() << "dB");
 	}
 	AIRTALGO_DEBUG(" Total volume : " << volumedB << "dB nbVolume=" << m_volumeList.size());
 	m_volumeAppli = std::pow(10.0f, volumedB/20.0f);
@@ -357,7 +357,9 @@ bool airtalgo::Volume::setParameter(const std::string& _parameter, const std::st
 			}
 			if (it->getName() == "FLOW") {
 				float value = 0;
-				sscanf(_value.c_str(), "%fdB", &value);
+				if (sscanf(_value.c_str(), "%fdB", &value) != 1) {
+					return false;
+				}
 				// TODO : Check if out of range ...
 				it->setVolume(value);
 				AIRTALGO_DEBUG("Set volume : FLOW = " << value << " dB (from:" << _value << ")");
