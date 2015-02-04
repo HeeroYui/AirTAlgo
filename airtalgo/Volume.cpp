@@ -148,9 +148,10 @@ void airtalgo::Volume::configurationChange() {
 	}
 	// nee to process all time (the format not change (just a simple filter))
 	m_needProcess = true;
+	volumeChange();
 }
 
-void airtalgo::Volume::updateVolumeValues() {
+void airtalgo::Volume::volumeChange() {
 	//m_volumeAppli = 20 * log(m_volumedB);
 	float volumedB = 0.0f;
 	for (auto &it : m_volumeList) {
@@ -323,8 +324,6 @@ bool airtalgo::Volume::process(std::chrono::system_clock::time_point& _time,
 		AIRTALGO_ERROR("null function ptr");
 		return false;
 	}
-	// Calculate in every case the volume to apply :
-	updateVolumeValues();
 	//AIRTALGO_WARNING("Apply volume : " << m_volumedB << "dB " << m_volumeAppli << " ==> x*" << m_volumeCoef << ">>" << m_volumeDecalage << " ex:50*C>>D=" << (50*m_volumeCoef>>m_volumeDecalage) );
 	m_functionConvert(_input, _output, _outputNbChunk*m_input.getMap().size(), m_volumeCoef, m_volumeDecalage, m_volumeAppli);
 	return true;
@@ -346,6 +345,7 @@ void airtalgo::Volume::addVolumeStage(const std::shared_ptr<VolumeElement>& _vol
 		}
 	}
 	m_volumeList.push_back(_volume);
+	volumeChange();
 }
 
 bool airtalgo::Volume::setParameter(const std::string& _parameter, const std::string& _value) {
@@ -363,6 +363,7 @@ bool airtalgo::Volume::setParameter(const std::string& _parameter, const std::st
 				// TODO : Check if out of range ...
 				it->setVolume(value);
 				AIRTALGO_DEBUG("Set volume : FLOW = " << value << " dB (from:" << _value << ")");
+				volumeChange();
 				return true;
 			}
 		}
@@ -402,3 +403,4 @@ std::string airtalgo::Volume::getParameterProperty(const std::string& _parameter
 	AIRTALGO_ERROR("unknow Parameter property for: '" << _parameter << "'");
 	return "[ERROR]";
 }
+

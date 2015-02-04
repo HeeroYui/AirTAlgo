@@ -76,13 +76,13 @@ namespace airtalgo {
 		public:
 			virtual std::vector<airtalgo::format> getFormatSupportedInput();
 			virtual std::vector<airtalgo::format> getFormatSupportedOutput();
-		protected:
-			virtual void updateVolumeValues();
 		public:
 			virtual void addVolumeStage(const std::shared_ptr<airtalgo::VolumeElement>& _volume);
 			virtual bool setParameter(const std::string& _parameter, const std::string& _value);
 			virtual std::string getParameter(const std::string& _parameter) const;
 			virtual std::string getParameterProperty(const std::string& _parameter) const;
+		public:
+			void volumeChange();
 	};
 };
 
