@@ -74,8 +74,8 @@ namespace airtalgo {
 			                     void*& _output,
 			                     size_t& _outputNbChunk);
 		public:
-			virtual std::vector<airtalgo::format> getFormatSupportedInput();
-			virtual std::vector<airtalgo::format> getFormatSupportedOutput();
+			virtual std::vector<audio::format> getFormatSupportedInput();
+			virtual std::vector<audio::format> getFormatSupportedOutput();
 		public:
 			virtual void addVolumeStage(const std::shared_ptr<airtalgo::VolumeElement>& _volume);
 			virtual bool setParameter(const std::string& _parameter, const std::string& _value);

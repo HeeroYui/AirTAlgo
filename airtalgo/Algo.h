@@ -11,8 +11,8 @@
 #include <string>
 #include <vector>
 #include <stdint.h>
-#include <airtalgo/format.h>
-#include <airtalgo/channel.h>
+#include <audio/format.h>
+#include <audio/channel.h>
 #include <chrono>
 #include <functional>
 #include <memory>
@@ -122,38 +122,38 @@ namespace airtalgo{
 			 */
 			virtual size_t needInputData(size_t _output);
 		protected: // note when nothing ==> support all type
-			std::vector<airtalgo::format> m_supportedFormat;
+			std::vector<audio::format> m_supportedFormat;
 		public:
-			virtual std::vector<airtalgo::format> getFormatSupportedInput() {
+			virtual std::vector<audio::format> getFormatSupportedInput() {
 				if (m_output.getConfigured() == true) {
-					std::vector<airtalgo::format> out;
+					std::vector<audio::format> out;
 					out.push_back(m_output.getFormat());
 					return out;
 				}
 				return m_supportedFormat;
 			};
-			virtual std::vector<airtalgo::format> getFormatSupportedOutput() {
+			virtual std::vector<audio::format> getFormatSupportedOutput() {
 				if (m_input.getConfigured() == true) {
-					std::vector<airtalgo::format> out;
+					std::vector<audio::format> out;
 					out.push_back(m_input.getFormat());
 					return out;
 				}
 				return m_supportedFormat;
 			};
 		protected: // note when nothing ==> support all type
-			std::vector<std::vector<airtalgo::channel>> m_supportedMap;
+			std::vector<std::vector<audio::channel>> m_supportedMap;
 		public:
-			virtual std::vector<std::vector<airtalgo::channel>> getMapSupportedInput() {
+			virtual std::vector<std::vector<audio::channel>> getMapSupportedInput() {
 				if (m_output.getConfigured() == true) {
-					std::vector<std::vector<airtalgo::channel>> out;
+					std::vector<std::vector<audio::channel>> out;
 					out.push_back(m_output.getMap());
 					return out;
 				}
 				return m_supportedMap;
 			};
-			virtual std::vector<std::vector<airtalgo::channel>> getMapSupportedOutput() {
+			virtual std::vector<std::vector<audio::channel>> getMapSupportedOutput() {
 				if (m_input.getConfigured() == true) {
-					std::vector<std::vector<airtalgo::channel>> out;
+					std::vector<std::vector<audio::channel>> out;
 					out.push_back(m_input.getMap());
 					return out;
 				}

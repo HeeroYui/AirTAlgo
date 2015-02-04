@@ -14,8 +14,8 @@
 namespace airtalgo{
 	typedef std::function<void (const std::chrono::system_clock::time_point& _playTime,
 	                            const size_t& _nbChunk,
-	                            const std::vector<airtalgo::channel>& _map,
-	                            enum airtalgo::format _type)> needDataFunctionWrite;
+	                            const std::vector<audio::channel>& _map,
+	                            enum audio::format _type)> needDataFunctionWrite;
 	class EndPointWrite : public EndPoint {
 		private:
 			std::vector<int8_t> m_tmpData;

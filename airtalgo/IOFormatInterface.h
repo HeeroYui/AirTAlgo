@@ -11,8 +11,8 @@
 #include <string>
 #include <vector>
 #include <stdint.h>
-#include <airtalgo/format.h>
-#include <airtalgo/channel.h>
+#include <audio/format.h>
+#include <audio/channel.h>
 #include <chrono>
 #include <functional>
 #include <memory>
@@ -23,39 +23,39 @@ namespace airtalgo{
 	class IOFormatInterface {
 		public:
 			IOFormatInterface();
-			IOFormatInterface(std::vector<airtalgo::channel> _map, airtalgo::format _format=airtalgo::format_int16, float _frequency=48000.0f);
-			void set(std::vector<airtalgo::channel> _map, airtalgo::format _format=airtalgo::format_int16, float _frequency=48000.0f);
+			IOFormatInterface(std::vector<audio::channel> _map, audio::format _format=audio::format_int16, float _frequency=48000.0f);
+			void set(std::vector<audio::channel> _map, audio::format _format=audio::format_int16, float _frequency=48000.0f);
 		protected:
 			bool m_configured;
 		public:
 			void setConfigured(bool _value);
 			bool getConfigured() const;
 		protected:
-			airtalgo::format m_format; //!< input Algo Format
+			audio::format m_format; //!< input Algo Format
 		public:
 			/**
 			 * @brief Get the algo format.
 			 * @return the current Format.
 			 */
-			airtalgo::format getFormat() const;
+			audio::format getFormat() const;
 			/**
 			 * @brief Set the algo format.
 			 * @param[in] _value New Format.
 			 */
-			void setFormat(airtalgo::format _value);
+			void setFormat(audio::format _value);
 		protected:
-			std::vector<airtalgo::channel> m_map; //!< input channel Map
+			std::vector<audio::channel> m_map; //!< input channel Map
 		public:
 			/**
 			 * @brief Get the algo channel Map.
 			 * @return the current channel Map.
 			 */
-			const std::vector<airtalgo::channel>& getMap() const;
+			const std::vector<audio::channel>& getMap() const;
 			/**
 			 * @brief Set the algo channel Map.
 			 * @param[in] _value New channel Map.
 			 */
-			void setMap(const std::vector<airtalgo::channel>& _value);
+			void setMap(const std::vector<audio::channel>& _value);
 		protected:
 			float m_frequency; //!< input Algo Format
 		public:

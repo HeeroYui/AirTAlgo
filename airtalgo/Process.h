@@ -11,8 +11,8 @@
 #include <string>
 #include <vector>
 #include <stdint.h>
-#include <airtalgo/format.h>
-#include <airtalgo/channel.h>
+#include <audio/format.h>
+#include <audio/channel.h>
 #include <airtalgo/Algo.h>
 #include <chrono>
 #include <memory>

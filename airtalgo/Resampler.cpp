@@ -23,7 +23,7 @@ airtalgo::Resampler::Resampler() :
 void airtalgo::Resampler::init() {
 	airtalgo::Algo::init();
 	m_type = "Resampler";
-	m_supportedFormat.push_back(format_int16);
+	m_supportedFormat.push_back(audio::format_int16);
 }
 
 std::shared_ptr<airtalgo::Resampler> airtalgo::Resampler::create() {
@@ -47,7 +47,7 @@ void airtalgo::Resampler::configurationChange() {
 		AIRTALGO_ERROR("can not support Format Change ...");
 		m_needProcess = false;
 	}
-	if (m_input.getFormat() != format_int16) {
+	if (m_input.getFormat() != audio::format_int16) {
 		AIRTALGO_ERROR("can not support Format other than int16_t ...");
 		m_needProcess = false;
 		return;

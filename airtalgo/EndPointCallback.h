@@ -14,14 +14,14 @@
 namespace airtalgo {
 	typedef std::function<void (const std::chrono::system_clock::time_point& _playTime,
 	                            size_t _nbChunk,
-	                            const std::vector<airtalgo::channel>& _map,
+	                            const std::vector<audio::channel>& _map,
 	                            void* _data,
-	                            enum airtalgo::format _type)> needDataFunction;
+	                            enum audio::format _type)> needDataFunction;
 	typedef std::function<void (const std::chrono::system_clock::time_point& _readTime,
 	                            size_t _nbChunk,
-	                            const std::vector<airtalgo::channel>& _map,
+	                            const std::vector<audio::channel>& _map,
 	                            const void* _data,
-	                            enum airtalgo::format _type)> haveNewDataFunction;
+	                            enum audio::format _type)> haveNewDataFunction;
 	class EndPointCallback : public EndPoint {
 		private:
 			needDataFunction m_outputFunction;

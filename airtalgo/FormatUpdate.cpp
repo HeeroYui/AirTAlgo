@@ -159,82 +159,82 @@ void airtalgo::FormatUpdate::configurationChange() {
 	}
 	switch (m_input.getFormat()) {
 		default:
-		case format_int16:
+		case audio::format_int16:
 			switch (m_output.getFormat()) {
 				default:
-				case format_int16:
+				case audio::format_int16:
 					AIRTALGO_ERROR(" Impossible case 1");
 					break;
-				case format_int16_on_int32:
+				case audio::format_int16_on_int32:
 					m_functionConvert = &convert__int16__to__int16_on_int32;
 					AIRTALGO_DEBUG(" use converter : 'convert__int16__to__int16_on_int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
-				case format_int32:
+				case audio::format_int32:
 					m_functionConvert = &convert__int16__to__int32;
 					AIRTALGO_DEBUG(" use converter : 'convert__int16__to__int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
-				case format_float:
+				case audio::format_float:
 					m_functionConvert = &convert__int16__to__float;
 					AIRTALGO_DEBUG(" use converter : 'convert__int16__to__float' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
 			}
 			break;
-		case format_int16_on_int32:
+		case audio::format_int16_on_int32:
 			switch (m_output.getFormat()) {
 				default:
-				case format_int16:
+				case audio::format_int16:
 					m_functionConvert = &convert__int16_on_int32__to__int16;
 					AIRTALGO_DEBUG(" use converter : 'convert__int16_on_int32__to__int16' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
-				case format_int16_on_int32:
+				case audio::format_int16_on_int32:
 					AIRTALGO_ERROR(" Impossible case 2");
 					break;
-				case format_int32:
+				case audio::format_int32:
 					m_functionConvert = &convert__int16_on_int32__to__int32;
 					AIRTALGO_DEBUG(" use converter : 'convert__int16_on_int32__to__int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
-				case format_float:
+				case audio::format_float:
 					m_functionConvert = &convert__int16_on_int32__to__float;
 					AIRTALGO_DEBUG(" use converter : 'convert__int16_on_int32__to__float' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
 			}
 			break;
-		case format_int32:
+		case audio::format_int32:
 			switch (m_output.getFormat()) {
 				default:
-				case format_int16:
+				case audio::format_int16:
 					m_functionConvert = &convert__int32__to__int16;
 					AIRTALGO_DEBUG(" use converter : 'convert__int32__to__int16' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
-				case format_int16_on_int32:
+				case audio::format_int16_on_int32:
 					m_functionConvert = &convert__int32__to__int16_on_int32;
 					AIRTALGO_DEBUG(" use converter : 'convert__int32__to__int16_on_int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
-				case format_int32:
+				case audio::format_int32:
 					AIRTALGO_ERROR(" Impossible case 3");
 					break;
-				case format_float:
+				case audio::format_float:
 					m_functionConvert = &convert__int32__to__float;
 					AIRTALGO_DEBUG(" use converter : 'convert__int32__to__float' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
 			}
 			break;
-		case format_float:
+		case audio::format_float:
 			switch (m_output.getFormat()) {
 				default:
-				case format_int16:
+				case audio::format_int16:
 					m_functionConvert = &convert__float__to__int16;
 					AIRTALGO_DEBUG(" use converter : 'convert__float__to__int16' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
-				case format_int16_on_int32:
+				case audio::format_int16_on_int32:
 					m_functionConvert = &convert__float__to__int16_on_int32;
 					AIRTALGO_DEBUG(" use converter : 'convert__float__to__int16_on_int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
-				case format_int32:
+				case audio::format_int32:
 					m_functionConvert = &convert__float__to__int32;
 					AIRTALGO_DEBUG(" use converter : 'convert__float__to__int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
-				case format_float:
+				case audio::format_float:
 					AIRTALGO_ERROR(" Impossible case 4");
 					break;
 			}

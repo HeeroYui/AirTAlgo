@@ -71,16 +71,15 @@ bool airtalgo::ChannelReorder::process(std::chrono::system_clock::time_point& _t
 	_output = &(m_outputData[0]);
 	// real process: (only depend of data size):
 	switch (m_output.getFormat()) {
-		default:
-		case format_int16:
+		case audio::format_int8:
 			{
 				AIRTALGO_VERBOSE("convert " << m_input.getMap() << " ==> " << m_output.getMap() << " format=" << int32_t(m_formatSize));
-				int16_t* in = static_cast<int16_t*>(_input);
-				int16_t* out = static_cast<int16_t*>(_output);
+				int8_t* in = static_cast<int8_t*>(_input);
+				int8_t* out = static_cast<int8_t*>(_output);
 				for (size_t kkk=0; kkk<m_output.getMap().size(); ++kkk) {
 					int32_t convertId = -1;
 					if (    m_input.getMap().size() == 1
-					     && m_input.getMap()[0] == airtalgo::channel_frontCenter) {
+					     && m_input.getMap()[0] == audio::channel_frontCenter) {
 						convertId = 0;
 					} else {
 						for (size_t jjj=0; jjj<m_input.getMap().size(); ++jjj) {
@@ -103,9 +102,42 @@ bool airtalgo::ChannelReorder::process(std::chrono::system_clock::time_point& _t
 				}
 			}
 			break;
-		case format_int16_on_int32:
-		case format_int32:
-		case format_float:
+		default:
+		case audio::format_int16:
+			{
+				AIRTALGO_VERBOSE("convert " << m_input.getMap() << " ==> " << m_output.getMap() << " format=" << int32_t(m_formatSize));
+				int16_t* in = static_cast<int16_t*>(_input);
+				int16_t* out = static_cast<int16_t*>(_output);
+				for (size_t kkk=0; kkk<m_output.getMap().size(); ++kkk) {
+					int32_t convertId = -1;
+					if (    m_input.getMap().size() == 1
+					     && m_input.getMap()[0] == audio::channel_frontCenter) {
+						convertId = 0;
+					} else {
+						for (size_t jjj=0; jjj<m_input.getMap().size(); ++jjj) {
+							if (m_output.getMap()[kkk] == m_input.getMap()[jjj]) {
+								convertId = jjj;
+								break;
+							}
+						}
+					}
+					AIRTALGO_VERBOSE("    " << convertId << " ==> " << kkk);
+					if (convertId == -1) {
+						for (size_t iii=0; iii<_outputNbChunk; ++iii) {
+							out[iii*m_output.getMap().size()+kkk] = 0;
+						}
+					} else {
+						for (size_t iii=0; iii<_outputNbChunk; ++iii) {
+							out[iii*m_output.getMap().size()+kkk] = in[iii*m_input.getMap().size()+convertId];
+						}
+					}
+				}
+			}
+			break;
+		case audio::format_int16_on_int32:
+		case audio::format_int24:
+		case audio::format_int32:
+		case audio::format_float:
 			{
 				AIRTALGO_VERBOSE("convert (2) " << m_input.getMap() << " ==> " << m_output.getMap());
 				uint32_t* in = static_cast<uint32_t*>(_input);
@@ -113,7 +145,37 @@ bool airtalgo::ChannelReorder::process(std::chrono::system_clock::time_point& _t
 				for (size_t kkk=0; kkk<m_output.getMap().size(); ++kkk) {
 					int32_t convertId = -1;
 					if (    m_input.getMap().size() == 1
-					     && m_input.getMap()[0] == airtalgo::channel_frontCenter) {
+					     && m_input.getMap()[0] == audio::channel_frontCenter) {
+						convertId = 0;
+					} else {
+						for (size_t jjj=0; jjj<m_input.getMap().size(); ++jjj) {
+							if (m_output.getMap()[kkk] == m_input.getMap()[jjj]) {
+								convertId = jjj;
+								break;
+							}
+						}
+					}
+					if (convertId == -1) {
+						for (size_t iii=0; iii<_outputNbChunk; ++iii) {
+							out[iii*m_output.getMap().size()+kkk] = 0;
+						}
+					} else {
+						for (size_t iii=0; iii<_outputNbChunk; ++iii) {
+							out[iii*m_output.getMap().size()+kkk] = in[iii*m_input.getMap().size()+convertId];
+						}
+					}
+				}
+			}
+			break;
+		case audio::format_double:
+			{
+				AIRTALGO_VERBOSE("convert (2) " << m_input.getMap() << " ==> " << m_output.getMap());
+				uint64_t* in = static_cast<uint64_t*>(_input);
+				uint64_t* out = static_cast<uint64_t*>(_output);
+				for (size_t kkk=0; kkk<m_output.getMap().size(); ++kkk) {
+					int32_t convertId = -1;
+					if (    m_input.getMap().size() == 1
+					     && m_input.getMap()[0] == audio::channel_frontCenter) {
 						convertId = 0;
 					} else {
 						for (size_t jjj=0; jjj<m_input.getMap().size(); ++jjj) {

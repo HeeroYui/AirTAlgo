@@ -9,8 +9,8 @@
 #include <string>
 #include <vector>
 #include <stdint.h>
-#include <airtalgo/format.h>
-#include <airtalgo/channel.h>
+#include <audio/format.h>
+#include <audio/channel.h>
 #include <airtalgo/Process.h>
 #include <airtalgo/ChannelReorder.h>
 #include <airtalgo/FormatUpdate.h>
@@ -190,13 +190,13 @@ void airtalgo::Process::updateInterAlgo() {
 			std::vector<float> freqIn = m_listAlgo[iii]->getFrequencySupportedInput();
 			std::vector<float> freq = getUnion<float>(freqOut, freqIn);
 			// step 2 : Check map:
-			std::vector<std::vector<airtalgo::channel>> mapOut = m_listAlgo[iii-1]->getMapSupportedOutput();
-			std::vector<std::vector<airtalgo::channel>> mapIn = m_listAlgo[iii]->getMapSupportedInput();
-			std::vector<std::vector<airtalgo::channel>> map = getUnion<std::vector<airtalgo::channel>>(mapOut, mapIn);
+			std::vector<std::vector<audio::channel>> mapOut = m_listAlgo[iii-1]->getMapSupportedOutput();
+			std::vector<std::vector<audio::channel>> mapIn = m_listAlgo[iii]->getMapSupportedInput();
+			std::vector<std::vector<audio::channel>> map = getUnion<std::vector<audio::channel>>(mapOut, mapIn);
 			// step 3 : Check Format:
-			std::vector<airtalgo::format> formatOut = m_listAlgo[iii-1]->getFormatSupportedOutput();
-			std::vector<airtalgo::format> formatIn = m_listAlgo[iii]->getFormatSupportedInput();
-			std::vector<airtalgo::format> format = getUnion<airtalgo::format>(formatOut, formatIn);
+			std::vector<audio::format> formatOut = m_listAlgo[iii-1]->getFormatSupportedOutput();
+			std::vector<audio::format> formatIn = m_listAlgo[iii]->getFormatSupportedInput();
+			std::vector<audio::format> format = getUnion<audio::format>(formatOut, formatIn);
 			
 			if (    freq.size() >= 1
 			     && map.size() >= 1
@@ -288,13 +288,13 @@ void airtalgo::Process::updateInterAlgo() {
 			if (out.getFrequency() != in.getFrequency()) {
 				
 				// TODO : Do it better: special check for resampler : only support int16_t
-				if (    out.getFormat() != format_int16
+				if (    out.getFormat() != audio::format_int16
 				     /* && out.getFormat() != format_float */) {
 					// need add a format Updater
 					std::shared_ptr<airtalgo::FormatUpdate> algo = airtalgo::FormatUpdate::create();
 					algo->setTemporary();
 					algo->setInputFormat(out);
-					out.setFormat(format_int16);
+					out.setFormat(audio::format_int16);
 					algo->setOutputFormat(out);
 					m_listAlgo.insert(m_listAlgo.begin()+iii, algo);
 					AIRTALGO_INFO("convert " << out.getFormat() << " -> " << in.getFormat());

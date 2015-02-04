@@ -20,8 +20,8 @@ airtalgo::Volume::Volume() :
 void airtalgo::Volume::init() {
 	airtalgo::Algo::init();
 	m_type = "Volume";
-	m_supportedFormat.push_back(format_int16);
-	m_supportedFormat.push_back(format_int16_on_int32);
+	m_supportedFormat.push_back(audio::format_int16);
+	m_supportedFormat.push_back(audio::format_int16_on_int32);
 }
 
 std::shared_ptr<airtalgo::Volume> airtalgo::Volume::create() {
@@ -90,50 +90,50 @@ void airtalgo::Volume::configurationChange() {
 	airtalgo::Algo::configurationChange();
 	switch (m_input.getFormat()) {
 		default:
-		case format_int16:
+		case audio::format_int16:
 			switch (m_output.getFormat()) {
 				default:
-				case format_int16:
+				case audio::format_int16:
 					m_functionConvert = &convert__int16__to__int16;
 					AIRTALGO_DEBUG("Use converter : 'convert__int16__to__int16' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
-				case format_int16_on_int32:
-				case format_int32:
+				case audio::format_int16_on_int32:
+				case audio::format_int32:
 					m_functionConvert = &convert__int16__to__int32;
 					AIRTALGO_DEBUG("Use converter : 'convert__int16__to__int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
-				case format_float:
+				case audio::format_float:
 					AIRTALGO_ERROR("Impossible case 1");
 					break;
 			}
 			break;
-		case format_int16_on_int32:
-		case format_int32:
+		case audio::format_int16_on_int32:
+		case audio::format_int32:
 			switch (m_output.getFormat()) {
 				default:
-				case format_int16:
+				case audio::format_int16:
 					m_functionConvert = &convert__int32__to__int16;
 					AIRTALGO_DEBUG("Use converter : 'convert__int32__to__int16' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
-				case format_int16_on_int32:
-				case format_int32:
+				case audio::format_int16_on_int32:
+				case audio::format_int32:
 					m_functionConvert = &convert__int32__to__int32;
 					AIRTALGO_DEBUG("Use converter : 'convert__int32__to__int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
-				case format_float:
+				case audio::format_float:
 					AIRTALGO_ERROR("Impossible case 2");
 					break;
 			}
 			break;
-		case format_float:
+		case audio::format_float:
 			switch (m_output.getFormat()) {
 				default:
-				case format_int16:
-				case format_int16_on_int32:
-				case format_int32:
+				case audio::format_int16:
+				case audio::format_int16_on_int32:
+				case audio::format_int32:
 					AIRTALGO_ERROR("Impossible case 4");
 					break;
-				case format_float:
+				case audio::format_float:
 					m_functionConvert = &convert__float__to__float;
 					AIRTALGO_DEBUG("Use converter : 'convert__float__to__float' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
@@ -165,10 +165,10 @@ void airtalgo::Volume::volumeChange() {
 	m_volumeAppli = std::pow(10.0f, volumedB/20.0f);
 	switch (m_input.getFormat()) {
 		default:
-		case format_int16:
+		case audio::format_int16:
 			switch (m_output.getFormat()) {
 				default:
-				case format_int16:
+				case audio::format_int16:
 					if (m_volumeAppli <= 1.0f) {
 						m_volumeCoef = m_volumeAppli*float(1<<16);
 						m_volumeDecalage = 16;
@@ -178,7 +178,7 @@ void airtalgo::Volume::volumeChange() {
 						m_volumeDecalage = 16-neareast;
 					}
 					break;
-				case format_int16_on_int32:
+				case audio::format_int16_on_int32:
 					if (m_volumeAppli <= 1.0f) {
 						m_volumeCoef = m_volumeAppli*float(1<<16);
 						m_volumeDecalage = 16;
@@ -188,19 +188,19 @@ void airtalgo::Volume::volumeChange() {
 						m_volumeDecalage = 16-neareast;
 					}
 					break;
-				case format_int32:
+				case audio::format_int32:
 					m_volumeCoef = m_volumeAppli*float(1<<16);
 					m_volumeDecalage = 0;
 					break;
-				case format_float:
+				case audio::format_float:
 					AIRTALGO_ERROR("Impossible case 1");
 					break;
 			}
 			break;
-		case format_int16_on_int32:
+		case audio::format_int16_on_int32:
 			switch (m_output.getFormat()) {
 				default:
-				case format_int16:
+				case audio::format_int16:
 					if (m_volumeAppli <= 1.0f) {
 						m_volumeCoef = m_volumeAppli*float(1<<16);
 						m_volumeDecalage = 16;
@@ -210,7 +210,7 @@ void airtalgo::Volume::volumeChange() {
 						m_volumeDecalage = 16-neareast;
 					}
 					break;
-				case format_int16_on_int32:
+				case audio::format_int16_on_int32:
 					if (m_volumeAppli <= 1.0f) {
 						m_volumeCoef = m_volumeAppli*float(1<<16);
 						m_volumeDecalage = 16;
@@ -220,19 +220,19 @@ void airtalgo::Volume::volumeChange() {
 						m_volumeDecalage = 16-neareast;
 					}
 					break;
-				case format_int32:
+				case audio::format_int32:
 					m_volumeCoef = m_volumeAppli*float(1<<16);
 					m_volumeDecalage = 0;
 					break;
-				case format_float:
+				case audio::format_float:
 					AIRTALGO_ERROR("Impossible case 2");
 					break;
 			}
 			break;
-		case format_int32:
+		case audio::format_int32:
 			switch (m_output.getFormat()) {
 				default:
-				case format_int16:
+				case audio::format_int16:
 					if (m_volumeAppli <= 1.0f) {
 						m_volumeCoef = m_volumeAppli*float(1<<16);
 						m_volumeDecalage = 32;
@@ -242,7 +242,7 @@ void airtalgo::Volume::volumeChange() {
 						m_volumeDecalage = 32-neareast;
 					}
 					break;
-				case format_int16_on_int32:
+				case audio::format_int16_on_int32:
 					if (m_volumeAppli <= 1.0f) {
 						m_volumeCoef = m_volumeAppli*float(1<<16);
 						m_volumeDecalage = 32;
@@ -252,48 +252,48 @@ void airtalgo::Volume::volumeChange() {
 						m_volumeDecalage = 32-neareast;
 					}
 					break;
-				case format_int32:
+				case audio::format_int32:
 					m_volumeCoef = m_volumeAppli*float(1<<16);
 					m_volumeDecalage = 16;
 					break;
-				case format_float:
+				case audio::format_float:
 					AIRTALGO_ERROR("Impossible case 3");
 					break;
 			}
 			break;
-		case format_float:
+		case audio::format_float:
 			// nothing to do (use m_volumeAppli)
 			break;
 	}
 }
 
 
-std::vector<airtalgo::format> airtalgo::Volume::getFormatSupportedInput() {
-	std::vector<airtalgo::format> tmp;
-	if (m_output.getFormat() == format_float) {
-		tmp.push_back(format_float);
+std::vector<audio::format> airtalgo::Volume::getFormatSupportedInput() {
+	std::vector<audio::format> tmp;
+	if (m_output.getFormat() == audio::format_float) {
+		tmp.push_back(audio::format_float);
 	}
-	if (    m_output.getFormat() == format_int16
-	     || m_output.getFormat() == format_int16_on_int32
-	     || m_output.getFormat() == format_int32) {
-		tmp.push_back(format_int16);
-		tmp.push_back(format_int16_on_int32);
-		tmp.push_back(format_int32);
+	if (    m_output.getFormat() == audio::format_int16
+	     || m_output.getFormat() == audio::format_int16_on_int32
+	     || m_output.getFormat() == audio::format_int32) {
+		tmp.push_back(audio::format_int16);
+		tmp.push_back(audio::format_int16_on_int32);
+		tmp.push_back(audio::format_int32);
 	}
 	return tmp;
 };
 
-std::vector<airtalgo::format> airtalgo::Volume::getFormatSupportedOutput() {
-		std::vector<airtalgo::format> tmp;
-	if (m_input.getFormat() == format_float) {
-		tmp.push_back(format_float);
+std::vector<audio::format> airtalgo::Volume::getFormatSupportedOutput() {
+		std::vector<audio::format> tmp;
+	if (m_input.getFormat() == audio::format_float) {
+		tmp.push_back(audio::format_float);
 	}
-	if (    m_input.getFormat() == format_int16
-	     || m_input.getFormat() == format_int16_on_int32
-	     || m_input.getFormat() == format_int32) {
-		tmp.push_back(format_int16);
-		tmp.push_back(format_int16_on_int32);
-		tmp.push_back(format_int32);
+	if (    m_input.getFormat() == audio::format_int16
+	     || m_input.getFormat() == audio::format_int16_on_int32
+	     || m_input.getFormat() == audio::format_int32) {
+		tmp.push_back(audio::format_int16);
+		tmp.push_back(audio::format_int16_on_int32);
+		tmp.push_back(audio::format_int32);
 	}
 	return tmp;
 };
@@ -338,6 +338,7 @@ void airtalgo::Volume::addVolumeStage(const std::shared_ptr<VolumeElement>& _vol
 			continue;
 		}
 		if (it == _volume) {
+			// already done ...
 			return;
 		}
 		if (it->getName() == _volume->getName()) {
@@ -360,7 +361,11 @@ bool airtalgo::Volume::setParameter(const std::string& _parameter, const std::st
 				if (sscanf(_value.c_str(), "%fdB", &value) != 1) {
 					return false;
 				}
-				// TODO : Check if out of range ...
+				if (    value < -300
+				     || value > 300) {
+					AIRTALGO_ERROR("Can not set volume ... : '" << _parameter << "' out of range : [-300..300]");
+					return false;
+				}
 				it->setVolume(value);
 				AIRTALGO_DEBUG("Set volume : FLOW = " << value << " dB (from:" << _value << ")");
 				volumeChange();

@@ -26,14 +26,14 @@ std::ostream& airtalgo::operator <<(std::ostream& _os, const IOFormatInterface& 
 
 airtalgo::IOFormatInterface::IOFormatInterface() :
   m_configured(false),
-  m_format(airtalgo::format_unknow),
+  m_format(audio::format_unknow),
   m_map(),
   m_frequency(0) {
-	m_map.push_back(airtalgo::channel_frontLeft);
-	m_map.push_back(airtalgo::channel_frontRight);
+	m_map.push_back(audio::channel_frontLeft);
+	m_map.push_back(audio::channel_frontRight);
 }
 
-airtalgo::IOFormatInterface::IOFormatInterface(std::vector<airtalgo::channel> _map, airtalgo::format _format, float _frequency) :
+airtalgo::IOFormatInterface::IOFormatInterface(std::vector<audio::channel> _map, audio::format _format, float _frequency) :
   m_configured(true),
   m_format(_format),
   m_map(_map),
@@ -41,7 +41,7 @@ airtalgo::IOFormatInterface::IOFormatInterface(std::vector<airtalgo::channel> _m
 	
 }
 
-void airtalgo::IOFormatInterface::set(std::vector<airtalgo::channel> _map, airtalgo::format _format, float _frequency) {
+void airtalgo::IOFormatInterface::set(std::vector<audio::channel> _map, audio::format _format, float _frequency) {
 	bool hasChange = false;
 	if (m_map != _map) {
 		m_map = _map;
@@ -69,11 +69,11 @@ bool airtalgo::IOFormatInterface::getConfigured() const {
 	return m_configured;
 }
 
-airtalgo::format airtalgo::IOFormatInterface::getFormat() const {
+audio::format airtalgo::IOFormatInterface::getFormat() const {
 	return m_format;
 }
 
-void airtalgo::IOFormatInterface::setFormat(airtalgo::format _value) {
+void airtalgo::IOFormatInterface::setFormat(audio::format _value) {
 	if (m_format == _value) {
 		return;
 	}
@@ -82,11 +82,11 @@ void airtalgo::IOFormatInterface::setFormat(airtalgo::format _value) {
 	configurationChange();
 }
 
-const std::vector<airtalgo::channel>& airtalgo::IOFormatInterface::getMap() const{
+const std::vector<audio::channel>& airtalgo::IOFormatInterface::getMap() const{
 	return m_map;
 }
 
-void airtalgo::IOFormatInterface::setMap(const std::vector<airtalgo::channel>& _value) {
+void airtalgo::IOFormatInterface::setMap(const std::vector<audio::channel>& _value) {
 	if (m_map == _value) {
 		return;
 	}

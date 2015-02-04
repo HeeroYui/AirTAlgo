@@ -8,7 +8,7 @@
 #define __AIRT_ALGO_CORE_H__
 
 #include <string>
-#include <airtalgo/format.h>
+#include <audio/format.h>
 #include <airtalgo/channel.h>
 #include <chrono>
 

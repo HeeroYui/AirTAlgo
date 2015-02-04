@@ -39,17 +39,24 @@ void airtalgo::Algo::configurationChange() {
 		m_needProcess = true;
 	}
 	switch (m_output.getFormat()) {
-		case format_int16:
+		case audio::format_int8:
+			m_formatSize = sizeof(int8_t);
+			break;
+		case audio::format_int16:
 			m_formatSize = sizeof(int16_t);
 			break;
-		case format_int16_on_int32:
-		case format_int32:
+		case audio::format_int24:
+		case audio::format_int16_on_int32:
+		case audio::format_int32:
 			m_formatSize = sizeof(int32_t);
 			break;
-		case format_float:
+		case audio::format_float:
 			m_formatSize = sizeof(float);
 			break;
-		case format_unknow:
+		case audio::format_double:
+			m_formatSize = sizeof(double);
+			break;
+		case audio::format_unknow:
 			AIRTALGO_ERROR("format not configured...");
 			m_formatSize = 8;
 			break;
