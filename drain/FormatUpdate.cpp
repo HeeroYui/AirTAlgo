@@ -103,7 +103,7 @@ static void convert__float__to__int16(void* _input, void* _output, size_t _nbSam
 		float value = in[iii] * static_cast<float>(INT16_MAX);
 		value = std::min(std::max(static_cast<float>(INT16_MIN), value), static_cast<float>(INT16_MAX));
 		out[iii] = static_cast<int16_t>(value);
-		//AIRTALGO_DEBUG(iii << " in=" << in[iii] << " out=" << out[iii]);
+		//DRAIN_DEBUG(iii << " in=" << in[iii] << " out=" << out[iii]);
 	}
 }
 static void convert__float__to__int16_on_int32(void* _input, void* _output, size_t _nbSample) {
@@ -145,11 +145,11 @@ std::shared_ptr<drain::FormatUpdate> drain::FormatUpdate::create() {
 void drain::FormatUpdate::configurationChange() {
 	drain::Algo::configurationChange();
 	if (m_input.getMap() != m_output.getMap()) {
-		AIRTALGO_ERROR("can not support Map Change ...");
+		DRAIN_ERROR("can not support Map Change ...");
 		m_needProcess = false;
 	}
 	if (m_input.getFrequency() != m_output.getFrequency()) {
-		AIRTALGO_ERROR("can not support frequency Change ...");
+		DRAIN_ERROR("can not support frequency Change ...");
 		m_needProcess = false;
 	}
 	if (m_input.getFormat() == m_output.getFormat()) {
@@ -163,19 +163,19 @@ void drain::FormatUpdate::configurationChange() {
 			switch (m_output.getFormat()) {
 				default:
 				case audio::format_int16:
-					AIRTALGO_ERROR(" Impossible case 1");
+					DRAIN_ERROR(" Impossible case 1");
 					break;
 				case audio::format_int16_on_int32:
 					m_functionConvert = &convert__int16__to__int16_on_int32;
-					AIRTALGO_DEBUG(" use converter : 'convert__int16__to__int16_on_int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
+					DRAIN_DEBUG(" use converter : 'convert__int16__to__int16_on_int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
 				case audio::format_int32:
 					m_functionConvert = &convert__int16__to__int32;
-					AIRTALGO_DEBUG(" use converter : 'convert__int16__to__int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
+					DRAIN_DEBUG(" use converter : 'convert__int16__to__int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
 				case audio::format_float:
 					m_functionConvert = &convert__int16__to__float;
-					AIRTALGO_DEBUG(" use converter : 'convert__int16__to__float' for " << m_input.getFormat() << " to " << m_output.getFormat());
+					DRAIN_DEBUG(" use converter : 'convert__int16__to__float' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
 			}
 			break;
@@ -184,18 +184,18 @@ void drain::FormatUpdate::configurationChange() {
 				default:
 				case audio::format_int16:
 					m_functionConvert = &convert__int16_on_int32__to__int16;
-					AIRTALGO_DEBUG(" use converter : 'convert__int16_on_int32__to__int16' for " << m_input.getFormat() << " to " << m_output.getFormat());
+					DRAIN_DEBUG(" use converter : 'convert__int16_on_int32__to__int16' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
 				case audio::format_int16_on_int32:
-					AIRTALGO_ERROR(" Impossible case 2");
+					DRAIN_ERROR(" Impossible case 2");
 					break;
 				case audio::format_int32:
 					m_functionConvert = &convert__int16_on_int32__to__int32;
-					AIRTALGO_DEBUG(" use converter : 'convert__int16_on_int32__to__int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
+					DRAIN_DEBUG(" use converter : 'convert__int16_on_int32__to__int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
 				case audio::format_float:
 					m_functionConvert = &convert__int16_on_int32__to__float;
-					AIRTALGO_DEBUG(" use converter : 'convert__int16_on_int32__to__float' for " << m_input.getFormat() << " to " << m_output.getFormat());
+					DRAIN_DEBUG(" use converter : 'convert__int16_on_int32__to__float' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
 			}
 			break;
@@ -204,18 +204,18 @@ void drain::FormatUpdate::configurationChange() {
 				default:
 				case audio::format_int16:
 					m_functionConvert = &convert__int32__to__int16;
-					AIRTALGO_DEBUG(" use converter : 'convert__int32__to__int16' for " << m_input.getFormat() << " to " << m_output.getFormat());
+					DRAIN_DEBUG(" use converter : 'convert__int32__to__int16' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
 				case audio::format_int16_on_int32:
 					m_functionConvert = &convert__int32__to__int16_on_int32;
-					AIRTALGO_DEBUG(" use converter : 'convert__int32__to__int16_on_int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
+					DRAIN_DEBUG(" use converter : 'convert__int32__to__int16_on_int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
 				case audio::format_int32:
-					AIRTALGO_ERROR(" Impossible case 3");
+					DRAIN_ERROR(" Impossible case 3");
 					break;
 				case audio::format_float:
 					m_functionConvert = &convert__int32__to__float;
-					AIRTALGO_DEBUG(" use converter : 'convert__int32__to__float' for " << m_input.getFormat() << " to " << m_output.getFormat());
+					DRAIN_DEBUG(" use converter : 'convert__int32__to__float' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
 			}
 			break;
@@ -224,18 +224,18 @@ void drain::FormatUpdate::configurationChange() {
 				default:
 				case audio::format_int16:
 					m_functionConvert = &convert__float__to__int16;
-					AIRTALGO_DEBUG(" use converter : 'convert__float__to__int16' for " << m_input.getFormat() << " to " << m_output.getFormat());
+					DRAIN_DEBUG(" use converter : 'convert__float__to__int16' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
 				case audio::format_int16_on_int32:
 					m_functionConvert = &convert__float__to__int16_on_int32;
-					AIRTALGO_DEBUG(" use converter : 'convert__float__to__int16_on_int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
+					DRAIN_DEBUG(" use converter : 'convert__float__to__int16_on_int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
 				case audio::format_int32:
 					m_functionConvert = &convert__float__to__int32;
-					AIRTALGO_DEBUG(" use converter : 'convert__float__to__int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
+					DRAIN_DEBUG(" use converter : 'convert__float__to__int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
 				case audio::format_float:
-					AIRTALGO_ERROR(" Impossible case 4");
+					DRAIN_ERROR(" Impossible case 4");
 					break;
 			}
 			break;
@@ -258,14 +258,14 @@ bool drain::FormatUpdate::process(std::chrono::system_clock::time_point& _time,
 	if (_input == nullptr) {
 		_output = &(m_outputData[0]);
 		_outputNbChunk = 0;
-		AIRTALGO_ERROR("null pointer input ... ");
+		DRAIN_ERROR("null pointer input ... ");
 		return false;
 	}
 	_outputNbChunk = _inputNbChunk;
 	m_outputData.resize(_outputNbChunk*m_input.getMap().size()*m_formatSize);
 	_output = &(m_outputData[0]);
 	if (m_functionConvert == nullptr) {
-		AIRTALGO_ERROR("null function ptr");
+		DRAIN_ERROR("null function ptr");
 		return false;
 	}
 	m_functionConvert(_input, _output, _outputNbChunk*m_input.getMap().size());

@@ -33,17 +33,17 @@ void drain::ChannelReorder::configurationChange() {
 	drain::AutoLogInOut("ChannelReorder (config)");
 	drain::Algo::configurationChange();
 	if (m_input.getFormat() != m_output.getFormat()) {
-		AIRTALGO_ERROR("can not support Format Change ...");
+		DRAIN_ERROR("can not support Format Change ...");
 		m_needProcess = false;
 	}
 	if (m_input.getFrequency() != m_output.getFrequency()) {
-		AIRTALGO_ERROR("can not support frequency Change ...");
+		DRAIN_ERROR("can not support frequency Change ...");
 		m_needProcess = false;
 	}
 	if (m_input.getMap() == m_output.getMap()) {
 		// nothing to process...
 		m_needProcess = false;
-		AIRTALGO_INFO(" no need to convert ... " << m_input.getMap() << " ==> " << m_output.getMap());
+		DRAIN_INFO(" no need to convert ... " << m_input.getMap() << " ==> " << m_output.getMap());
 		return;
 	}
 }
@@ -64,7 +64,7 @@ bool drain::ChannelReorder::process(std::chrono::system_clock::time_point& _time
 	if (_input == nullptr) {
 		_output = &(m_outputData[0]);
 		_outputNbChunk = 0;
-		AIRTALGO_ERROR("null pointer input ... ");
+		DRAIN_ERROR("null pointer input ... ");
 		return false;
 	}
 	m_outputData.resize(_outputNbChunk*m_output.getMap().size()*m_formatSize);
@@ -73,7 +73,7 @@ bool drain::ChannelReorder::process(std::chrono::system_clock::time_point& _time
 	switch (m_output.getFormat()) {
 		case audio::format_int8:
 			{
-				AIRTALGO_VERBOSE("convert " << m_input.getMap() << " ==> " << m_output.getMap() << " format=" << int32_t(m_formatSize));
+				DRAIN_VERBOSE("convert " << m_input.getMap() << " ==> " << m_output.getMap() << " format=" << int32_t(m_formatSize));
 				int8_t* in = static_cast<int8_t*>(_input);
 				int8_t* out = static_cast<int8_t*>(_output);
 				for (size_t kkk=0; kkk<m_output.getMap().size(); ++kkk) {
@@ -89,7 +89,7 @@ bool drain::ChannelReorder::process(std::chrono::system_clock::time_point& _time
 							}
 						}
 					}
-					AIRTALGO_VERBOSE("    " << convertId << " ==> " << kkk);
+					DRAIN_VERBOSE("    " << convertId << " ==> " << kkk);
 					if (convertId == -1) {
 						for (size_t iii=0; iii<_outputNbChunk; ++iii) {
 							out[iii*m_output.getMap().size()+kkk] = 0;
@@ -105,7 +105,7 @@ bool drain::ChannelReorder::process(std::chrono::system_clock::time_point& _time
 		default:
 		case audio::format_int16:
 			{
-				AIRTALGO_VERBOSE("convert " << m_input.getMap() << " ==> " << m_output.getMap() << " format=" << int32_t(m_formatSize));
+				DRAIN_VERBOSE("convert " << m_input.getMap() << " ==> " << m_output.getMap() << " format=" << int32_t(m_formatSize));
 				int16_t* in = static_cast<int16_t*>(_input);
 				int16_t* out = static_cast<int16_t*>(_output);
 				for (size_t kkk=0; kkk<m_output.getMap().size(); ++kkk) {
@@ -121,7 +121,7 @@ bool drain::ChannelReorder::process(std::chrono::system_clock::time_point& _time
 							}
 						}
 					}
-					AIRTALGO_VERBOSE("    " << convertId << " ==> " << kkk);
+					DRAIN_VERBOSE("    " << convertId << " ==> " << kkk);
 					if (convertId == -1) {
 						for (size_t iii=0; iii<_outputNbChunk; ++iii) {
 							out[iii*m_output.getMap().size()+kkk] = 0;
@@ -139,7 +139,7 @@ bool drain::ChannelReorder::process(std::chrono::system_clock::time_point& _time
 		case audio::format_int32:
 		case audio::format_float:
 			{
-				AIRTALGO_VERBOSE("convert (2) " << m_input.getMap() << " ==> " << m_output.getMap());
+				DRAIN_VERBOSE("convert (2) " << m_input.getMap() << " ==> " << m_output.getMap());
 				uint32_t* in = static_cast<uint32_t*>(_input);
 				uint32_t* out = static_cast<uint32_t*>(_output);
 				for (size_t kkk=0; kkk<m_output.getMap().size(); ++kkk) {
@@ -169,7 +169,7 @@ bool drain::ChannelReorder::process(std::chrono::system_clock::time_point& _time
 			break;
 		case audio::format_double:
 			{
-				AIRTALGO_VERBOSE("convert (2) " << m_input.getMap() << " ==> " << m_output.getMap());
+				DRAIN_VERBOSE("convert (2) " << m_input.getMap() << " ==> " << m_output.getMap());
 				uint64_t* in = static_cast<uint64_t*>(_input);
 				uint64_t* out = static_cast<uint64_t*>(_output);
 				for (size_t kkk=0; kkk<m_output.getMap().size(); ++kkk) {

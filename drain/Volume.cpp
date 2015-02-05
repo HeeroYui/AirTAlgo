@@ -57,7 +57,7 @@ static void convert__int16__to__int32(void* _input, void* _output, size_t _nbSam
 	for (size_t iii=0; iii<_nbSample; ++iii) {
 		out[iii] = (int32_t(in[iii]) * int32_t(_volumeCoef)) >> _volumeDecalage;
 	}
-	//AIRTALGO_INFO("plop " << in[0] << " >> " << out[0]);
+	//DRAIN_INFO("plop " << in[0] << " >> " << out[0]);
 }
 
 static void convert__int32__to__int16(void* _input, void* _output, size_t _nbSample, int32_t _volumeCoef, int32_t _volumeDecalage, float _volumeAppli) {
@@ -75,7 +75,7 @@ static void convert__int32__to__int32(void* _input, void* _output, size_t _nbSam
 	for (size_t iii=0; iii<_nbSample; ++iii) {
 		out[iii] = int32_t((int64_t(in[iii]) * int64_t(_volumeCoef)) >> _volumeDecalage);
 	}
-	//AIRTALGO_INFO("plop " << in[0] << " >> " << out[0]);
+	//DRAIN_INFO("plop " << in[0] << " >> " << out[0]);
 }
 
 static void convert__float__to__float(void* _input, void* _output, size_t _nbSample, int32_t _volumeCoef, int32_t _volumeDecalage, float _volumeAppli) {
@@ -95,15 +95,15 @@ void drain::Volume::configurationChange() {
 				default:
 				case audio::format_int16:
 					m_functionConvert = &convert__int16__to__int16;
-					AIRTALGO_DEBUG("Use converter : 'convert__int16__to__int16' for " << m_input.getFormat() << " to " << m_output.getFormat());
+					DRAIN_DEBUG("Use converter : 'convert__int16__to__int16' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
 				case audio::format_int16_on_int32:
 				case audio::format_int32:
 					m_functionConvert = &convert__int16__to__int32;
-					AIRTALGO_DEBUG("Use converter : 'convert__int16__to__int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
+					DRAIN_DEBUG("Use converter : 'convert__int16__to__int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
 				case audio::format_float:
-					AIRTALGO_ERROR("Impossible case 1");
+					DRAIN_ERROR("Impossible case 1");
 					break;
 			}
 			break;
@@ -113,15 +113,15 @@ void drain::Volume::configurationChange() {
 				default:
 				case audio::format_int16:
 					m_functionConvert = &convert__int32__to__int16;
-					AIRTALGO_DEBUG("Use converter : 'convert__int32__to__int16' for " << m_input.getFormat() << " to " << m_output.getFormat());
+					DRAIN_DEBUG("Use converter : 'convert__int32__to__int16' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
 				case audio::format_int16_on_int32:
 				case audio::format_int32:
 					m_functionConvert = &convert__int32__to__int32;
-					AIRTALGO_DEBUG("Use converter : 'convert__int32__to__int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
+					DRAIN_DEBUG("Use converter : 'convert__int32__to__int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
 				case audio::format_float:
-					AIRTALGO_ERROR("Impossible case 2");
+					DRAIN_ERROR("Impossible case 2");
 					break;
 			}
 			break;
@@ -131,20 +131,20 @@ void drain::Volume::configurationChange() {
 				case audio::format_int16:
 				case audio::format_int16_on_int32:
 				case audio::format_int32:
-					AIRTALGO_ERROR("Impossible case 4");
+					DRAIN_ERROR("Impossible case 4");
 					break;
 				case audio::format_float:
 					m_functionConvert = &convert__float__to__float;
-					AIRTALGO_DEBUG("Use converter : 'convert__float__to__float' for " << m_input.getFormat() << " to " << m_output.getFormat());
+					DRAIN_DEBUG("Use converter : 'convert__float__to__float' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
 			}
 			break;
 	}
 	if (m_input.getMap() != m_output.getMap()) {
-		AIRTALGO_ERROR("Volume map change is not supported");
+		DRAIN_ERROR("Volume map change is not supported");
 	}
 	if (m_input.getFrequency() != m_output.getFrequency()) {
-		AIRTALGO_ERROR("Volume frequency change is not supported");
+		DRAIN_ERROR("Volume frequency change is not supported");
 	}
 	// nee to process all time (the format not change (just a simple filter))
 	m_needProcess = true;
@@ -159,9 +159,9 @@ void drain::Volume::volumeChange() {
 			continue;
 		}
 		volumedB += it->getVolume();
-		AIRTALGO_VERBOSE("append volume : '" << it->getName() << " vol=" << it->getVolume() << "dB");
+		DRAIN_VERBOSE("append volume : '" << it->getName() << " vol=" << it->getVolume() << "dB");
 	}
-	AIRTALGO_DEBUG(" Total volume : " << volumedB << "dB nbVolume=" << m_volumeList.size());
+	DRAIN_DEBUG(" Total volume : " << volumedB << "dB nbVolume=" << m_volumeList.size());
 	m_volumeAppli = std::pow(10.0f, volumedB/20.0f);
 	switch (m_input.getFormat()) {
 		default:
@@ -193,7 +193,7 @@ void drain::Volume::volumeChange() {
 					m_volumeDecalage = 0;
 					break;
 				case audio::format_float:
-					AIRTALGO_ERROR("Impossible case 1");
+					DRAIN_ERROR("Impossible case 1");
 					break;
 			}
 			break;
@@ -225,7 +225,7 @@ void drain::Volume::volumeChange() {
 					m_volumeDecalage = 0;
 					break;
 				case audio::format_float:
-					AIRTALGO_ERROR("Impossible case 2");
+					DRAIN_ERROR("Impossible case 2");
 					break;
 			}
 			break;
@@ -257,7 +257,7 @@ void drain::Volume::volumeChange() {
 					m_volumeDecalage = 16;
 					break;
 				case audio::format_float:
-					AIRTALGO_ERROR("Impossible case 3");
+					DRAIN_ERROR("Impossible case 3");
 					break;
 			}
 			break;
@@ -314,17 +314,17 @@ bool drain::Volume::process(std::chrono::system_clock::time_point& _time,
 	if (_input == nullptr) {
 		_output = &(m_outputData[0]);
 		_outputNbChunk = 0;
-		AIRTALGO_ERROR("null pointer input ... ");
+		DRAIN_ERROR("null pointer input ... ");
 		return false;
 	}
 	_outputNbChunk = _inputNbChunk;
 	m_outputData.resize(_outputNbChunk*m_input.getMap().size()*m_formatSize);
 	_output = &(m_outputData[0]);
 	if (m_functionConvert == nullptr) {
-		AIRTALGO_ERROR("null function ptr");
+		DRAIN_ERROR("null function ptr");
 		return false;
 	}
-	//AIRTALGO_WARNING("Apply volume : " << m_volumedB << "dB " << m_volumeAppli << " ==> x*" << m_volumeCoef << ">>" << m_volumeDecalage << " ex:50*C>>D=" << (50*m_volumeCoef>>m_volumeDecalage) );
+	//DRAIN_WARNING("Apply volume : " << m_volumedB << "dB " << m_volumeAppli << " ==> x*" << m_volumeCoef << ">>" << m_volumeDecalage << " ex:50*C>>D=" << (50*m_volumeCoef>>m_volumeDecalage) );
 	m_functionConvert(_input, _output, _outputNbChunk*m_input.getMap().size(), m_volumeCoef, m_volumeDecalage, m_volumeAppli);
 	return true;
 }
@@ -363,17 +363,17 @@ bool drain::Volume::setParameter(const std::string& _parameter, const std::strin
 				}
 				if (    value < -300
 				     || value > 300) {
-					AIRTALGO_ERROR("Can not set volume ... : '" << _parameter << "' out of range : [-300..300]");
+					DRAIN_ERROR("Can not set volume ... : '" << _parameter << "' out of range : [-300..300]");
 					return false;
 				}
 				it->setVolume(value);
-				AIRTALGO_DEBUG("Set volume : FLOW = " << value << " dB (from:" << _value << ")");
+				DRAIN_DEBUG("Set volume : FLOW = " << value << " dB (from:" << _value << ")");
 				volumeChange();
 				return true;
 			}
 		}
 	}
-	AIRTALGO_ERROR("unknow set Parameter : '" << _parameter << "' with Value: '" << _value << "'");
+	DRAIN_ERROR("unknow set Parameter : '" << _parameter << "' with Value: '" << _value << "'");
 	return false;
 }
 
@@ -389,7 +389,7 @@ std::string drain::Volume::getParameter(const std::string& _parameter) const {
 			}
 		}
 	}
-	AIRTALGO_ERROR("unknow get Parameter : '" << _parameter << "'");
+	DRAIN_ERROR("unknow get Parameter : '" << _parameter << "'");
 	return "[ERROR]";
 }
 
@@ -405,7 +405,7 @@ std::string drain::Volume::getParameterProperty(const std::string& _parameter) c
 			}
 		}
 	}
-	AIRTALGO_ERROR("unknow Parameter property for: '" << _parameter << "'");
+	DRAIN_ERROR("unknow Parameter property for: '" << _parameter << "'");
 	return "[ERROR]";
 }
 

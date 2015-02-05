@@ -16,7 +16,7 @@ drain::Algo::Algo() :
   m_outputData(),
   m_formatSize(0),
   m_needProcess(false) {
-	AIRTALGO_VERBOSE("CREATE ALGO");
+	DRAIN_VERBOSE("CREATE ALGO");
 }
 
 void drain::Algo::init() {
@@ -57,7 +57,7 @@ void drain::Algo::configurationChange() {
 			m_formatSize = sizeof(double);
 			break;
 		case audio::format_unknow:
-			AIRTALGO_ERROR("format not configured...");
+			DRAIN_ERROR("format not configured...");
 			m_formatSize = 8;
 			break;
 	}

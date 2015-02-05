@@ -9,9 +9,9 @@
 
 drain::AutoLogInOut::AutoLogInOut(const std::string& _value) :
   m_value(_value) {
-	AIRTALGO_VERBOSE("                 '" << m_value << "' [START]");
+	DRAIN_VERBOSE("                 '" << m_value << "' [START]");
 }
 
 drain::AutoLogInOut::~AutoLogInOut() {
-	AIRTALGO_VERBOSE("                 '" << m_value << "' [STOP]");
+	DRAIN_VERBOSE("                 '" << m_value << "' [STOP]");
 }

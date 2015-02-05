@@ -41,7 +41,7 @@ std::shared_ptr<drain::EndPointCallback> drain::EndPointCallback::create(haveNew
 
 void drain::EndPointCallback::configurationChange() {
 	drain::EndPoint::configurationChange();
-	AIRTALGO_INFO("update : format=" << m_output.getFormat() << " map=" << m_input.getMap() << " freq=" << m_input.getFrequency() << " size=" << int32_t(m_formatSize));
+	DRAIN_INFO("update : format=" << m_output.getFormat() << " map=" << m_input.getMap() << " freq=" << m_input.getFrequency() << " size=" << int32_t(m_formatSize));
 	m_needProcess = true;
 }
 
@@ -56,14 +56,14 @@ bool drain::EndPointCallback::process(std::chrono::system_clock::time_point& _ti
 		// update buffer size ...
 		m_outputData.resize(_inputNbChunk*m_output.getMap().size()*m_formatSize);
 		// call user
-		AIRTALGO_VERBOSE("call user get " << _inputNbChunk << "*" << m_output.getMap().size() << " map=" << m_output.getMap() << " datasize=" << int32_t(m_formatSize));
+		DRAIN_VERBOSE("call user get " << _inputNbChunk << "*" << m_output.getMap().size() << " map=" << m_output.getMap() << " datasize=" << int32_t(m_formatSize));
 		m_outputFunction(_time,
 		                 _inputNbChunk,
 		                 m_output.getMap(),
 		                 &m_outputData[0],
 		                 m_output.getFormat());
 		if (m_outputData.size() != _inputNbChunk*m_output.getMap().size()*m_formatSize) {
-			AIRTALGO_ERROR(" can not get enough data from user ... " << m_outputData.size() << " != " << _inputNbChunk*m_output.getMap().size());
+			DRAIN_ERROR(" can not get enough data from user ... " << m_outputData.size() << " != " << _inputNbChunk*m_output.getMap().size());
 			return false;
 		}
 		_output = &m_outputData[0];
@@ -72,7 +72,7 @@ bool drain::EndPointCallback::process(std::chrono::system_clock::time_point& _ti
 	}
 	if (m_inputFunction != nullptr) {
 		// Call user ...
-		AIRTALGO_VERBOSE("call user set " << _inputNbChunk << "*" << m_input.getMap().size());
+		DRAIN_VERBOSE("call user set " << _inputNbChunk << "*" << m_input.getMap().size());
 		m_inputFunction(_time,
 		                _inputNbChunk,
 		                m_input.getMap(),

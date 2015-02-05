@@ -35,7 +35,7 @@ bool drain::Process::push(std::chrono::system_clock::time_point& _time,
                              size_t _nbChunk) {
 	void* out = nullptr;
 	size_t nbChunkOut;
-	AIRTALGO_VERBOSE("        Process push");
+	DRAIN_VERBOSE("        Process push");
 	process(_time, _data, _nbChunk, out, nbChunkOut);
 	return true;
 }
@@ -99,7 +99,7 @@ bool drain::Process::process(std::chrono::system_clock::time_point& _time,
 		_outNbChunk = _inNbChunk;
 		return true;
 	}
-	AIRTALGO_VERBOSE(" process : " << m_listAlgo.size() << " algos nbChunk=" << _outNbChunk);
+	DRAIN_VERBOSE(" process : " << m_listAlgo.size() << " algos nbChunk=" << _outNbChunk);
 	for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
 		//std::cout << "            Algo " << iii+1 << "/" << m_listAlgo.size() << std::endl;
 		if (m_listAlgo[iii] != nullptr) {
@@ -161,27 +161,27 @@ void drain::Process::updateInterAlgo() {
 		// cahin is already configured
 		return ;
 	}
-	AIRTALGO_INFO(" display properties : nbAlgo : " << m_listAlgo.size());
+	DRAIN_INFO(" display properties : nbAlgo : " << m_listAlgo.size());
 	for (auto &it : m_listAlgo) {
-		AIRTALGO_INFO("    [" << it->getType() << "] '" << it->getName() << "'");
+		DRAIN_INFO("    [" << it->getType() << "] '" << it->getName() << "'");
 		if (it->getInputFormat().getConfigured() == true) {
-			AIRTALGO_INFO("        Input : " << it->getInputFormat());
+			DRAIN_INFO("        Input : " << it->getInputFormat());
 		} else {
-			AIRTALGO_INFO("        Input : Not configured");
-			AIRTALGO_INFO("            format : " << it->getFormatSupportedInput());
-			AIRTALGO_INFO("            frequency : " << it->getFrequencySupportedInput());
-			AIRTALGO_INFO("            map : " << it->getMapSupportedInput());
+			DRAIN_INFO("        Input : Not configured");
+			DRAIN_INFO("            format : " << it->getFormatSupportedInput());
+			DRAIN_INFO("            frequency : " << it->getFrequencySupportedInput());
+			DRAIN_INFO("            map : " << it->getMapSupportedInput());
 		}
 		if (it->getOutputFormat().getConfigured() == true) {
-			AIRTALGO_INFO("        Output: " << it->getOutputFormat());
+			DRAIN_INFO("        Output: " << it->getOutputFormat());
 		} else {
-			AIRTALGO_INFO("        Output : Not configured");
-			AIRTALGO_INFO("            format : " << it->getFormatSupportedOutput());
-			AIRTALGO_INFO("            frequency : " << it->getFrequencySupportedOutput());
-			AIRTALGO_INFO("            map : " << it->getMapSupportedOutput());
+			DRAIN_INFO("        Output : Not configured");
+			DRAIN_INFO("            format : " << it->getFormatSupportedOutput());
+			DRAIN_INFO("            frequency : " << it->getFrequencySupportedOutput());
+			DRAIN_INFO("            map : " << it->getMapSupportedOutput());
 		}
 	}
-	AIRTALGO_INFO("********* configuration START *************");
+	DRAIN_INFO("********* configuration START *************");
 	for (size_t iii=1; iii<m_listAlgo.size(); ++iii) {
 		if (    m_listAlgo[iii-1]->getOutputFormat().getConfigured() == false
 		     && m_listAlgo[iii]->getInputFormat().getConfigured() == false) {
@@ -201,7 +201,7 @@ void drain::Process::updateInterAlgo() {
 			if (    freq.size() >= 1
 			     && map.size() >= 1
 			     && format.size() >= 1) {
-				AIRTALGO_INFO("        find 1 compatibility :{format=" << format << ",frequency=" << freq << ",map=" << map << "}");
+				DRAIN_INFO("        find 1 compatibility :{format=" << format << ",frequency=" << freq << ",map=" << map << "}");
 				drain::IOFormatInterface tmp(map[0], format[0], freq[0]);
 				m_listAlgo[iii-1]->setOutputFormat(tmp);
 				m_listAlgo[iii]->setInputFormat(tmp);
@@ -276,12 +276,12 @@ void drain::Process::updateInterAlgo() {
 					}
 				}
 			}
-			AIRTALGO_INFO("        union:");
-			AIRTALGO_INFO("            format : " << format);
-			AIRTALGO_INFO("            frequency : " << freq);
-			AIRTALGO_INFO("            map : " << map);
-			AIRTALGO_INFO("        update: out=" << out);
-			AIRTALGO_INFO("                in=" << in);
+			DRAIN_INFO("        union:");
+			DRAIN_INFO("            format : " << format);
+			DRAIN_INFO("            frequency : " << freq);
+			DRAIN_INFO("            map : " << map);
+			DRAIN_INFO("        update: out=" << out);
+			DRAIN_INFO("                in=" << in);
 			m_listAlgo[iii-1]->setOutputFormat(out);
 			m_listAlgo[iii]->setInputFormat(in);
 			// TODO : Add updater with an optimisation of CPU
@@ -297,7 +297,7 @@ void drain::Process::updateInterAlgo() {
 					out.setFormat(audio::format_int16);
 					algo->setOutputFormat(out);
 					m_listAlgo.insert(m_listAlgo.begin()+iii, algo);
-					AIRTALGO_INFO("convert " << out.getFormat() << " -> " << in.getFormat());
+					DRAIN_INFO("convert " << out.getFormat() << " -> " << in.getFormat());
 					iii++;
 				}
 				// need add a resampler
@@ -307,7 +307,7 @@ void drain::Process::updateInterAlgo() {
 				out.setFrequency(in.getFrequency());
 				algo->setOutputFormat(out);
 				m_listAlgo.insert(m_listAlgo.begin()+iii, algo);
-				AIRTALGO_INFO("convert " << out.getFrequency() << " -> " << in.getFrequency());
+				DRAIN_INFO("convert " << out.getFrequency() << " -> " << in.getFrequency());
 				out.setFrequency(in.getFrequency());
 				iii++;
 			}
@@ -319,7 +319,7 @@ void drain::Process::updateInterAlgo() {
 				out.setMap(in.getMap());
 				algo->setOutputFormat(out);
 				m_listAlgo.insert(m_listAlgo.begin()+iii, algo);
-				AIRTALGO_INFO("convert " << out.getMap() << " -> " << in.getMap());
+				DRAIN_INFO("convert " << out.getMap() << " -> " << in.getMap());
 				iii++;
 			}
 			if (out.getFormat() != in.getFormat()) {
@@ -330,27 +330,27 @@ void drain::Process::updateInterAlgo() {
 				out.setFormat(in.getFormat());
 				algo->setOutputFormat(out);
 				m_listAlgo.insert(m_listAlgo.begin()+iii, algo);
-				AIRTALGO_INFO("convert " << out.getFormat() << " -> " << in.getFormat());
+				DRAIN_INFO("convert " << out.getFormat() << " -> " << in.getFormat());
 				iii++;
 			}
 			
 		} else if (    m_listAlgo[iii-1]->getOutputFormat().getConfigured() == false
 		            || m_listAlgo[iii]->getInputFormat().getConfigured() == false) {
-			AIRTALGO_ERROR(" configuration error mode in " << iii-1 << " && " << iii );
+			DRAIN_ERROR(" configuration error mode in " << iii-1 << " && " << iii );
 		}
 	}
-	AIRTALGO_INFO("********* configuration will be done *************");
+	DRAIN_INFO("********* configuration will be done *************");
 	for (auto &it : m_listAlgo) {
-		AIRTALGO_INFO("    [" << it->getType() << "] '" << it->getName() << "'");
+		DRAIN_INFO("    [" << it->getType() << "] '" << it->getName() << "'");
 		if (it->getInputFormat().getConfigured() == true) {
-			AIRTALGO_INFO("        Input : " << it->getInputFormat());
+			DRAIN_INFO("        Input : " << it->getInputFormat());
 		} else {
-			AIRTALGO_ERROR("        Input : Not configured");
+			DRAIN_ERROR("        Input : Not configured");
 		}
 		if (it->getOutputFormat().getConfigured() == true) {
-			AIRTALGO_INFO("        Output: " << it->getOutputFormat());
+			DRAIN_INFO("        Output: " << it->getOutputFormat());
 		} else {
-			AIRTALGO_ERROR("        Output : Not configured");
+			DRAIN_ERROR("        Output : Not configured");
 		}
 	}
 	m_isConfigured = true;

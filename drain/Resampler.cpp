@@ -44,16 +44,16 @@ drain::Resampler::~Resampler() {
 void drain::Resampler::configurationChange() {
 	drain::Algo::configurationChange();
 	if (m_input.getFormat() != m_output.getFormat()) {
-		AIRTALGO_ERROR("can not support Format Change ...");
+		DRAIN_ERROR("can not support Format Change ...");
 		m_needProcess = false;
 	}
 	if (m_input.getFormat() != audio::format_int16) {
-		AIRTALGO_ERROR("can not support Format other than int16_t ...");
+		DRAIN_ERROR("can not support Format other than int16_t ...");
 		m_needProcess = false;
 		return;
 	}
 	if (m_output.getMap() != m_output.getMap()) {
-		AIRTALGO_ERROR("can not support map Change ...");
+		DRAIN_ERROR("can not support map Change ...");
 		m_needProcess = false;
 	}
 	if (m_input.getFrequency() == m_output.getFrequency()) {
@@ -72,7 +72,7 @@ void drain::Resampler::configurationChange() {
 		                                        m_output.getFrequency(),
 		                                        10, &err);
 	#else
-		AIRTALGO_WARNING("SPEEX DSP lib not accessible ==> can not resample");
+		DRAIN_WARNING("SPEEX DSP lib not accessible ==> can not resample");
 		m_needProcess = false;
 	#endif
 }
@@ -87,7 +87,7 @@ bool drain::Resampler::process(std::chrono::system_clock::time_point& _time,
 	_outputNbChunk = 2048;
 	// chack if we need to process:
 	if (m_needProcess == false) {
-		AIRTALGO_WARNING("no process");
+		DRAIN_WARNING("no process");
 		_output = _input;
 		_outputNbChunk = _inputNbChunk;
 		return true;
@@ -95,7 +95,7 @@ bool drain::Resampler::process(std::chrono::system_clock::time_point& _time,
 	if (_input == nullptr) {
 		_output = &(m_outputData[0]);
 		_outputNbChunk = 0;
-		AIRTALGO_ERROR("null pointer input ... ");
+		DRAIN_ERROR("null pointer input ... ");
 		return false;
 	}
 	#ifdef HAVE_SPEEX_DSP_RESAMPLE
@@ -103,38 +103,38 @@ bool drain::Resampler::process(std::chrono::system_clock::time_point& _time,
 		float nbOutputSample = nbInputTime*m_output.getFrequency();
 		// we add 10% of the buffer size to have all the time enought data in the output to proceed all the input data...
 		_outputNbChunk = size_t(nbOutputSample*1.5f);
-		AIRTALGO_VERBOSE("                               freq in=" << m_input.getFrequency() << " out=" << m_output.getFrequency());
-		AIRTALGO_VERBOSE("                               Frame duration=" << nbInputTime);
-		AIRTALGO_VERBOSE("                               nbInput chunk=" << _inputNbChunk << " nbOutputChunk=" << nbOutputSample);
+		DRAIN_VERBOSE("                               freq in=" << m_input.getFrequency() << " out=" << m_output.getFrequency());
+		DRAIN_VERBOSE("                               Frame duration=" << nbInputTime);
+		DRAIN_VERBOSE("                               nbInput chunk=" << _inputNbChunk << " nbOutputChunk=" << nbOutputSample);
 		
 		m_outputData.resize(_outputNbChunk*m_output.getMap().size()*m_formatSize*16);
 		_output = &(m_outputData[0]);
 		if (m_speexResampler == nullptr) {
-			AIRTALGO_ERROR("                               No speex resampler");
+			DRAIN_ERROR("                               No speex resampler");
 			return false;
 		}
 		uint32_t nbChunkInput = _inputNbChunk;
 		uint32_t nbChunkOutput = _outputNbChunk;
-		AIRTALGO_VERBOSE("                               >> input=" << nbChunkInput << " output=" << nbChunkOutput);
+		DRAIN_VERBOSE("                               >> input=" << nbChunkInput << " output=" << nbChunkOutput);
 		int ret = speex_resampler_process_interleaved_int(m_speexResampler,
 		                                                  static_cast<int16_t*>(_input),
 		                                                  &nbChunkInput,
 		                                                  static_cast<int16_t*>(_output),
 		                                                  &nbChunkOutput);
-		AIRTALGO_VERBOSE("                               << input=" << nbChunkInput << " output=" << nbChunkOutput);
+		DRAIN_VERBOSE("                               << input=" << nbChunkInput << " output=" << nbChunkOutput);
 		// update position of data:
 		m_positionWrite += nbChunkOutput;
 		// Check all input and output ...
 		if (nbChunkInput != _inputNbChunk) {
-			AIRTALGO_ERROR("                               inputSize (not all read ...) proceed=" << nbChunkInput << " requested=" << _inputNbChunk);
+			DRAIN_ERROR("                               inputSize (not all read ...) proceed=" << nbChunkInput << " requested=" << _inputNbChunk);
 			// TODO : manage this case ...
 		}
 		if (nbChunkOutput == _outputNbChunk) {
-			AIRTALGO_ERROR("                               Might have not enought data in output... output size=" << _outputNbChunk);
+			DRAIN_ERROR("                               Might have not enought data in output... output size=" << _outputNbChunk);
 			// TODO : manage this case ...
 		}
 		_outputNbChunk = nbChunkOutput;
-		AIRTALGO_VERBOSE("                               process chunk=" << nbChunkInput << " out=" << nbChunkOutput);
+		DRAIN_VERBOSE("                               process chunk=" << nbChunkInput << " out=" << nbChunkOutput);
 		return true;
 	#else
 		_output = _input;

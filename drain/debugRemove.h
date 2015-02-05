@@ -6,17 +6,17 @@
  * @license BSD 3 clauses (see license file)
  */
 
-#ifdef __AIRTALGOO_DEBUG_H__
-#undef __AIRTALGOO_DEBUG_H__
+#ifdef __DRAINO_DEBUG_H__
+#undef __DRAINO_DEBUG_H__
 
-#undef AIRTALGO_BASE
-#undef AIRTALGO_CRITICAL
-#undef AIRTALGO_ERROR
-#undef AIRTALGO_WARNING
-#undef AIRTALGO_INFO
-#undef AIRTALGO_DEBUG
-#undef AIRTALGO_VERBOSE
-#undef AIRTALGO_TODO
-#undef AIRTALGO_ASSERT
+#undef DRAIN_BASE
+#undef DRAIN_CRITICAL
+#undef DRAIN_ERROR
+#undef DRAIN_WARNING
+#undef DRAIN_INFO
+#undef DRAIN_DEBUG
+#undef DRAIN_VERBOSE
+#undef DRAIN_TODO
+#undef DRAIN_ASSERT
 #endif
 
