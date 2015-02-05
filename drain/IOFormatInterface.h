@@ -19,7 +19,7 @@
 #include "AutoLogInOut.h"
 #include "debug.h"
 
-namespace airtalgo{
+namespace drain{
 	class IOFormatInterface {
 		public:
 			IOFormatInterface();

@@ -5,13 +5,13 @@
  */
 
 #include "debug.h"
-#include <airtalgo/Resampler.h>
+#include <drain/Resampler.h>
 #include <iostream>
 
 #undef __class__
 #define __class__ "Resampler"
 
-airtalgo::Resampler::Resampler() :
+drain::Resampler::Resampler() :
   #ifdef HAVE_SPEEX_DSP_RESAMPLE
     m_speexResampler(nullptr),
   #endif
@@ -20,19 +20,19 @@ airtalgo::Resampler::Resampler() :
 	
 }
 
-void airtalgo::Resampler::init() {
-	airtalgo::Algo::init();
+void drain::Resampler::init() {
+	drain::Algo::init();
 	m_type = "Resampler";
 	m_supportedFormat.push_back(audio::format_int16);
 }
 
-std::shared_ptr<airtalgo::Resampler> airtalgo::Resampler::create() {
-	std::shared_ptr<airtalgo::Resampler> tmp(new airtalgo::Resampler());
+std::shared_ptr<drain::Resampler> drain::Resampler::create() {
+	std::shared_ptr<drain::Resampler> tmp(new drain::Resampler());
 	tmp->init();
 	return tmp;
 }
 
-airtalgo::Resampler::~Resampler() {
+drain::Resampler::~Resampler() {
 	#ifdef HAVE_SPEEX_DSP_RESAMPLE
 		if (m_speexResampler != nullptr) {
 			speex_resampler_destroy(m_speexResampler);
@@ -41,8 +41,8 @@ airtalgo::Resampler::~Resampler() {
 	#endif
 }
 
-void airtalgo::Resampler::configurationChange() {
-	airtalgo::Algo::configurationChange();
+void drain::Resampler::configurationChange() {
+	drain::Algo::configurationChange();
 	if (m_input.getFormat() != m_output.getFormat()) {
 		AIRTALGO_ERROR("can not support Format Change ...");
 		m_needProcess = false;
@@ -78,12 +78,12 @@ void airtalgo::Resampler::configurationChange() {
 }
 
 
-bool airtalgo::Resampler::process(std::chrono::system_clock::time_point& _time,
+bool drain::Resampler::process(std::chrono::system_clock::time_point& _time,
                                   void* _input,
                                   size_t _inputNbChunk,
                                   void*& _output,
                                   size_t& _outputNbChunk) {
-	airtalgo::AutoLogInOut tmpLog("Resampler");
+	drain::AutoLogInOut tmpLog("Resampler");
 	_outputNbChunk = 2048;
 	// chack if we need to process:
 	if (m_needProcess == false) {

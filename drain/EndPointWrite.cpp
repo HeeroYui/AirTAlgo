@@ -4,40 +4,40 @@
  * @license APACHE v2.0 (see license file)
  */
 #include "debug.h"
-#include <airtalgo/EndPointWrite.h>
+#include <drain/EndPointWrite.h>
 
 
 #undef __class__
 #define __class__ "EndPointWrite"
 
-airtalgo::EndPointWrite::EndPointWrite() :
+drain::EndPointWrite::EndPointWrite() :
   m_function(nullptr) {
 	
 }
 
-void airtalgo::EndPointWrite::init() {
-	airtalgo::EndPoint::init();
+void drain::EndPointWrite::init() {
+	drain::EndPoint::init();
 	m_type = "EndPoint";
 }
 
-std::shared_ptr<airtalgo::EndPointWrite> airtalgo::EndPointWrite::create() {
-	std::shared_ptr<airtalgo::EndPointWrite> tmp(new airtalgo::EndPointWrite());
+std::shared_ptr<drain::EndPointWrite> drain::EndPointWrite::create() {
+	std::shared_ptr<drain::EndPointWrite> tmp(new drain::EndPointWrite());
 	tmp->init();
 	return tmp;
 }
 
-void airtalgo::EndPointWrite::configurationChange() {
-	airtalgo::EndPoint::configurationChange();
+void drain::EndPointWrite::configurationChange() {
+	drain::EndPoint::configurationChange();
 	m_needProcess = true;
 }
 
 
-bool airtalgo::EndPointWrite::process(std::chrono::system_clock::time_point& _time,
+bool drain::EndPointWrite::process(std::chrono::system_clock::time_point& _time,
                                              void* _input,
                                              size_t _inputNbChunk,
                                              void*& _output,
                                              size_t& _outputNbChunk){
-	airtalgo::AutoLogInOut tmpLog("EndPointWrite");
+	drain::AutoLogInOut tmpLog("EndPointWrite");
 	//AIRTALGO_INFO("                              nb Sample in buffer : " << m_tmpData.size());
 	if (m_function != nullptr) {
 		if (m_tmpData.size() <= 20000) {
@@ -70,7 +70,7 @@ bool airtalgo::EndPointWrite::process(std::chrono::system_clock::time_point& _ti
 	return true;
 }
 
-void airtalgo::EndPointWrite::write(const void* _value, size_t _nbChunk) {
+void drain::EndPointWrite::write(const void* _value, size_t _nbChunk) {
 	std::unique_lock<std::mutex> lock(m_mutex);
 	AIRTALGO_INFO("[ASYNC] Write data : " << _nbChunk << " chunks"
 	              << " ==> " << _nbChunk*m_output.getMap().size() << " samples"

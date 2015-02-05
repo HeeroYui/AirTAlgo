@@ -3,7 +3,7 @@
  * @copyright 2011, Edouard DUPIN, all right reserved
  * @license APACHE v2.0 (see license file)
  */
-#include <airtalgo/Algo.h>
+#include <drain/Algo.h>
 #include <functional>
 #include "debug.h"
 
@@ -11,7 +11,7 @@
 #undef __class__
 #define __class__ "Algo"
 
-airtalgo::Algo::Algo() :
+drain::Algo::Algo() :
   m_temporary(false),
   m_outputData(),
   m_formatSize(0),
@@ -19,15 +19,15 @@ airtalgo::Algo::Algo() :
 	AIRTALGO_VERBOSE("CREATE ALGO");
 }
 
-void airtalgo::Algo::init() {
+void drain::Algo::init() {
 	// set notification callback :
-	m_input.setCallback(std::bind(&airtalgo::Algo::configurationChangeLocal, this));
-	m_output.setCallback(std::bind(&airtalgo::Algo::configurationChangeLocal, this));
+	m_input.setCallback(std::bind(&drain::Algo::configurationChangeLocal, this));
+	m_output.setCallback(std::bind(&drain::Algo::configurationChangeLocal, this));
 	// first configure ==> update the internal parameters
 	configurationChange();
 }
 
-void airtalgo::Algo::configurationChange() {
+void drain::Algo::configurationChange() {
 	m_needProcess = false;
 	if (m_input.getFormat() != m_output.getFormat()) {
 		m_needProcess = true;
@@ -63,7 +63,7 @@ void airtalgo::Algo::configurationChange() {
 	}
 }
 
-size_t airtalgo::Algo::needInputData(size_t _output) {
+size_t drain::Algo::needInputData(size_t _output) {
 	size_t input = _output;
 	/* NOT good at all ...
 	if (m_input.getFormat() != m_output.getFormat()) {

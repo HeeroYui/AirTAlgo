@@ -7,9 +7,9 @@
 #ifndef __AIRT_ALGO_CHANNEL_REORDER_H__
 #define __AIRT_ALGO_CHANNEL_REORDER_H__
 
-#include <airtalgo/Algo.h>
+#include <drain/Algo.h>
 
-namespace airtalgo{
+namespace drain{
 	class ChannelReorder : public Algo {
 		protected:
 			/**

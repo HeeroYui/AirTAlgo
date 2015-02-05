@@ -9,17 +9,17 @@
 
 #include <etk/log.h>
 
-namespace airtalgo {
+namespace drain {
 	int32_t getLogId();
 };
 // TODO : Review this problem of multiple intanciation of "std::stringbuf sb"
 #define AIRTALGO_BASE(info,data) \
 	do { \
-		if (info <= etk::log::getLevel(airtalgo::getLogId())) { \
+		if (info <= etk::log::getLevel(drain::getLogId())) { \
 			std::stringbuf sb; \
 			std::ostream tmpStream(&sb); \
 			tmpStream << data; \
-			etk::log::logStream(airtalgo::getLogId(), info, __LINE__, __class__, __func__, tmpStream); \
+			etk::log::logStream(drain::getLogId(), info, __LINE__, __class__, __func__, tmpStream); \
 		} \
 	} while(0)
 

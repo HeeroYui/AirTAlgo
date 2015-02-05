@@ -7,13 +7,13 @@
 #ifndef __AIRT_ALGO_VOLUME_H__
 #define __AIRT_ALGO_VOLUME_H__
 
-#include <airtalgo/Algo.h>
+#include <drain/Algo.h>
 #ifdef HAVE_SPEEX_DSP_RESAMPLE
 	#include <speex/speex_resampler.h>
 #endif
 #include <memory>
 
-namespace airtalgo {
+namespace drain {
 	// data structure.
 	class VolumeElement {
 		public:
@@ -45,7 +45,7 @@ namespace airtalgo {
 	// TODO: Manage set volume
 	class Volume : public Algo {
 		private:
-			std::vector<std::shared_ptr<airtalgo::VolumeElement>> m_volumeList;
+			std::vector<std::shared_ptr<drain::VolumeElement>> m_volumeList;
 			// for float input :
 			float m_volumeAppli;
 			// for integer input :
@@ -77,7 +77,7 @@ namespace airtalgo {
 			virtual std::vector<audio::format> getFormatSupportedInput();
 			virtual std::vector<audio::format> getFormatSupportedOutput();
 		public:
-			virtual void addVolumeStage(const std::shared_ptr<airtalgo::VolumeElement>& _volume);
+			virtual void addVolumeStage(const std::shared_ptr<drain::VolumeElement>& _volume);
 			virtual bool setParameter(const std::string& _parameter, const std::string& _value);
 			virtual std::string getParameter(const std::string& _parameter) const;
 			virtual std::string getParameterProperty(const std::string& _parameter) const;

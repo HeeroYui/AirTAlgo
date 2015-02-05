@@ -4,7 +4,7 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <airtalgo/ChannelReorder.h>
+#include <drain/ChannelReorder.h>
 #include <iostream>
 #include "debug.h"
 #include "debug.h"
@@ -13,25 +13,25 @@
 #undef __class__
 #define __class__ "ChannelReorder"
 
-airtalgo::ChannelReorder::ChannelReorder() {
+drain::ChannelReorder::ChannelReorder() {
 	
 }
 
 
-void airtalgo::ChannelReorder::init() {
-	airtalgo::Algo::init();
+void drain::ChannelReorder::init() {
+	drain::Algo::init();
 	m_type = "ChannelReorder";
 }
 
-std::shared_ptr<airtalgo::ChannelReorder> airtalgo::ChannelReorder::create() {
-	std::shared_ptr<airtalgo::ChannelReorder> tmp(new airtalgo::ChannelReorder());
+std::shared_ptr<drain::ChannelReorder> drain::ChannelReorder::create() {
+	std::shared_ptr<drain::ChannelReorder> tmp(new drain::ChannelReorder());
 	tmp->init();
 	return tmp;
 }
 
-void airtalgo::ChannelReorder::configurationChange() {
-	airtalgo::AutoLogInOut("ChannelReorder (config)");
-	airtalgo::Algo::configurationChange();
+void drain::ChannelReorder::configurationChange() {
+	drain::AutoLogInOut("ChannelReorder (config)");
+	drain::Algo::configurationChange();
 	if (m_input.getFormat() != m_output.getFormat()) {
 		AIRTALGO_ERROR("can not support Format Change ...");
 		m_needProcess = false;
@@ -49,12 +49,12 @@ void airtalgo::ChannelReorder::configurationChange() {
 }
 
 
-bool airtalgo::ChannelReorder::process(std::chrono::system_clock::time_point& _time,
+bool drain::ChannelReorder::process(std::chrono::system_clock::time_point& _time,
                                               void* _input,
                                               size_t _inputNbChunk,
                                               void*& _output,
                                               size_t& _outputNbChunk) {
-	airtalgo::AutoLogInOut tmpLog("ChannelReorder");
+	drain::AutoLogInOut tmpLog("ChannelReorder");
 	_outputNbChunk = _inputNbChunk;
 	// check if we need to process:
 	if (m_needProcess == false) {

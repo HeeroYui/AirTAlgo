@@ -11,7 +11,7 @@
 #define __class__ "IOFormatInterface"
 
 
-std::ostream& airtalgo::operator <<(std::ostream& _os, const IOFormatInterface& _obj) {
+std::ostream& drain::operator <<(std::ostream& _os, const IOFormatInterface& _obj) {
 	_os << "{";
 	if (_obj.getConfigured() == false) {
 		_os << "Not configured";
@@ -24,7 +24,7 @@ std::ostream& airtalgo::operator <<(std::ostream& _os, const IOFormatInterface& 
 	return _os;
 }
 
-airtalgo::IOFormatInterface::IOFormatInterface() :
+drain::IOFormatInterface::IOFormatInterface() :
   m_configured(false),
   m_format(audio::format_unknow),
   m_map(),
@@ -33,7 +33,7 @@ airtalgo::IOFormatInterface::IOFormatInterface() :
 	m_map.push_back(audio::channel_frontRight);
 }
 
-airtalgo::IOFormatInterface::IOFormatInterface(std::vector<audio::channel> _map, audio::format _format, float _frequency) :
+drain::IOFormatInterface::IOFormatInterface(std::vector<audio::channel> _map, audio::format _format, float _frequency) :
   m_configured(true),
   m_format(_format),
   m_map(_map),
@@ -41,7 +41,7 @@ airtalgo::IOFormatInterface::IOFormatInterface(std::vector<audio::channel> _map,
 	
 }
 
-void airtalgo::IOFormatInterface::set(std::vector<audio::channel> _map, audio::format _format, float _frequency) {
+void drain::IOFormatInterface::set(std::vector<audio::channel> _map, audio::format _format, float _frequency) {
 	bool hasChange = false;
 	if (m_map != _map) {
 		m_map = _map;
@@ -61,19 +61,19 @@ void airtalgo::IOFormatInterface::set(std::vector<audio::channel> _map, audio::f
 	}
 }
 
-void airtalgo::IOFormatInterface::setConfigured(bool _value) {
+void drain::IOFormatInterface::setConfigured(bool _value) {
 	m_configured = _value;
 }
 
-bool airtalgo::IOFormatInterface::getConfigured() const {
+bool drain::IOFormatInterface::getConfigured() const {
 	return m_configured;
 }
 
-audio::format airtalgo::IOFormatInterface::getFormat() const {
+audio::format drain::IOFormatInterface::getFormat() const {
 	return m_format;
 }
 
-void airtalgo::IOFormatInterface::setFormat(audio::format _value) {
+void drain::IOFormatInterface::setFormat(audio::format _value) {
 	if (m_format == _value) {
 		return;
 	}
@@ -82,11 +82,11 @@ void airtalgo::IOFormatInterface::setFormat(audio::format _value) {
 	configurationChange();
 }
 
-const std::vector<audio::channel>& airtalgo::IOFormatInterface::getMap() const{
+const std::vector<audio::channel>& drain::IOFormatInterface::getMap() const{
 	return m_map;
 }
 
-void airtalgo::IOFormatInterface::setMap(const std::vector<audio::channel>& _value) {
+void drain::IOFormatInterface::setMap(const std::vector<audio::channel>& _value) {
 	if (m_map == _value) {
 		return;
 	}
@@ -95,11 +95,11 @@ void airtalgo::IOFormatInterface::setMap(const std::vector<audio::channel>& _val
 	configurationChange();
 }
 
-float airtalgo::IOFormatInterface::getFrequency() const{
+float drain::IOFormatInterface::getFrequency() const{
 	return m_frequency;
 }
 
-void airtalgo::IOFormatInterface::setFrequency(float _value) {
+void drain::IOFormatInterface::setFrequency(float _value) {
 	if (m_frequency == _value) {
 		return;
 	}
@@ -108,12 +108,12 @@ void airtalgo::IOFormatInterface::setFrequency(float _value) {
 	configurationChange();
 }
 
-void airtalgo::IOFormatInterface::configurationChange() {
+void drain::IOFormatInterface::configurationChange() {
 	if (m_ioChangeFunctor != nullptr) {
 		m_ioChangeFunctor();
 	}
 }
 
-void airtalgo::IOFormatInterface::setCallback(const std::function<void()>& _functor) {
+void drain::IOFormatInterface::setCallback(const std::function<void()>& _functor) {
 	m_ioChangeFunctor = _functor;
 }

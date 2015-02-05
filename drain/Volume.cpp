@@ -5,32 +5,32 @@
  */
 
 #include "debug.h"
-#include <airtalgo/Volume.h>
+#include <drain/Volume.h>
 #include <iostream>
 
 #undef __class__
 #define __class__ "Volume"
 
-airtalgo::Volume::Volume() :
+drain::Volume::Volume() :
   m_volumeAppli(1.0f),
   m_functionConvert(nullptr) {
 	
 }
 
-void airtalgo::Volume::init() {
-	airtalgo::Algo::init();
+void drain::Volume::init() {
+	drain::Algo::init();
 	m_type = "Volume";
 	m_supportedFormat.push_back(audio::format_int16);
 	m_supportedFormat.push_back(audio::format_int16_on_int32);
 }
 
-std::shared_ptr<airtalgo::Volume> airtalgo::Volume::create() {
-	std::shared_ptr<airtalgo::Volume> tmp(new airtalgo::Volume());
+std::shared_ptr<drain::Volume> drain::Volume::create() {
+	std::shared_ptr<drain::Volume> tmp(new drain::Volume());
 	tmp->init();
 	return tmp;
 }
 
-airtalgo::Volume::~Volume() {
+drain::Volume::~Volume() {
 	
 }
 
@@ -86,8 +86,8 @@ static void convert__float__to__float(void* _input, void* _output, size_t _nbSam
 	}
 }
 
-void airtalgo::Volume::configurationChange() {
-	airtalgo::Algo::configurationChange();
+void drain::Volume::configurationChange() {
+	drain::Algo::configurationChange();
 	switch (m_input.getFormat()) {
 		default:
 		case audio::format_int16:
@@ -151,7 +151,7 @@ void airtalgo::Volume::configurationChange() {
 	volumeChange();
 }
 
-void airtalgo::Volume::volumeChange() {
+void drain::Volume::volumeChange() {
 	//m_volumeAppli = 20 * log(m_volumedB);
 	float volumedB = 0.0f;
 	for (auto &it : m_volumeList) {
@@ -268,7 +268,7 @@ void airtalgo::Volume::volumeChange() {
 }
 
 
-std::vector<audio::format> airtalgo::Volume::getFormatSupportedInput() {
+std::vector<audio::format> drain::Volume::getFormatSupportedInput() {
 	std::vector<audio::format> tmp;
 	if (m_output.getFormat() == audio::format_float) {
 		tmp.push_back(audio::format_float);
@@ -283,7 +283,7 @@ std::vector<audio::format> airtalgo::Volume::getFormatSupportedInput() {
 	return tmp;
 };
 
-std::vector<audio::format> airtalgo::Volume::getFormatSupportedOutput() {
+std::vector<audio::format> drain::Volume::getFormatSupportedOutput() {
 		std::vector<audio::format> tmp;
 	if (m_input.getFormat() == audio::format_float) {
 		tmp.push_back(audio::format_float);
@@ -299,12 +299,12 @@ std::vector<audio::format> airtalgo::Volume::getFormatSupportedOutput() {
 };
 
 
-bool airtalgo::Volume::process(std::chrono::system_clock::time_point& _time,
+bool drain::Volume::process(std::chrono::system_clock::time_point& _time,
                                void* _input,
                                size_t _inputNbChunk,
                                void*& _output,
                                size_t& _outputNbChunk) {
-	airtalgo::AutoLogInOut tmpLog("Volume");
+	drain::AutoLogInOut tmpLog("Volume");
 	// chack if we need to process:
 	if (m_needProcess == false) {
 		_output = _input;
@@ -329,7 +329,7 @@ bool airtalgo::Volume::process(std::chrono::system_clock::time_point& _time,
 	return true;
 }
 
-void airtalgo::Volume::addVolumeStage(const std::shared_ptr<VolumeElement>& _volume) {
+void drain::Volume::addVolumeStage(const std::shared_ptr<VolumeElement>& _volume) {
 	if (_volume == nullptr) {
 		return;
 	}
@@ -349,7 +349,7 @@ void airtalgo::Volume::addVolumeStage(const std::shared_ptr<VolumeElement>& _vol
 	volumeChange();
 }
 
-bool airtalgo::Volume::setParameter(const std::string& _parameter, const std::string& _value) {
+bool drain::Volume::setParameter(const std::string& _parameter, const std::string& _value) {
 	if (_parameter == "FLOW") {
 		// set Volume ...
 		for (auto &it : m_volumeList) {
@@ -377,7 +377,7 @@ bool airtalgo::Volume::setParameter(const std::string& _parameter, const std::st
 	return false;
 }
 
-std::string airtalgo::Volume::getParameter(const std::string& _parameter) const {
+std::string drain::Volume::getParameter(const std::string& _parameter) const {
 	if (_parameter == "FLOW") {
 		// set Volume ...
 		for (auto &it : m_volumeList) {
@@ -393,7 +393,7 @@ std::string airtalgo::Volume::getParameter(const std::string& _parameter) const 
 	return "[ERROR]";
 }
 
-std::string airtalgo::Volume::getParameterProperty(const std::string& _parameter) const {
+std::string drain::Volume::getParameterProperty(const std::string& _parameter) const {
 	if (_parameter == "FLOW") {
 		// set Volume ...
 		for (auto &it : m_volumeList) {

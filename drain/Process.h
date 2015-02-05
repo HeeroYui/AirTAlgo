@@ -13,11 +13,11 @@
 #include <stdint.h>
 #include <audio/format.h>
 #include <audio/channel.h>
-#include <airtalgo/Algo.h>
+#include <drain/Algo.h>
 #include <chrono>
 #include <memory>
 
-namespace airtalgo{
+namespace drain{
 	class Process {
 		protected:
 			std::vector<int8_t> m_data; //!< temporary overlap output buffer (change size of the output data)
@@ -65,10 +65,10 @@ namespace airtalgo{
 			             void*& _outData,
 			             size_t& _outNbChunk);
 		protected:
-			std::vector<std::shared_ptr<airtalgo::Algo> > m_listAlgo;
+			std::vector<std::shared_ptr<drain::Algo> > m_listAlgo;
 		public:
-			void pushBack(const std::shared_ptr<airtalgo::Algo>& _algo);
-			void pushFront(const std::shared_ptr<airtalgo::Algo>& _algo);
+			void pushBack(const std::shared_ptr<drain::Algo>& _algo);
+			void pushFront(const std::shared_ptr<drain::Algo>& _algo);
 			void clear() {
 				m_isConfigured = false;
 				m_listAlgo.clear();

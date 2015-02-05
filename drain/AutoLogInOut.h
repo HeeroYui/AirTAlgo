@@ -11,7 +11,7 @@
 #include <string>
 #include "debug.h"
 
-namespace airtalgo{
+namespace drain{
 	class AutoLogInOut {
 		private:
 			std::string m_value;

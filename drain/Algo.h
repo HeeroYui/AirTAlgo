@@ -20,7 +20,7 @@
 #include "IOFormatInterface.h"
 #include "debug.h"
 
-namespace airtalgo{
+namespace drain{
 	class Algo : public std::enable_shared_from_this<Algo> {
 		private:
 			std::string m_name;

@@ -7,13 +7,13 @@
 #ifndef __AIRT_ALGO_RESAMPLER_H__
 #define __AIRT_ALGO_RESAMPLER_H__
 
-#include <airtalgo/Algo.h>
+#include <drain/Algo.h>
 #ifdef HAVE_SPEEX_DSP_RESAMPLE
 	#include <speex/speex_resampler.h>
 #endif
 #include <memory>
 
-namespace airtalgo {
+namespace drain {
 	class Resampler : public Algo {
 		private:
 			#ifdef HAVE_SPEEX_DSP_RESAMPLE

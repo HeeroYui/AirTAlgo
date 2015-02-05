@@ -7,11 +7,11 @@
 #ifndef __AIRT_ALGO_ALGO_END_POINT_WRITE_H__
 #define __AIRT_ALGO_ALGO_END_POINT_WRITE_H__
 
-#include <airtalgo/EndPoint.h>
+#include <drain/EndPoint.h>
 #include <mutex>
 #include <functional>
 
-namespace airtalgo{
+namespace drain{
 	typedef std::function<void (const std::chrono::system_clock::time_point& _playTime,
 	                            const size_t& _nbChunk,
 	                            const std::vector<audio::channel>& _map,

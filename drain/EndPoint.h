@@ -7,9 +7,9 @@
 #ifndef __AIRT_ALGO_END_POINT_H__
 #define __AIRT_ALGO_END_POINT_H__
 
-#include <airtalgo/Algo.h>
+#include <drain/Algo.h>
 
-namespace airtalgo{
+namespace drain{
 	class EndPoint : public Algo {
 		protected:
 			/**
@@ -17,7 +17,7 @@ namespace airtalgo{
 			 */
 			EndPoint() {};
 			void init() {
-				airtalgo::Algo::init();
+				drain::Algo::init();
 			};
 		public:
 			/**

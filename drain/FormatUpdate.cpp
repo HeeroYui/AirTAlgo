@@ -5,7 +5,7 @@
  */
 
 #include "debug.h"
-#include <airtalgo/FormatUpdate.h>
+#include <drain/FormatUpdate.h>
 #include <iostream>
 
 #undef __class__
@@ -126,24 +126,24 @@ static void convert__float__to__int32(void* _input, void* _output, size_t _nbSam
 }
 
 
-airtalgo::FormatUpdate::FormatUpdate() :
+drain::FormatUpdate::FormatUpdate() :
   m_functionConvert(nullptr) {
 	
 }
 
-void airtalgo::FormatUpdate::init() {
-	airtalgo::Algo::init();
+void drain::FormatUpdate::init() {
+	drain::Algo::init();
 	m_type = "FormatUpdate";
 }
 
-std::shared_ptr<airtalgo::FormatUpdate> airtalgo::FormatUpdate::create() {
-	std::shared_ptr<airtalgo::FormatUpdate> tmp(new airtalgo::FormatUpdate());
+std::shared_ptr<drain::FormatUpdate> drain::FormatUpdate::create() {
+	std::shared_ptr<drain::FormatUpdate> tmp(new drain::FormatUpdate());
 	tmp->init();
 	return tmp;
 }
 
-void airtalgo::FormatUpdate::configurationChange() {
-	airtalgo::Algo::configurationChange();
+void drain::FormatUpdate::configurationChange() {
+	drain::Algo::configurationChange();
 	if (m_input.getMap() != m_output.getMap()) {
 		AIRTALGO_ERROR("can not support Map Change ...");
 		m_needProcess = false;
@@ -243,12 +243,12 @@ void airtalgo::FormatUpdate::configurationChange() {
 }
 
 
-bool airtalgo::FormatUpdate::process(std::chrono::system_clock::time_point& _time,
+bool drain::FormatUpdate::process(std::chrono::system_clock::time_point& _time,
                                             void* _input,
                                             size_t _inputNbChunk,
                                             void*& _output,
                                             size_t& _outputNbChunk) {
-	airtalgo::AutoLogInOut tmpLog("FormatUpdate");
+	drain::AutoLogInOut tmpLog("FormatUpdate");
 	// chack if we need to process:
 	if (m_needProcess == false) {
 		_output = _input;

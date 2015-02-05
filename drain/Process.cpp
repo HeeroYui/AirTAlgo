@@ -11,26 +11,26 @@
 #include <stdint.h>
 #include <audio/format.h>
 #include <audio/channel.h>
-#include <airtalgo/Process.h>
-#include <airtalgo/ChannelReorder.h>
-#include <airtalgo/FormatUpdate.h>
-#include <airtalgo/Resampler.h>
+#include <drain/Process.h>
+#include <drain/ChannelReorder.h>
+#include <drain/FormatUpdate.h>
+#include <drain/Resampler.h>
 #include <chrono>
 
 #undef __class__
 #define __class__ "Process"
 
-airtalgo::Process::Process() :
+drain::Process::Process() :
   m_isConfigured(false) {
 	
 }
-airtalgo::Process::~Process() {
+drain::Process::~Process() {
 	for (auto &it : m_listAlgo) {
 		it.reset();
 	}
 }
 
-bool airtalgo::Process::push(std::chrono::system_clock::time_point& _time,
+bool drain::Process::push(std::chrono::system_clock::time_point& _time,
                              void* _data,
                              size_t _nbChunk) {
 	void* out = nullptr;
@@ -40,7 +40,7 @@ bool airtalgo::Process::push(std::chrono::system_clock::time_point& _time,
 	return true;
 }
 
-bool airtalgo::Process::pull(std::chrono::system_clock::time_point& _time,
+bool drain::Process::pull(std::chrono::system_clock::time_point& _time,
                              void* _data,
                              size_t _nbChunk,
                              size_t _chunkSize) {
@@ -89,7 +89,7 @@ bool airtalgo::Process::pull(std::chrono::system_clock::time_point& _time,
 }
 
 
-bool airtalgo::Process::process(std::chrono::system_clock::time_point& _time,
+bool drain::Process::process(std::chrono::system_clock::time_point& _time,
                                 void* _inData,
                                 size_t _inNbChunk,
                                 void*& _outData,
@@ -111,12 +111,12 @@ bool airtalgo::Process::process(std::chrono::system_clock::time_point& _time,
 	return true;
 }
 
-void airtalgo::Process::pushBack(const std::shared_ptr<airtalgo::Algo>& _algo) {
+void drain::Process::pushBack(const std::shared_ptr<drain::Algo>& _algo) {
 	removeAlgoDynamic();
 	m_listAlgo.push_back(_algo);
 }
 
-void airtalgo::Process::pushFront(const std::shared_ptr<airtalgo::Algo>& _algo) {
+void drain::Process::pushFront(const std::shared_ptr<drain::Algo>& _algo) {
 	removeAlgoDynamic();
 	m_listAlgo.insert(m_listAlgo.begin(), _algo);
 }
@@ -156,7 +156,7 @@ template<typename T> std::vector<T> getUnion(const std::vector<T>& _out, const s
 	return out;
 }
 
-void airtalgo::Process::updateInterAlgo() {
+void drain::Process::updateInterAlgo() {
 	if (m_isConfigured == true) {
 		// cahin is already configured
 		return ;
@@ -202,14 +202,14 @@ void airtalgo::Process::updateInterAlgo() {
 			     && map.size() >= 1
 			     && format.size() >= 1) {
 				AIRTALGO_INFO("        find 1 compatibility :{format=" << format << ",frequency=" << freq << ",map=" << map << "}");
-				airtalgo::IOFormatInterface tmp(map[0], format[0], freq[0]);
+				drain::IOFormatInterface tmp(map[0], format[0], freq[0]);
 				m_listAlgo[iii-1]->setOutputFormat(tmp);
 				m_listAlgo[iii]->setInputFormat(tmp);
 				continue;
 			}
 			// create mapping to transform:
-			airtalgo::IOFormatInterface out;
-			airtalgo::IOFormatInterface in;
+			drain::IOFormatInterface out;
+			drain::IOFormatInterface in;
 			if (freq.size() > 0) {
 				out.setFrequency(freq[0]);
 				in.setFrequency(freq[0]);
@@ -291,7 +291,7 @@ void airtalgo::Process::updateInterAlgo() {
 				if (    out.getFormat() != audio::format_int16
 				     /* && out.getFormat() != format_float */) {
 					// need add a format Updater
-					std::shared_ptr<airtalgo::FormatUpdate> algo = airtalgo::FormatUpdate::create();
+					std::shared_ptr<drain::FormatUpdate> algo = drain::FormatUpdate::create();
 					algo->setTemporary();
 					algo->setInputFormat(out);
 					out.setFormat(audio::format_int16);
@@ -301,7 +301,7 @@ void airtalgo::Process::updateInterAlgo() {
 					iii++;
 				}
 				// need add a resampler
-				std::shared_ptr<airtalgo::Resampler> algo = airtalgo::Resampler::create();
+				std::shared_ptr<drain::Resampler> algo = drain::Resampler::create();
 				algo->setTemporary();
 				algo->setInputFormat(out);
 				out.setFrequency(in.getFrequency());
@@ -313,7 +313,7 @@ void airtalgo::Process::updateInterAlgo() {
 			}
 			if (out.getMap() != in.getMap()) {
 				// need add a channel Reorder
-				std::shared_ptr<airtalgo::ChannelReorder> algo = airtalgo::ChannelReorder::create();
+				std::shared_ptr<drain::ChannelReorder> algo = drain::ChannelReorder::create();
 				algo->setTemporary();
 				algo->setInputFormat(out);
 				out.setMap(in.getMap());
@@ -324,7 +324,7 @@ void airtalgo::Process::updateInterAlgo() {
 			}
 			if (out.getFormat() != in.getFormat()) {
 				// need add a format Updater
-				std::shared_ptr<airtalgo::FormatUpdate> algo = airtalgo::FormatUpdate::create();
+				std::shared_ptr<drain::FormatUpdate> algo = drain::FormatUpdate::create();
 				algo->setTemporary();
 				algo->setInputFormat(out);
 				out.setFormat(in.getFormat());
@@ -357,7 +357,7 @@ void airtalgo::Process::updateInterAlgo() {
 	//exit(-1);
 }
 
-void airtalgo::Process::removeAlgoDynamic() {
+void drain::Process::removeAlgoDynamic() {
 	if (m_isConfigured == true) {
 		// chain is already unconfigured.
 		return;

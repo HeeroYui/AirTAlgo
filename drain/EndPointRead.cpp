@@ -5,39 +5,39 @@
  */
 
 #include "debug.h"
-#include <airtalgo/EndPointRead.h>
+#include <drain/EndPointRead.h>
 
 #undef __class__
 #define __class__ "EndPointRead"
 
-airtalgo::EndPointRead::EndPointRead() {
+drain::EndPointRead::EndPointRead() {
 	
 }
 
 
-void airtalgo::EndPointRead::init() {
-	airtalgo::EndPoint::init();
+void drain::EndPointRead::init() {
+	drain::EndPoint::init();
 	m_type = "EndPointRead";
 }
 
-std::shared_ptr<airtalgo::EndPointRead> airtalgo::EndPointRead::create() {
-	std::shared_ptr<airtalgo::EndPointRead> tmp(new airtalgo::EndPointRead());
+std::shared_ptr<drain::EndPointRead> drain::EndPointRead::create() {
+	std::shared_ptr<drain::EndPointRead> tmp(new drain::EndPointRead());
 	tmp->init();
 	return tmp;
 }
 
-void airtalgo::EndPointRead::configurationChange() {
-	airtalgo::EndPoint::configurationChange();
+void drain::EndPointRead::configurationChange() {
+	drain::EndPoint::configurationChange();
 	m_needProcess = true;
 }
 
 
-bool airtalgo::EndPointRead::process(std::chrono::system_clock::time_point& _time,
+bool drain::EndPointRead::process(std::chrono::system_clock::time_point& _time,
                                             void* _input,
                                             size_t _inputNbChunk,
                                             void*& _output,
                                             size_t& _outputNbChunk){
-	airtalgo::AutoLogInOut tmpLog("EndPointRead");
+	drain::AutoLogInOut tmpLog("EndPointRead");
 	return false;
 }
 

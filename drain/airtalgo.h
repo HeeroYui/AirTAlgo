@@ -9,10 +9,10 @@
 
 #include <string>
 #include <audio/format.h>
-#include <airtalgo/channel.h>
+#include <drain/channel.h>
 #include <chrono>
 
-namespace airtalgo {
+namespace drain {
 	/**
 	 * @brief Init the instance af algorithm (add all internal factory)
 	 */
@@ -26,13 +26,13 @@ namespace airtalgo {
 	 * @param[in] _name Name of the Algorithm.
 	 * @return Instanciate algorithm 
 	 */
-	airtalgo::Algo* createAlgo(const std::string& _name);
+	drain::Algo* createAlgo(const std::string& _name);
 	/**
 	 * @brief Add a Factory Algorithm in the internal List (static for all instance)
 	 * @param[in] _name Name of the Algorithm.
 	 * @param[in] _functor Function of the factory
 	 */
-	void addAlgoFactory(const std::string& _name, std::function<airtalgo::Algo*(void)> _functor);
+	void addAlgoFactory(const std::string& _name, std::function<drain::Algo*(void)> _functor);
 	/**
 	 * @brief Remove a Factory Algorithm in the internal List (static for all instance)
 	 * @param[in] _name Name of the Algorithm.
