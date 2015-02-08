@@ -94,12 +94,13 @@ bool drain::Process::process(std::chrono::system_clock::time_point& _time,
                                 size_t _inNbChunk,
                                 void*& _outData,
                                 size_t& _outNbChunk) {
+	updateInterAlgo();
 	if (m_listAlgo.size() == 0) {
 		_outData = _inData;
 		_outNbChunk = _inNbChunk;
 		return true;
 	}
-	DRAIN_VERBOSE(" process : " << m_listAlgo.size() << " algos nbChunk=" << _outNbChunk);
+	DRAIN_VERBOSE(" process : " << m_listAlgo.size() << " algos nbChunk=" << _inNbChunk);
 	for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
 		//std::cout << "            Algo " << iii+1 << "/" << m_listAlgo.size() << std::endl;
 		if (m_listAlgo[iii] != nullptr) {
@@ -119,20 +120,6 @@ void drain::Process::pushBack(const std::shared_ptr<drain::Algo>& _algo) {
 void drain::Process::pushFront(const std::shared_ptr<drain::Algo>& _algo) {
 	removeAlgoDynamic();
 	m_listAlgo.insert(m_listAlgo.begin(), _algo);
-}
-
-namespace std {
-static std::ostream& operator <<(std::ostream& _os, const std::vector<float>& _obj) {
-	_os << std::string("{");
-	for (size_t iii=0; iii<_obj.size(); ++iii) {
-		if (iii!=0) {
-			_os << std::string(";");
-		}
-		_os << _obj[iii];
-	}
-	_os << std::string("}");
-	return _os;
-}
 }
 
 template<typename T> std::vector<T> getUnion(const std::vector<T>& _out, const std::vector<T>& _in) {
@@ -161,50 +148,127 @@ void drain::Process::updateInterAlgo() {
 		// cahin is already configured
 		return ;
 	}
-	DRAIN_INFO(" display properties : nbAlgo : " << m_listAlgo.size());
+	DRAIN_DEBUG("Display properties : nbAlgo : " << m_listAlgo.size());
+	DRAIN_DEBUG("    Input : " << m_inputConfig);
 	for (auto &it : m_listAlgo) {
-		DRAIN_INFO("    [" << it->getType() << "] '" << it->getName() << "'");
+		DRAIN_DEBUG("    [" << it->getType() << "] '" << it->getName() << "'");
 		if (it->getInputFormat().getConfigured() == true) {
-			DRAIN_INFO("        Input : " << it->getInputFormat());
+			DRAIN_DEBUG("        Input : " << it->getInputFormat());
 		} else {
-			DRAIN_INFO("        Input : Not configured");
-			DRAIN_INFO("            format : " << it->getFormatSupportedInput());
-			DRAIN_INFO("            frequency : " << it->getFrequencySupportedInput());
-			DRAIN_INFO("            map : " << it->getMapSupportedInput());
+			DRAIN_DEBUG("        Input : Not configured");
+			DRAIN_DEBUG("            format : " << it->getFormatSupportedInput());
+			DRAIN_DEBUG("            frequency : " << it->getFrequencySupportedInput());
+			DRAIN_DEBUG("            map : " << it->getMapSupportedInput());
 		}
 		if (it->getOutputFormat().getConfigured() == true) {
-			DRAIN_INFO("        Output: " << it->getOutputFormat());
+			DRAIN_DEBUG("        Output: " << it->getOutputFormat());
 		} else {
-			DRAIN_INFO("        Output : Not configured");
-			DRAIN_INFO("            format : " << it->getFormatSupportedOutput());
-			DRAIN_INFO("            frequency : " << it->getFrequencySupportedOutput());
-			DRAIN_INFO("            map : " << it->getMapSupportedOutput());
+			DRAIN_DEBUG("        Output : Not configured");
+			DRAIN_DEBUG("            format : " << it->getFormatSupportedOutput());
+			DRAIN_DEBUG("            frequency : " << it->getFrequencySupportedOutput());
+			DRAIN_DEBUG("            map : " << it->getMapSupportedOutput());
 		}
 	}
-	DRAIN_INFO("********* configuration START *************");
-	for (size_t iii=1; iii<m_listAlgo.size(); ++iii) {
-		if (    m_listAlgo[iii-1]->getOutputFormat().getConfigured() == false
-		     && m_listAlgo[iii]->getInputFormat().getConfigured() == false) {
+	DRAIN_DEBUG("    Output : " << m_outputConfig);
+	DRAIN_DEBUG("********* configuration START *************");
+	// TODO : Better management of this ...
+	/*
+	if (m_listAlgo.size() == 0) {
+		DRAIN_ERROR("manage empty drain ...");
+		return;
+	}
+	if (m_listAlgo.size() == 1) {
+		DRAIN_ERROR("manage Single drain ...");
+		return;
+	}
+	*/
+	/*
+	DRAIN_INFO("configuration Input");
+	if (m_listAlgo.size()>1) {
+		m_listAlgo[0]->setInputFormat(m_inputConfig);
+	}
+	DRAIN_INFO("configuration Output");
+	if (m_listAlgo.size()>1) {
+		m_listAlgo[m_listAlgo.size()-1]->setOutputFormat(m_outputConfig);
+	}
+	*/
+	for (size_t iii=0; iii<=m_listAlgo.size(); ++iii) {
+		DRAIN_VERBOSE("    id = " << iii);
+		if (    (    iii == 0
+		          || (    iii > 0
+		               && m_listAlgo[iii-1]->getOutputFormat().getConfigured() == false
+		             )
+		        )
+		     && (    iii == m_listAlgo.size()
+		          || (    iii < m_listAlgo.size()
+		               && m_listAlgo[iii]->getInputFormat().getConfigured() == false
+		             )
+		        )
+		   ) {
 			// step 1 : check frequency:
-			std::vector<float> freqOut = m_listAlgo[iii-1]->getFrequencySupportedOutput();
-			std::vector<float> freqIn = m_listAlgo[iii]->getFrequencySupportedInput();
+			std::vector<float> freqOut;
+			std::vector<float> freqIn;
+			if (iii == 0) {
+				freqOut.push_back(m_inputConfig.getFrequency());
+			} else {
+				freqOut = m_listAlgo[iii-1]->getFrequencySupportedOutput();
+			}
+			if (iii == m_listAlgo.size()) {
+				freqIn.push_back(m_outputConfig.getFrequency());
+			} else {
+				freqIn = m_listAlgo[iii]->getFrequencySupportedInput();
+			}
 			std::vector<float> freq = getUnion<float>(freqOut, freqIn);
+			DRAIN_VERBOSE("        freq out   :" << freqOut);
+			DRAIN_VERBOSE("        freq in    :" << freqIn);
+			DRAIN_VERBOSE("        freq union :" << freq);
+			
 			// step 2 : Check map:
-			std::vector<std::vector<audio::channel>> mapOut = m_listAlgo[iii-1]->getMapSupportedOutput();
-			std::vector<std::vector<audio::channel>> mapIn = m_listAlgo[iii]->getMapSupportedInput();
+			std::vector<std::vector<audio::channel>> mapOut;
+			std::vector<std::vector<audio::channel>> mapIn;
+			if (iii == 0) {
+				mapOut.push_back(m_inputConfig.getMap());
+			} else {
+				mapOut = m_listAlgo[iii-1]->getMapSupportedOutput();
+			}
+			if (iii == m_listAlgo.size()) {
+				mapIn.push_back(m_outputConfig.getMap());
+			} else {
+				mapIn = m_listAlgo[iii]->getMapSupportedInput();
+			}
 			std::vector<std::vector<audio::channel>> map = getUnion<std::vector<audio::channel>>(mapOut, mapIn);
+			DRAIN_VERBOSE("        map out   :" << mapOut);
+			DRAIN_VERBOSE("        map in    :" << mapIn);
+			DRAIN_VERBOSE("        map union :" << map);
 			// step 3 : Check Format:
-			std::vector<audio::format> formatOut = m_listAlgo[iii-1]->getFormatSupportedOutput();
-			std::vector<audio::format> formatIn = m_listAlgo[iii]->getFormatSupportedInput();
+			std::vector<audio::format> formatOut;
+			std::vector<audio::format> formatIn;
+			if (iii == 0) {
+				formatOut.push_back(m_inputConfig.getFormat());
+			} else {
+				formatOut = m_listAlgo[iii-1]->getFormatSupportedOutput();
+			}
+			if (iii == m_listAlgo.size()) {
+				formatIn.push_back(m_outputConfig.getFormat());
+			} else {
+				formatIn = m_listAlgo[iii]->getFormatSupportedInput();
+			}
 			std::vector<audio::format> format = getUnion<audio::format>(formatOut, formatIn);
+			DRAIN_VERBOSE("        format out   :" << formatOut);
+			DRAIN_VERBOSE("        format in    :" << formatIn);
+			DRAIN_VERBOSE("        format union :" << format);
 			
 			if (    freq.size() >= 1
 			     && map.size() >= 1
 			     && format.size() >= 1) {
-				DRAIN_INFO("        find 1 compatibility :{format=" << format << ",frequency=" << freq << ",map=" << map << "}");
+				DRAIN_DEBUG("        find 1 compatibility :{format=" << format << ",frequency=" << freq << ",map=" << map << "}");
 				drain::IOFormatInterface tmp(map[0], format[0], freq[0]);
-				m_listAlgo[iii-1]->setOutputFormat(tmp);
-				m_listAlgo[iii]->setInputFormat(tmp);
+				if (iii > 0) {
+					m_listAlgo[iii-1]->setOutputFormat(tmp);
+				}
+				if (iii <m_listAlgo.size()) {
+					m_listAlgo[iii]->setInputFormat(tmp);
+				}
 				continue;
 			}
 			// create mapping to transform:
@@ -216,8 +280,12 @@ void drain::Process::updateInterAlgo() {
 			} else {
 				if (freqOut.size() == 0) {
 					if (freqIn.size() == 0) {
-						out.setFrequency(m_listAlgo[iii-1]->getInputFormat().getFrequency());
-						in.setFrequency(m_listAlgo[iii-1]->getInputFormat().getFrequency());
+						if (iii == 0) {
+							DRAIN_ERROR("IMPOSSIBLE CASE");
+						} else {
+							out.setFrequency(m_listAlgo[iii-1]->getInputFormat().getFrequency());
+							in.setFrequency(m_listAlgo[iii-1]->getInputFormat().getFrequency());
+						}
 					} else {
 						out.setFrequency(freqIn[0]);
 						in.setFrequency(freqIn[0]);
@@ -238,8 +306,12 @@ void drain::Process::updateInterAlgo() {
 			} else {
 				if (mapOut.size() == 0) {
 					if (mapIn.size() == 0) {
-						out.setMap(m_listAlgo[iii-1]->getInputFormat().getMap());
-						in.setMap(m_listAlgo[iii-1]->getInputFormat().getMap());
+						if (iii == 0) {
+							DRAIN_ERROR("IMPOSSIBLE CASE");
+						} else {
+							out.setMap(m_listAlgo[iii-1]->getInputFormat().getMap());
+							in.setMap(m_listAlgo[iii-1]->getInputFormat().getMap());
+						}
 					} else {
 						out.setMap(mapIn[0]);
 						in.setMap(mapIn[0]);
@@ -260,8 +332,12 @@ void drain::Process::updateInterAlgo() {
 			} else {
 				if (formatOut.size() == 0) {
 					if (formatIn.size() == 0) {
-						out.setFormat(m_listAlgo[iii-1]->getInputFormat().getFormat());
-						in.setFormat(m_listAlgo[iii-1]->getInputFormat().getFormat());
+						if (iii == 0) {
+							DRAIN_ERROR("IMPOSSIBLE CASE");
+						} else {
+							out.setFormat(m_listAlgo[iii-1]->getInputFormat().getFormat());
+							in.setFormat(m_listAlgo[iii-1]->getInputFormat().getFormat());
+						}
 					} else {
 						out.setFormat(formatIn[0]);
 						in.setFormat(formatIn[0]);
@@ -276,14 +352,18 @@ void drain::Process::updateInterAlgo() {
 					}
 				}
 			}
-			DRAIN_INFO("        union:");
-			DRAIN_INFO("            format : " << format);
-			DRAIN_INFO("            frequency : " << freq);
-			DRAIN_INFO("            map : " << map);
-			DRAIN_INFO("        update: out=" << out);
-			DRAIN_INFO("                in=" << in);
-			m_listAlgo[iii-1]->setOutputFormat(out);
-			m_listAlgo[iii]->setInputFormat(in);
+			DRAIN_DEBUG("        union:");
+			DRAIN_DEBUG("            format : " << format);
+			DRAIN_DEBUG("            frequency : " << freq);
+			DRAIN_DEBUG("            map : " << map);
+			DRAIN_DEBUG("        update: out=" << out);
+			DRAIN_DEBUG("                in=" << in);
+			if (iii > 0) {
+				m_listAlgo[iii-1]->setOutputFormat(out);
+			}
+			if (iii < m_listAlgo.size()) {
+				m_listAlgo[iii]->setInputFormat(in);
+			}
 			// TODO : Add updater with an optimisation of CPU
 			if (out.getFrequency() != in.getFrequency()) {
 				
@@ -297,7 +377,7 @@ void drain::Process::updateInterAlgo() {
 					out.setFormat(audio::format_int16);
 					algo->setOutputFormat(out);
 					m_listAlgo.insert(m_listAlgo.begin()+iii, algo);
-					DRAIN_INFO("convert " << out.getFormat() << " -> " << in.getFormat());
+					DRAIN_DEBUG("convert " << out.getFormat() << " -> " << in.getFormat());
 					iii++;
 				}
 				// need add a resampler
@@ -307,7 +387,7 @@ void drain::Process::updateInterAlgo() {
 				out.setFrequency(in.getFrequency());
 				algo->setOutputFormat(out);
 				m_listAlgo.insert(m_listAlgo.begin()+iii, algo);
-				DRAIN_INFO("convert " << out.getFrequency() << " -> " << in.getFrequency());
+				DRAIN_DEBUG("convert " << out.getFrequency() << " -> " << in.getFrequency());
 				out.setFrequency(in.getFrequency());
 				iii++;
 			}
@@ -319,7 +399,7 @@ void drain::Process::updateInterAlgo() {
 				out.setMap(in.getMap());
 				algo->setOutputFormat(out);
 				m_listAlgo.insert(m_listAlgo.begin()+iii, algo);
-				DRAIN_INFO("convert " << out.getMap() << " -> " << in.getMap());
+				DRAIN_DEBUG("convert " << out.getMap() << " -> " << in.getMap());
 				iii++;
 			}
 			if (out.getFormat() != in.getFormat()) {
@@ -330,29 +410,36 @@ void drain::Process::updateInterAlgo() {
 				out.setFormat(in.getFormat());
 				algo->setOutputFormat(out);
 				m_listAlgo.insert(m_listAlgo.begin()+iii, algo);
-				DRAIN_INFO("convert " << out.getFormat() << " -> " << in.getFormat());
+				DRAIN_DEBUG("convert " << out.getFormat() << " -> " << in.getFormat());
 				iii++;
 			}
 			
-		} else if (    m_listAlgo[iii-1]->getOutputFormat().getConfigured() == false
-		            || m_listAlgo[iii]->getInputFormat().getConfigured() == false) {
+		} else if (    (    iii > 0
+		                 && m_listAlgo[iii-1]->getOutputFormat().getConfigured() == false
+		               )
+		            || (    iii < m_listAlgo.size()
+		                 && m_listAlgo[iii]->getInputFormat().getConfigured() == false
+		               )
+		          ) {
 			DRAIN_ERROR(" configuration error mode in " << iii-1 << " && " << iii );
 		}
 	}
-	DRAIN_INFO("********* configuration will be done *************");
+	DRAIN_DEBUG("********* configuration will be done *************");
+	DRAIN_DEBUG("    Input : " << m_inputConfig);
 	for (auto &it : m_listAlgo) {
-		DRAIN_INFO("    [" << it->getType() << "] '" << it->getName() << "'");
+		DRAIN_DEBUG("    [" << it->getType() << "] '" << it->getName() << "'");
 		if (it->getInputFormat().getConfigured() == true) {
-			DRAIN_INFO("        Input : " << it->getInputFormat());
+			DRAIN_DEBUG("        Input : " << it->getInputFormat());
 		} else {
 			DRAIN_ERROR("        Input : Not configured");
 		}
 		if (it->getOutputFormat().getConfigured() == true) {
-			DRAIN_INFO("        Output: " << it->getOutputFormat());
+			DRAIN_DEBUG("        Output: " << it->getOutputFormat());
 		} else {
 			DRAIN_ERROR("        Output : Not configured");
 		}
 	}
+	DRAIN_DEBUG("    Output : " << m_outputConfig);
 	m_isConfigured = true;
 	//exit(-1);
 }
@@ -363,4 +450,21 @@ void drain::Process::removeAlgoDynamic() {
 		return;
 	}
 	m_isConfigured = false;
+}
+
+
+bool drain::Process::processIn(void* _inData,
+                               size_t _inNbChunk,
+                               void* _outData,
+                               size_t _outNbChunk){
+	void* outData = nullptr;
+	size_t outSize = 0;
+	bool error = process(_inData, _inNbChunk, outData, outSize);
+	if (outSize != _outNbChunk) {
+		DRAIN_ERROR("can not copy data to output (not the same chunk number : out=" << outSize << " chunks != request=" << _outNbChunk << " chunks");
+		return false;
+	}
+	// TODO : Do it better ...
+	memcpy(_outData, outData, _outNbChunk*audio::getFormatBytes(m_outputConfig.getFormat()) * m_outputConfig.getMap().size());
+	return false;
 }

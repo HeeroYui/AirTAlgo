@@ -64,6 +64,35 @@ namespace drain{
 			             size_t _inNbChunk,
 			             void*& _outData,
 			             size_t& _outNbChunk);
+			bool process(void* _inData,
+			             size_t _inNbChunk,
+			             void*& _outData,
+			             size_t& _outNbChunk) {
+				std::chrono::system_clock::time_point time;
+				return process(time, _inData, _inNbChunk, _outData, _outNbChunk);
+			}
+			bool processIn(void* _inData,
+			               size_t _inNbChunk,
+			               void* _outData,
+			               size_t _outNbChunk);
+		protected:
+			IOFormatInterface m_inputConfig;
+		public:
+			const IOFormatInterface& getInputConfig() const {
+				return m_inputConfig;
+			}
+			void setInputConfig(const IOFormatInterface& _interface) {
+				m_inputConfig = _interface;
+			}
+		protected:
+			IOFormatInterface m_outputConfig;
+		public:
+			const IOFormatInterface& getOutputConfig() const {
+				return m_outputConfig;
+			}
+			void setOutputConfig(const IOFormatInterface& _interface) {
+				m_outputConfig = _interface;
+			}
 		protected:
 			std::vector<std::shared_ptr<drain::Algo> > m_listAlgo;
 		public:
