@@ -70,7 +70,6 @@ static void convert__int16_on_int32__to__float(void* _input, void* _output, size
 		// TODO : Set * intead of /
 		out[iii] = static_cast<float>(in[iii])/static_cast<float>(INT16_MAX);
 	}
-	DRAIN_VERBOSE("plop : " << in[0] << " " << out[0]);
 }
 
 static void convert__int32__to__int16(void* _input, void* _output, size_t _nbSample) {

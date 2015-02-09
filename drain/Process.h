@@ -132,6 +132,17 @@ namespace drain{
 				}
 				return nullptr;
 			}
+			template<typename T> std::shared_ptr<const T> get(const std::string& _name) const {
+				for (auto &it : m_listAlgo) {
+					if (it == nullptr) {
+						continue;
+					}
+					if (it->getName() == _name) {
+						return std::dynamic_pointer_cast<T>(it);
+					}
+				}
+				return nullptr;
+			}
 			template<typename T> bool hasType() {
 				for (auto &it : m_listAlgo) {
 					std::shared_ptr<T> tmp = std::dynamic_pointer_cast<T>(it);

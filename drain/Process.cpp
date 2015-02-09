@@ -22,7 +22,7 @@
 
 drain::Process::Process() :
   m_isConfigured(false) {
-	
+	m_data.clear();
 }
 drain::Process::~Process() {
 	for (auto &it : m_listAlgo) {
@@ -31,8 +31,8 @@ drain::Process::~Process() {
 }
 
 bool drain::Process::push(std::chrono::system_clock::time_point& _time,
-                             void* _data,
-                             size_t _nbChunk) {
+                          void* _data,
+                          size_t _nbChunk) {
 	void* out = nullptr;
 	size_t nbChunkOut;
 	DRAIN_VERBOSE("        Process push");
@@ -41,9 +41,9 @@ bool drain::Process::push(std::chrono::system_clock::time_point& _time,
 }
 
 bool drain::Process::pull(std::chrono::system_clock::time_point& _time,
-                             void* _data,
-                             size_t _nbChunk,
-                             size_t _chunkSize) {
+                          void* _data,
+                          size_t _nbChunk,
+                          size_t _chunkSize) {
 	//std::cout << "        Interface DIRECT " << std::endl;
 	while(m_data.size()<_nbChunk*_chunkSize) {
 		void* in = NULL;
@@ -81,7 +81,7 @@ bool drain::Process::pull(std::chrono::system_clock::time_point& _time,
 		memcpy(_data, &m_data[0], _nbChunk*_chunkSize);
 		m_data.erase(m_data.begin(), m_data.begin()+_nbChunk*_chunkSize);
 	} else {
-		//std::cout << "         * soft underflow" << std::endl;
+		DRAIN_WARNING("         * soft underflow");
 		// ERROR
 		m_data.clear();
 	}
@@ -221,7 +221,7 @@ void drain::Process::updateInterAlgo() {
 			std::vector<float> freq = getUnion<float>(freqOut, freqIn);
 			DRAIN_VERBOSE("        freq out   :" << freqOut);
 			DRAIN_VERBOSE("        freq in    :" << freqIn);
-			DRAIN_VERBOSE("        freq union :" << freq);
+			DRAIN_DEBUG("        freq union :" << freq);
 			
 			// step 2 : Check map:
 			std::vector<std::vector<audio::channel>> mapOut;
@@ -239,7 +239,7 @@ void drain::Process::updateInterAlgo() {
 			std::vector<std::vector<audio::channel>> map = getUnion<std::vector<audio::channel>>(mapOut, mapIn);
 			DRAIN_VERBOSE("        map out   :" << mapOut);
 			DRAIN_VERBOSE("        map in    :" << mapIn);
-			DRAIN_VERBOSE("        map union :" << map);
+			DRAIN_DEBUG("        map union :" << map);
 			// step 3 : Check Format:
 			std::vector<audio::format> formatOut;
 			std::vector<audio::format> formatIn;
@@ -256,7 +256,7 @@ void drain::Process::updateInterAlgo() {
 			std::vector<audio::format> format = getUnion<audio::format>(formatOut, formatIn);
 			DRAIN_VERBOSE("        format out   :" << formatOut);
 			DRAIN_VERBOSE("        format in    :" << formatIn);
-			DRAIN_VERBOSE("        format union :" << format);
+			DRAIN_DEBUG("        format union :" << format);
 			
 			if (    freq.size() >= 1
 			     && map.size() >= 1
@@ -352,10 +352,6 @@ void drain::Process::updateInterAlgo() {
 					}
 				}
 			}
-			DRAIN_DEBUG("        union:");
-			DRAIN_DEBUG("            format : " << format);
-			DRAIN_DEBUG("            frequency : " << freq);
-			DRAIN_DEBUG("            map : " << map);
 			DRAIN_DEBUG("        update: out=" << out);
 			DRAIN_DEBUG("                in=" << in);
 			if (iii > 0) {
@@ -465,6 +461,7 @@ bool drain::Process::processIn(void* _inData,
 		return false;
 	}
 	// TODO : Do it better ...
+	DRAIN_VERBOSE("Copy " << _outNbChunk << " chunks byte size=" << audio::getFormatBytes(m_outputConfig.getFormat()) << " nbChan=" << m_outputConfig.getMap().size() << " format=" << m_outputConfig.getFormat());
 	memcpy(_outData, outData, _outNbChunk*audio::getFormatBytes(m_outputConfig.getFormat()) * m_outputConfig.getMap().size());
 	return false;
 }

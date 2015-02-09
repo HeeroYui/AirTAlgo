@@ -16,7 +16,7 @@ drain::Algo::Algo() :
   m_outputData(),
   m_formatSize(0),
   m_needProcess(false) {
-	DRAIN_VERBOSE("CREATE ALGO");
+	
 }
 
 void drain::Algo::init() {
