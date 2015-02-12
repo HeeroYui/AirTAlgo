@@ -7,6 +7,7 @@
 #include "debug.h"
 #include <drain/Volume.h>
 #include <iostream>
+#include <math.h>
 
 #undef __class__
 #define __class__ "Volume"
@@ -162,7 +163,11 @@ void drain::Volume::volumeChange() {
 		DRAIN_VERBOSE("append volume : '" << it->getName() << " vol=" << it->getVolume() << "dB");
 	}
 	DRAIN_DEBUG(" Total volume : " << volumedB << "dB nbVolume=" << m_volumeList.size());
-	m_volumeAppli = std::pow(10.0f, volumedB/20.0f);
+	#if (defined(__TARGET_OS__MacOs) || defined(__TARGET_OS__IOs))
+		m_volumeAppli = pow(10.0f, volumedB/20.0f);
+	#else
+		m_volumeAppli = std::pow(10.0f, volumedB/20.0f);
+	#endif
 	switch (m_input.getFormat()) {
 		default:
 		case audio::format_int16:
