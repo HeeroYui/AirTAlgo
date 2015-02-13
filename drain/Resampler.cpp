@@ -61,12 +61,18 @@ void drain::Resampler::configurationChange() {
 		m_needProcess = false;
 		return;
 	}
+	if (    m_input.getFrequency() == 0
+	     || m_output.getFrequency() == 0) {
+		DRAIN_WARNING("Configure IO with 0 frequency ... " << m_input << " to " << m_output);
+		return;
+	}
 	#ifdef HAVE_SPEEX_DSP_RESAMPLE
 		if (m_speexResampler != nullptr) {
 			speex_resampler_destroy(m_speexResampler);
 			m_speexResampler = nullptr;
 		}
 		int err = 0;
+		DRAIN_WARNING("Create resampler for : " << m_input << " to " << m_output);
 		m_speexResampler = speex_resampler_init(m_output.getMap().size(),
 		                                        m_input.getFrequency(),
 		                                        m_output.getFrequency(),

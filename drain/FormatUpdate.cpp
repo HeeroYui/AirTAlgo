@@ -244,10 +244,10 @@ void drain::FormatUpdate::configurationChange() {
 
 
 bool drain::FormatUpdate::process(std::chrono::system_clock::time_point& _time,
-                                            void* _input,
-                                            size_t _inputNbChunk,
-                                            void*& _output,
-                                            size_t& _outputNbChunk) {
+                                  void* _input,
+                                  size_t _inputNbChunk,
+                                  void*& _output,
+                                  size_t& _outputNbChunk) {
 	drain::AutoLogInOut tmpLog("FormatUpdate");
 	// chack if we need to process:
 	if (m_needProcess == false) {
