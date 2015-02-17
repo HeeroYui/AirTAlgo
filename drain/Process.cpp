@@ -143,12 +143,8 @@ template<typename T> std::vector<T> getUnion(const std::vector<T>& _out, const s
 	return out;
 }
 
-void drain::Process::updateInterAlgo() {
-	if (m_isConfigured == true) {
-		// cahin is already configured
-		return ;
-	}
-	DRAIN_DEBUG("Display properties : nbAlgo : " << m_listAlgo.size());
+
+void drain::Process::displayAlgo() {
 	DRAIN_DEBUG("    Input : " << m_inputConfig);
 	for (auto &it : m_listAlgo) {
 		DRAIN_DEBUG("    [" << it->getType() << "] '" << it->getName() << "'");
@@ -170,272 +166,254 @@ void drain::Process::updateInterAlgo() {
 		}
 	}
 	DRAIN_DEBUG("    Output : " << m_outputConfig);
-	DRAIN_DEBUG("********* configuration START *************");
-	// TODO : Better management of this ...
-	/*
-	if (m_listAlgo.size() == 0) {
-		DRAIN_ERROR("manage empty drain ...");
-		return;
-	}
-	if (m_listAlgo.size() == 1) {
-		DRAIN_ERROR("manage Single drain ...");
-		return;
-	}
-	*/
-	/*
-	DRAIN_INFO("configuration Input");
-	if (m_listAlgo.size()>1) {
-		m_listAlgo[0]->setInputFormat(m_inputConfig);
-	}
-	DRAIN_INFO("configuration Output");
-	if (m_listAlgo.size()>1) {
-		m_listAlgo[m_listAlgo.size()-1]->setOutputFormat(m_outputConfig);
-	}
-	*/
-	for (size_t iii=0; iii<=m_listAlgo.size(); ++iii) {
-		DRAIN_VERBOSE("    id = " << iii);
-		if (    (    iii == 0
-		          || (    iii > 0
-		               && m_listAlgo[iii-1]->getOutputFormat().getConfigured() == false
-		             )
-		        )
-		     && (    iii == m_listAlgo.size()
-		          || (    iii < m_listAlgo.size()
-		               && m_listAlgo[iii]->getInputFormat().getConfigured() == false
-		             )
-		        )
-		   ) {
-			// step 1 : check frequency:
-			std::vector<float> freqOut;
-			std::vector<float> freqIn;
-			if (iii == 0) {
-				freqOut.push_back(m_inputConfig.getFrequency());
-			} else {
-				freqOut = m_listAlgo[iii-1]->getFrequencySupportedOutput();
+}
+
+void drain::Process::updateAlgo(size_t _position) {
+	DRAIN_VERBOSE("    id = " << _position);
+	if (    (    _position == 0
+	          || (    _position > 0
+	               && m_listAlgo[_position-1]->getOutputFormat().getConfigured() == false
+	             )
+	        )
+	     && (    _position == m_listAlgo.size()
+	          || (    _position < m_listAlgo.size()
+	               && m_listAlgo[_position]->getInputFormat().getConfigured() == false
+	             )
+	        )
+	   ) {
+		// step 1 : check frequency:
+		std::vector<float> freqOut;
+		std::vector<float> freqIn;
+		if (_position == 0) {
+			freqOut.push_back(m_inputConfig.getFrequency());
+		} else {
+			freqOut = m_listAlgo[_position-1]->getFrequencySupportedOutput();
+		}
+		if (_position == m_listAlgo.size()) {
+			freqIn.push_back(m_outputConfig.getFrequency());
+		} else {
+			freqIn = m_listAlgo[_position]->getFrequencySupportedInput();
+		}
+		std::vector<float> freq = getUnion<float>(freqOut, freqIn);
+		DRAIN_VERBOSE("        freq out   :" << freqOut);
+		DRAIN_VERBOSE("        freq in    :" << freqIn);
+		DRAIN_DEBUG("        freq union :" << freq);
+		
+		// step 2 : Check map:
+		std::vector<std::vector<audio::channel>> mapOut;
+		std::vector<std::vector<audio::channel>> mapIn;
+		if (_position == 0) {
+			mapOut.push_back(m_inputConfig.getMap());
+		} else {
+			mapOut = m_listAlgo[_position-1]->getMapSupportedOutput();
+		}
+		if (_position == m_listAlgo.size()) {
+			mapIn.push_back(m_outputConfig.getMap());
+		} else {
+			mapIn = m_listAlgo[_position]->getMapSupportedInput();
+		}
+		std::vector<std::vector<audio::channel>> map = getUnion<std::vector<audio::channel>>(mapOut, mapIn);
+		DRAIN_VERBOSE("        map out   :" << mapOut);
+		DRAIN_VERBOSE("        map in    :" << mapIn);
+		DRAIN_DEBUG("        map union :" << map);
+		// step 3 : Check Format:
+		std::vector<audio::format> formatOut;
+		std::vector<audio::format> formatIn;
+		if (_position == 0) {
+			formatOut.push_back(m_inputConfig.getFormat());
+		} else {
+			formatOut = m_listAlgo[_position-1]->getFormatSupportedOutput();
+		}
+		if (_position == m_listAlgo.size()) {
+			formatIn.push_back(m_outputConfig.getFormat());
+		} else {
+			formatIn = m_listAlgo[_position]->getFormatSupportedInput();
+		}
+		std::vector<audio::format> format = getUnion<audio::format>(formatOut, formatIn);
+		DRAIN_VERBOSE("        format out   :" << formatOut);
+		DRAIN_VERBOSE("        format in    :" << formatIn);
+		DRAIN_DEBUG("        format union :" << format);
+		
+		if (    freq.size() >= 1
+		     && map.size() >= 1
+		     && format.size() >= 1) {
+			DRAIN_DEBUG("        find 1 compatibility :{format=" << format << ",frequency=" << freq << ",map=" << map << "}");
+			drain::IOFormatInterface tmp(map[0], format[0], freq[0]);
+			if (_position > 0) {
+				m_listAlgo[_position-1]->setOutputFormat(tmp);
 			}
-			if (iii == m_listAlgo.size()) {
-				freqIn.push_back(m_outputConfig.getFrequency());
-			} else {
-				freqIn = m_listAlgo[iii]->getFrequencySupportedInput();
+			if (_position <m_listAlgo.size()) {
+				m_listAlgo[_position]->setInputFormat(tmp);
 			}
-			std::vector<float> freq = getUnion<float>(freqOut, freqIn);
-			DRAIN_VERBOSE("        freq out   :" << freqOut);
-			DRAIN_VERBOSE("        freq in    :" << freqIn);
-			DRAIN_DEBUG("        freq union :" << freq);
+			return;
+		}
+		// create mapping to transform:
+		drain::IOFormatInterface out;
+		drain::IOFormatInterface in;
+		if (freq.size() > 0) {
+			out.setFrequency(freq[0]);
+			in.setFrequency(freq[0]);
+		} else {
+			if (freqOut.size() == 0) {
+				if (freqIn.size() == 0) {
+					if (_position == 0) {
+						DRAIN_ERROR("IMPOSSIBLE CASE");
+					} else {
+						out.setFrequency(m_listAlgo[_position-1]->getInputFormat().getFrequency());
+						in.setFrequency(m_listAlgo[_position-1]->getInputFormat().getFrequency());
+					}
+				} else {
+					out.setFrequency(freqIn[0]);
+					in.setFrequency(freqIn[0]);
+				}
+			} else {
+				if (freqIn.size() == 0) {
+					out.setFrequency(freqOut[0]);
+					in.setFrequency(freqOut[0]);
+				} else {
+					out.setFrequency(freqOut[0]);
+					in.setFrequency(freqIn[0]);
+				}
+			}
+		}
+		if (map.size() > 0) {
+			out.setMap(map[0]);
+			in.setMap(map[0]);
+		} else {
+			if (mapOut.size() == 0) {
+				if (mapIn.size() == 0) {
+					if (_position == 0) {
+						DRAIN_ERROR("IMPOSSIBLE CASE");
+					} else {
+						out.setMap(m_listAlgo[_position-1]->getInputFormat().getMap());
+						in.setMap(m_listAlgo[_position-1]->getInputFormat().getMap());
+					}
+				} else {
+					out.setMap(mapIn[0]);
+					in.setMap(mapIn[0]);
+				}
+			} else {
+				if (mapIn.size() == 0) {
+					out.setMap(mapOut[0]);
+					in.setMap(mapOut[0]);
+				} else {
+					out.setMap(mapOut[0]);
+					in.setMap(mapIn[0]);
+				}
+			}
+		}
+		if (format.size() > 0) {
+			out.setFormat(format[0]);
+			in.setFormat(format[0]);
+		} else {
+			if (formatOut.size() == 0) {
+				if (formatIn.size() == 0) {
+					if (_position == 0) {
+						DRAIN_ERROR("IMPOSSIBLE CASE");
+					} else {
+						out.setFormat(m_listAlgo[_position-1]->getInputFormat().getFormat());
+						in.setFormat(m_listAlgo[_position-1]->getInputFormat().getFormat());
+					}
+				} else {
+					out.setFormat(formatIn[0]);
+					in.setFormat(formatIn[0]);
+				}
+			} else {
+				if (formatIn.size() == 0) {
+					out.setFormat(formatOut[0]);
+					in.setFormat(formatOut[0]);
+				} else {
+					out.setFormat(formatOut[0]);
+					in.setFormat(formatIn[0]);
+				}
+			}
+		}
+		DRAIN_DEBUG("        update: out=" << out);
+		DRAIN_DEBUG("                in=" << in);
+		if (_position > 0) {
+			m_listAlgo[_position-1]->setOutputFormat(out);
+		}
+		if (_position < m_listAlgo.size()) {
+			m_listAlgo[_position]->setInputFormat(in);
+		}
+		// TODO : Add updater with an optimisation of CPU
+		if (out.getFrequency() != in.getFrequency()) {
 			
-			// step 2 : Check map:
-			std::vector<std::vector<audio::channel>> mapOut;
-			std::vector<std::vector<audio::channel>> mapIn;
-			if (iii == 0) {
-				mapOut.push_back(m_inputConfig.getMap());
-			} else {
-				mapOut = m_listAlgo[iii-1]->getMapSupportedOutput();
-			}
-			if (iii == m_listAlgo.size()) {
-				mapIn.push_back(m_outputConfig.getMap());
-			} else {
-				mapIn = m_listAlgo[iii]->getMapSupportedInput();
-			}
-			std::vector<std::vector<audio::channel>> map = getUnion<std::vector<audio::channel>>(mapOut, mapIn);
-			DRAIN_VERBOSE("        map out   :" << mapOut);
-			DRAIN_VERBOSE("        map in    :" << mapIn);
-			DRAIN_DEBUG("        map union :" << map);
-			// step 3 : Check Format:
-			std::vector<audio::format> formatOut;
-			std::vector<audio::format> formatIn;
-			if (iii == 0) {
-				formatOut.push_back(m_inputConfig.getFormat());
-			} else {
-				formatOut = m_listAlgo[iii-1]->getFormatSupportedOutput();
-			}
-			if (iii == m_listAlgo.size()) {
-				formatIn.push_back(m_outputConfig.getFormat());
-			} else {
-				formatIn = m_listAlgo[iii]->getFormatSupportedInput();
-			}
-			std::vector<audio::format> format = getUnion<audio::format>(formatOut, formatIn);
-			DRAIN_VERBOSE("        format out   :" << formatOut);
-			DRAIN_VERBOSE("        format in    :" << formatIn);
-			DRAIN_DEBUG("        format union :" << format);
-			
-			if (    freq.size() >= 1
-			     && map.size() >= 1
-			     && format.size() >= 1) {
-				DRAIN_DEBUG("        find 1 compatibility :{format=" << format << ",frequency=" << freq << ",map=" << map << "}");
-				drain::IOFormatInterface tmp(map[0], format[0], freq[0]);
-				if (iii > 0) {
-					m_listAlgo[iii-1]->setOutputFormat(tmp);
-				}
-				if (iii <m_listAlgo.size()) {
-					m_listAlgo[iii]->setInputFormat(tmp);
-				}
-				continue;
-			}
-			// create mapping to transform:
-			drain::IOFormatInterface out;
-			drain::IOFormatInterface in;
-			if (freq.size() > 0) {
-				out.setFrequency(freq[0]);
-				in.setFrequency(freq[0]);
-			} else {
-				if (freqOut.size() == 0) {
-					if (freqIn.size() == 0) {
-						if (iii == 0) {
-							DRAIN_ERROR("IMPOSSIBLE CASE");
-						} else {
-							out.setFrequency(m_listAlgo[iii-1]->getInputFormat().getFrequency());
-							in.setFrequency(m_listAlgo[iii-1]->getInputFormat().getFrequency());
-						}
-					} else {
-						out.setFrequency(freqIn[0]);
-						in.setFrequency(freqIn[0]);
-					}
-				} else {
-					if (freqIn.size() == 0) {
-						out.setFrequency(freqOut[0]);
-						in.setFrequency(freqOut[0]);
-					} else {
-						out.setFrequency(freqOut[0]);
-						in.setFrequency(freqIn[0]);
-					}
-				}
-			}
-			if (map.size() > 0) {
-				out.setMap(map[0]);
-				in.setMap(map[0]);
-			} else {
-				if (mapOut.size() == 0) {
-					if (mapIn.size() == 0) {
-						if (iii == 0) {
-							DRAIN_ERROR("IMPOSSIBLE CASE");
-						} else {
-							out.setMap(m_listAlgo[iii-1]->getInputFormat().getMap());
-							in.setMap(m_listAlgo[iii-1]->getInputFormat().getMap());
-						}
-					} else {
-						out.setMap(mapIn[0]);
-						in.setMap(mapIn[0]);
-					}
-				} else {
-					if (mapIn.size() == 0) {
-						out.setMap(mapOut[0]);
-						in.setMap(mapOut[0]);
-					} else {
-						out.setMap(mapOut[0]);
-						in.setMap(mapIn[0]);
-					}
-				}
-			}
-			if (format.size() > 0) {
-				out.setFormat(format[0]);
-				in.setFormat(format[0]);
-			} else {
-				if (formatOut.size() == 0) {
-					if (formatIn.size() == 0) {
-						if (iii == 0) {
-							DRAIN_ERROR("IMPOSSIBLE CASE");
-						} else {
-							out.setFormat(m_listAlgo[iii-1]->getInputFormat().getFormat());
-							in.setFormat(m_listAlgo[iii-1]->getInputFormat().getFormat());
-						}
-					} else {
-						out.setFormat(formatIn[0]);
-						in.setFormat(formatIn[0]);
-					}
-				} else {
-					if (formatIn.size() == 0) {
-						out.setFormat(formatOut[0]);
-						in.setFormat(formatOut[0]);
-					} else {
-						out.setFormat(formatOut[0]);
-						in.setFormat(formatIn[0]);
-					}
-				}
-			}
-			DRAIN_DEBUG("        update: out=" << out);
-			DRAIN_DEBUG("                in=" << in);
-			if (iii > 0) {
-				m_listAlgo[iii-1]->setOutputFormat(out);
-			}
-			if (iii < m_listAlgo.size()) {
-				m_listAlgo[iii]->setInputFormat(in);
-			}
-			// TODO : Add updater with an optimisation of CPU
-			if (out.getFrequency() != in.getFrequency()) {
-				
-				// TODO : Do it better: special check for resampler : only support int16_t
-				if (    out.getFormat() != audio::format_int16
-				     /* && out.getFormat() != format_float */) {
-					// need add a format Updater
-					std::shared_ptr<drain::FormatUpdate> algo = drain::FormatUpdate::create();
-					algo->setTemporary();
-					algo->setInputFormat(out);
-					out.setFormat(audio::format_int16);
-					algo->setOutputFormat(out);
-					m_listAlgo.insert(m_listAlgo.begin()+iii, algo);
-					DRAIN_DEBUG("convert " << out.getFormat() << " -> " << in.getFormat());
-					iii++;
-				}
-				// need add a resampler
-				std::shared_ptr<drain::Resampler> algo = drain::Resampler::create();
-				algo->setTemporary();
-				algo->setInputFormat(out);
-				out.setFrequency(in.getFrequency());
-				algo->setOutputFormat(out);
-				m_listAlgo.insert(m_listAlgo.begin()+iii, algo);
-				DRAIN_DEBUG("convert " << out.getFrequency() << " -> " << in.getFrequency());
-				out.setFrequency(in.getFrequency());
-				iii++;
-			}
-			if (out.getMap() != in.getMap()) {
-				// need add a channel Reorder
-				std::shared_ptr<drain::ChannelReorder> algo = drain::ChannelReorder::create();
-				algo->setTemporary();
-				algo->setInputFormat(out);
-				out.setMap(in.getMap());
-				algo->setOutputFormat(out);
-				m_listAlgo.insert(m_listAlgo.begin()+iii, algo);
-				DRAIN_DEBUG("convert " << out.getMap() << " -> " << in.getMap());
-				iii++;
-			}
-			if (out.getFormat() != in.getFormat()) {
+			// TODO : Do it better: special check for resampler : only support int16_t
+			if (    out.getFormat() != audio::format_int16
+			     /* && out.getFormat() != format_float */) {
 				// need add a format Updater
 				std::shared_ptr<drain::FormatUpdate> algo = drain::FormatUpdate::create();
 				algo->setTemporary();
 				algo->setInputFormat(out);
-				out.setFormat(in.getFormat());
+				out.setFormat(audio::format_int16);
 				algo->setOutputFormat(out);
-				m_listAlgo.insert(m_listAlgo.begin()+iii, algo);
+				m_listAlgo.insert(m_listAlgo.begin()+_position, algo);
 				DRAIN_DEBUG("convert " << out.getFormat() << " -> " << in.getFormat());
-				iii++;
+				_position++;
 			}
-			
-		} else if (    (    iii > 0
-		                 && m_listAlgo[iii-1]->getOutputFormat().getConfigured() == false
-		               )
-		            || (    iii < m_listAlgo.size()
-		                 && m_listAlgo[iii]->getInputFormat().getConfigured() == false
-		               )
-		          ) {
-			DRAIN_ERROR(" configuration error mode in " << iii-1 << " && " << iii );
+			// need add a resampler
+			std::shared_ptr<drain::Resampler> algo = drain::Resampler::create();
+			algo->setTemporary();
+			algo->setInputFormat(out);
+			out.setFrequency(in.getFrequency());
+			algo->setOutputFormat(out);
+			m_listAlgo.insert(m_listAlgo.begin()+_position, algo);
+			DRAIN_DEBUG("convert " << out.getFrequency() << " -> " << in.getFrequency());
+			out.setFrequency(in.getFrequency());
+			_position++;
 		}
+		if (out.getMap() != in.getMap()) {
+			// need add a channel Reorder
+			std::shared_ptr<drain::ChannelReorder> algo = drain::ChannelReorder::create();
+			algo->setTemporary();
+			algo->setInputFormat(out);
+			out.setMap(in.getMap());
+			algo->setOutputFormat(out);
+			m_listAlgo.insert(m_listAlgo.begin()+_position, algo);
+			DRAIN_DEBUG("convert " << out.getMap() << " -> " << in.getMap());
+			_position++;
+		}
+		if (out.getFormat() != in.getFormat()) {
+			// need add a format Updater
+			std::shared_ptr<drain::FormatUpdate> algo = drain::FormatUpdate::create();
+			algo->setTemporary();
+			algo->setInputFormat(out);
+			out.setFormat(in.getFormat());
+			algo->setOutputFormat(out);
+			m_listAlgo.insert(m_listAlgo.begin()+_position, algo);
+			DRAIN_DEBUG("convert " << out.getFormat() << " -> " << in.getFormat());
+			_position++;
+		}
+		
+	} else if (    (    _position > 0
+	                 && m_listAlgo[_position-1]->getOutputFormat().getConfigured() == false
+	               )
+	            || (    _position < m_listAlgo.size()
+	                 && m_listAlgo[_position]->getInputFormat().getConfigured() == false
+	               )
+	          ) {
+		DRAIN_ERROR(" configuration error mode in " << _position-1 << " && " << _position );
+	}
+}
+
+void drain::Process::updateInterAlgo() {
+	if (m_isConfigured == true) {
+		// cahin is already configured
+		return ;
+	}
+	DRAIN_DEBUG("Display properties : nbAlgo : " << m_listAlgo.size());
+	displayAlgo();
+	DRAIN_DEBUG("********* configuration START *************");
+	// configure first the endpoint ...
+	if (m_listAlgo.size() > 1) {
+		updateAlgo(m_listAlgo.size());
+	}
+	for (size_t iii=0; iii<=m_listAlgo.size(); ++iii) {
+		updateAlgo(iii);
 	}
 	DRAIN_DEBUG("********* configuration will be done *************");
-	DRAIN_DEBUG("    Input : " << m_inputConfig);
-	for (auto &it : m_listAlgo) {
-		DRAIN_DEBUG("    [" << it->getType() << "] '" << it->getName() << "'");
-		if (it->getInputFormat().getConfigured() == true) {
-			DRAIN_DEBUG("        Input : " << it->getInputFormat());
-		} else {
-			DRAIN_ERROR("        Input : Not configured");
-		}
-		if (it->getOutputFormat().getConfigured() == true) {
-			DRAIN_DEBUG("        Output: " << it->getOutputFormat());
-		} else {
-			DRAIN_ERROR("        Output : Not configured");
-		}
-	}
-	DRAIN_DEBUG("    Output : " << m_outputConfig);
+	displayAlgo();
 	m_isConfigured = true;
 	//exit(-1);
 }

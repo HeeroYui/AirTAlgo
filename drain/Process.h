@@ -157,6 +157,9 @@ namespace drain{
 		public:
 			void updateInterAlgo();
 			void removeAlgoDynamic();
+		private:
+			void displayAlgo();
+			void updateAlgo(size_t _position);
 	};
 };
 

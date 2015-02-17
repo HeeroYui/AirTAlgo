@@ -14,6 +14,8 @@
 #include <memory>
 
 namespace drain {
+	// TODO: Manage change timestamp when pull mode
+	// TODO: drain ...
 	class Resampler : public Algo {
 		private:
 			#ifdef HAVE_SPEEX_DSP_RESAMPLE
@@ -41,6 +43,8 @@ namespace drain {
 			                     size_t _inputNbChunk,
 			                     void*& _output,
 			                     size_t& _outputNbChunk);
+		private:
+			std::chrono::nanoseconds m_residualTimeInResampler; //!< the time of data locked in the resampler ...
 	};
 };
 

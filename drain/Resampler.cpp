@@ -83,12 +83,30 @@ void drain::Resampler::configurationChange() {
 	#endif
 }
 
+namespace std {
+	static std::ostream& operator <<(std::ostream& _os, const std::chrono::system_clock::time_point& _obj) {
+		std::chrono::nanoseconds ns = std::chrono::duration_cast<std::chrono::nanoseconds>(_obj.time_since_epoch());
+		int64_t totalSecond = ns.count()/1000000000;
+		int64_t millisecond = (ns.count()%1000000000)/1000000;
+		int64_t microsecond = (ns.count()%1000000)/1000;
+		int64_t nanosecond = ns.count()%1000;
+		//_os << totalSecond << "s " << millisecond << "ms " << microsecond << "µs " << nanosecond << "ns";
+		
+		int32_t second = totalSecond % 60;
+		int32_t minute = (totalSecond/60)%60;
+		int32_t hour = (totalSecond/3600)%24;
+		int32_t day = (totalSecond/(24*3600))%365;
+		int32_t year = totalSecond/(24*3600*365);
+		_os << year << "y " << day << "d " << hour << "h" << minute << ":"<< second << "s " << millisecond << "ms " << microsecond << "Âµs " << nanosecond << "ns";
+		return _os;
+	}
+}
 
 bool drain::Resampler::process(std::chrono::system_clock::time_point& _time,
-                                  void* _input,
-                                  size_t _inputNbChunk,
-                                  void*& _output,
-                                  size_t& _outputNbChunk) {
+                               void* _input,
+                               size_t _inputNbChunk,
+                               void*& _output,
+                               size_t& _outputNbChunk) {
 	drain::AutoLogInOut tmpLog("Resampler");
 	_outputNbChunk = 2048;
 	// chack if we need to process:
@@ -104,6 +122,12 @@ bool drain::Resampler::process(std::chrono::system_clock::time_point& _time,
 		DRAIN_ERROR("null pointer input ... ");
 		return false;
 	}
+	// Update Output time with the previous delta of the buffer
+	DRAIN_VERBOSE("Resampler correct timestamp : " << _time << " ==> " << (_time - m_residualTimeInResampler));
+	_time -= m_residualTimeInResampler;
+	
+	std::chrono::nanoseconds inTime((int64_t(_inputNbChunk)*int64_t(1000000000)) / int64_t(m_input.getFrequency()));
+	m_residualTimeInResampler += inTime;
 	#ifdef HAVE_SPEEX_DSP_RESAMPLE
 		float nbInputTime = float(_inputNbChunk)/m_input.getFrequency();
 		float nbOutputSample = nbInputTime*m_output.getFrequency();
@@ -141,6 +165,14 @@ bool drain::Resampler::process(std::chrono::system_clock::time_point& _time,
 		}
 		_outputNbChunk = nbChunkOutput;
 		DRAIN_VERBOSE("                               process chunk=" << nbChunkInput << " out=" << nbChunkOutput);
+		std::chrono::nanoseconds outTime((int64_t(_outputNbChunk)*int64_t(1000000000)) / int64_t(m_output.getFrequency()));
+		// correct time :
+		m_residualTimeInResampler -= outTime;
+		/*
+		if (m_residualTimeInResampler.count() < 0) {
+			DRAIN_TODO("manage this case ... residual time in resampler : " << m_residualTimeInResampler.count() << "ns");
+		}
+		*/
 		return true;
 	#else
 		_output = _input;

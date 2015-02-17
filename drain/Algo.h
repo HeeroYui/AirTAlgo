@@ -120,6 +120,7 @@ namespace drain{
 			 * @param[in] _output number of chunk estimate in output
 			 * @return number of sample needed to have nearly the good number of sample
 			 */
+			// TODO : Manage the change of the timestamp ...
 			virtual size_t needInputData(size_t _output);
 		protected: // note when nothing ==> support all type
 			std::vector<audio::format> m_supportedFormat;

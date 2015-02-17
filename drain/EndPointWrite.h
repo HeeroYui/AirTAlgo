@@ -12,14 +12,15 @@
 #include <functional>
 
 namespace drain{
-	typedef std::function<void (const std::chrono::system_clock::time_point& _playTime,
-	                            const size_t& _nbChunk,
-	                            const std::vector<audio::channel>& _map,
-	                            enum audio::format _type)> needDataFunctionWrite;
+	typedef std::function<void (const std::chrono::system_clock::time_point& _time,
+	                            size_t _nbChunk,
+	                            enum audio::format _format,
+	                            uint32_t _frequency,
+	                            const std::vector<audio::channel>& _map)> playbackFunctionWrite;
 	class EndPointWrite : public EndPoint {
 		private:
 			std::vector<int8_t> m_tmpData;
-			needDataFunctionWrite m_function;
+			playbackFunctionWrite m_function;
 			std::mutex m_mutex;
 		protected:
 			/**
@@ -40,7 +41,7 @@ namespace drain{
 			                     void*& _output,
 			                     size_t& _outputNbChunk);
 			virtual void write(const void* _value, size_t _nbChunk);
-			virtual void setCallback(needDataFunctionWrite _function) {
+			virtual void setCallback(playbackFunctionWrite _function) {
 				m_function = _function;
 			}
 	};

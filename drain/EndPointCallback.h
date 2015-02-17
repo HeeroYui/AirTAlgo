@@ -12,30 +12,32 @@
 
 
 namespace drain {
-	typedef std::function<void (const std::chrono::system_clock::time_point& _playTime,
+	typedef std::function<void (void* _data,
+	                            const std::chrono::system_clock::time_point& _playTime,
 	                            size_t _nbChunk,
-	                            const std::vector<audio::channel>& _map,
-	                            void* _data,
-	                            enum audio::format _type)> needDataFunction;
-	typedef std::function<void (const std::chrono::system_clock::time_point& _readTime,
+	                            enum audio::format _format,
+	                            uint32_t _frequency,
+	                            const std::vector<audio::channel>& _map)> playbackFunction;
+	typedef std::function<void (const void* _data,
+	                            const std::chrono::system_clock::time_point& _readTime,
 	                            size_t _nbChunk,
-	                            const std::vector<audio::channel>& _map,
-	                            const void* _data,
-	                            enum audio::format _type)> haveNewDataFunction;
+	                            enum audio::format _format,
+	                            uint32_t _frequency,
+	                            const std::vector<audio::channel>& _map)> recordFunction;
 	class EndPointCallback : public EndPoint {
 		private:
-			needDataFunction m_outputFunction;
-			haveNewDataFunction m_inputFunction;
+			playbackFunction m_outputFunction;
+			recordFunction m_inputFunction;
 		protected:
 			/**
 			 * @brief Constructor
 			 */
 			EndPointCallback();
-			void init(needDataFunction _callback);
-			void init(haveNewDataFunction _callback);
+			void init(playbackFunction _callback);
+			void init(recordFunction _callback);
 		public:
-			static std::shared_ptr<EndPointCallback> create(needDataFunction _callback);
-			static std::shared_ptr<EndPointCallback> create(haveNewDataFunction _callback);
+			static std::shared_ptr<EndPointCallback> create(playbackFunction _callback);
+			static std::shared_ptr<EndPointCallback> create(recordFunction _callback);
 			/**
 			 * @brief Destructor
 			 */

@@ -33,15 +33,15 @@ void drain::EndPointWrite::configurationChange() {
 
 
 bool drain::EndPointWrite::process(std::chrono::system_clock::time_point& _time,
-                                             void* _input,
-                                             size_t _inputNbChunk,
-                                             void*& _output,
-                                             size_t& _outputNbChunk){
+                                   void* _input,
+                                   size_t _inputNbChunk,
+                                   void*& _output,
+                                   size_t& _outputNbChunk){
 	drain::AutoLogInOut tmpLog("EndPointWrite");
 	//DRAIN_INFO("                              nb Sample in buffer : " << m_tmpData.size());
 	if (m_function != nullptr) {
 		if (m_tmpData.size() <= 20000) {
-			m_function(_time, _inputNbChunk, m_output.getMap(), m_output.getFormat());
+			m_function(_time, _inputNbChunk, m_output.getFormat(), m_output.getFrequency(), m_output.getMap());
 		}
 	}
 	// resize output buffer:
