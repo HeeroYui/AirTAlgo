@@ -102,6 +102,16 @@ namespace drain{
 				m_isConfigured = false;
 				m_listAlgo.clear();
 			}
+			size_t size() {
+				return m_listAlgo.size();
+			}
+			std::vector<std::shared_ptr<drain::Algo> >::iterator begin() {
+				return m_listAlgo.begin();
+			}
+			std::vector<std::shared_ptr<drain::Algo> >::iterator end() {
+				return m_listAlgo.end();
+			}
+			
 			template<typename T> void removeIfFirst() {
 				if (m_listAlgo.size() > 0) {
 					std::shared_ptr<T> algoEP = std::dynamic_pointer_cast<T>(m_listAlgo[0]);

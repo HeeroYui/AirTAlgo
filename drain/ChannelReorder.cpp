@@ -104,7 +104,18 @@ bool drain::ChannelReorder::process(std::chrono::system_clock::time_point& _time
 			break;
 		default:
 		case audio::format_int16:
-			{
+			if (m_output.getMap().size() == 1) {
+				DRAIN_VERBOSE("convert " << m_input.getMap() << " ==> " << m_output.getMap() << " format=" << int32_t(m_formatSize));
+				int16_t* in = static_cast<int16_t*>(_input);
+				int16_t* out = static_cast<int16_t*>(_output);
+				for (size_t iii=0; iii<_outputNbChunk; ++iii) {
+					int32_t val = 0;
+					for (size_t jjj=0; jjj<m_input.getMap().size(); ++jjj) {
+						val += in[iii*m_input.getMap().size()+jjj];
+					}
+					out[iii] = val/m_input.getMap().size();
+				}
+			} else {
 				DRAIN_VERBOSE("convert " << m_input.getMap() << " ==> " << m_output.getMap() << " format=" << int32_t(m_formatSize));
 				int16_t* in = static_cast<int16_t*>(_input);
 				int16_t* out = static_cast<int16_t*>(_output);
