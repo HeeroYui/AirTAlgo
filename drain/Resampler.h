@@ -11,7 +11,11 @@
 #ifdef HAVE_SPEEX_DSP_RESAMPLE
 	#include <speex/speex_resampler.h>
 #endif
-#include <memory>
+#if __cplusplus >= 201103L
+	#include <memory>
+#else
+	#include <etk/memory.h>
+#endif
 
 namespace drain {
 	// TODO: Manage change timestamp when pull mode
@@ -30,7 +34,7 @@ namespace drain {
 			Resampler();
 			void init();
 		public:
-			static std::shared_ptr<Resampler> create();
+			static std11::shared_ptr<Resampler> create();
 			/**
 			 * @brief Destructor
 			 */
@@ -38,13 +42,13 @@ namespace drain {
 		protected:
 			virtual void configurationChange();
 		public:
-			virtual bool process(std::chrono::system_clock::time_point& _time,
+			virtual bool process(std11::chrono::system_clock::time_point& _time,
 			                     void* _input,
 			                     size_t _inputNbChunk,
 			                     void*& _output,
 			                     size_t& _outputNbChunk);
 		private:
-			std::chrono::nanoseconds m_residualTimeInResampler; //!< the time of data locked in the resampler ...
+			std11::chrono::nanoseconds m_residualTimeInResampler; //!< the time of data locked in the resampler ...
 	};
 };
 

@@ -8,22 +8,26 @@
 #define __AIRT_ALGO_END_POINT_CALLBACK_H__
 
 #include <drain/EndPoint.h>
-#include <functional>
+#if __cplusplus >= 201103L
+	#include <functional>
+#else
+	#include <etk/functional.h>
+#endif
 
 
 namespace drain {
-	typedef std::function<void (void* _data,
-	                            const std::chrono::system_clock::time_point& _playTime,
-	                            size_t _nbChunk,
-	                            enum audio::format _format,
-	                            uint32_t _frequency,
-	                            const std::vector<audio::channel>& _map)> playbackFunction;
-	typedef std::function<void (const void* _data,
-	                            const std::chrono::system_clock::time_point& _readTime,
-	                            size_t _nbChunk,
-	                            enum audio::format _format,
-	                            uint32_t _frequency,
-	                            const std::vector<audio::channel>& _map)> recordFunction;
+	typedef std11::function<void (void* _data,
+	                              const std11::chrono::system_clock::time_point& _playTime,
+	                              size_t _nbChunk,
+	                              enum audio::format _format,
+	                              uint32_t _frequency,
+	                              const std::vector<audio::channel>& _map)> playbackFunction;
+	typedef std11::function<void (const void* _data,
+	                              const std11::chrono::system_clock::time_point& _readTime,
+	                              size_t _nbChunk,
+	                              enum audio::format _format,
+	                              uint32_t _frequency,
+	                              const std::vector<audio::channel>& _map)> recordFunction;
 	class EndPointCallback : public EndPoint {
 		private:
 			playbackFunction m_outputFunction;
@@ -36,14 +40,14 @@ namespace drain {
 			void init(playbackFunction _callback);
 			void init(recordFunction _callback);
 		public:
-			static std::shared_ptr<EndPointCallback> create(playbackFunction _callback);
-			static std::shared_ptr<EndPointCallback> create(recordFunction _callback);
+			static std11::shared_ptr<EndPointCallback> create(playbackFunction _callback);
+			static std11::shared_ptr<EndPointCallback> create(recordFunction _callback);
 			/**
 			 * @brief Destructor
 			 */
 			virtual ~EndPointCallback() {};
 			virtual void configurationChange();
-			virtual bool process(std::chrono::system_clock::time_point& _time,
+			virtual bool process(std11::chrono::system_clock::time_point& _time,
 			                     void* _input,
 			                     size_t _inputNbChunk,
 			                     void*& _output,

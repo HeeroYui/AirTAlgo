@@ -23,8 +23,8 @@ void drain::ChannelReorder::init() {
 	m_type = "ChannelReorder";
 }
 
-std::shared_ptr<drain::ChannelReorder> drain::ChannelReorder::create() {
-	std::shared_ptr<drain::ChannelReorder> tmp(new drain::ChannelReorder());
+std11::shared_ptr<drain::ChannelReorder> drain::ChannelReorder::create() {
+	std11::shared_ptr<drain::ChannelReorder> tmp(new drain::ChannelReorder());
 	tmp->init();
 	return tmp;
 }
@@ -49,7 +49,7 @@ void drain::ChannelReorder::configurationChange() {
 }
 
 
-bool drain::ChannelReorder::process(std::chrono::system_clock::time_point& _time,
+bool drain::ChannelReorder::process(std11::chrono::system_clock::time_point& _time,
                                               void* _input,
                                               size_t _inputNbChunk,
                                               void*& _output,

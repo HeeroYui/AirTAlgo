@@ -136,8 +136,8 @@ void drain::FormatUpdate::init() {
 	m_type = "FormatUpdate";
 }
 
-std::shared_ptr<drain::FormatUpdate> drain::FormatUpdate::create() {
-	std::shared_ptr<drain::FormatUpdate> tmp(new drain::FormatUpdate());
+std11::shared_ptr<drain::FormatUpdate> drain::FormatUpdate::create() {
+	std11::shared_ptr<drain::FormatUpdate> tmp(new drain::FormatUpdate());
 	tmp->init();
 	return tmp;
 }
@@ -243,7 +243,7 @@ void drain::FormatUpdate::configurationChange() {
 }
 
 
-bool drain::FormatUpdate::process(std::chrono::system_clock::time_point& _time,
+bool drain::FormatUpdate::process(std11::chrono::system_clock::time_point& _time,
                                   void* _input,
                                   size_t _inputNbChunk,
                                   void*& _output,

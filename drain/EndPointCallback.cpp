@@ -27,14 +27,14 @@ void drain::EndPointCallback::init(recordFunction _callback) {
 	m_type = "EndPointCallback";
 }
 
-std::shared_ptr<drain::EndPointCallback> drain::EndPointCallback::create(playbackFunction _callback) {
-	std::shared_ptr<drain::EndPointCallback> tmp(new drain::EndPointCallback());
+std11::shared_ptr<drain::EndPointCallback> drain::EndPointCallback::create(playbackFunction _callback) {
+	std11::shared_ptr<drain::EndPointCallback> tmp(new drain::EndPointCallback());
 	tmp->init(_callback);
 	return tmp;
 }
 
-std::shared_ptr<drain::EndPointCallback> drain::EndPointCallback::create(recordFunction _callback) {
-	std::shared_ptr<drain::EndPointCallback> tmp(new drain::EndPointCallback());
+std11::shared_ptr<drain::EndPointCallback> drain::EndPointCallback::create(recordFunction _callback) {
+	std11::shared_ptr<drain::EndPointCallback> tmp(new drain::EndPointCallback());
 	tmp->init(_callback);
 	return tmp;
 }
@@ -46,7 +46,7 @@ void drain::EndPointCallback::configurationChange() {
 }
 
 
-bool drain::EndPointCallback::process(std::chrono::system_clock::time_point& _time,
+bool drain::EndPointCallback::process(std11::chrono::system_clock::time_point& _time,
                                       void* _input,
                                       size_t _inputNbChunk,
                                       void*& _output,

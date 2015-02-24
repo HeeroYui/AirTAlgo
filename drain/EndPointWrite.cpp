@@ -20,8 +20,8 @@ void drain::EndPointWrite::init() {
 	m_type = "EndPoint";
 }
 
-std::shared_ptr<drain::EndPointWrite> drain::EndPointWrite::create() {
-	std::shared_ptr<drain::EndPointWrite> tmp(new drain::EndPointWrite());
+std11::shared_ptr<drain::EndPointWrite> drain::EndPointWrite::create() {
+	std11::shared_ptr<drain::EndPointWrite> tmp(new drain::EndPointWrite());
 	tmp->init();
 	return tmp;
 }
@@ -32,7 +32,7 @@ void drain::EndPointWrite::configurationChange() {
 }
 
 
-bool drain::EndPointWrite::process(std::chrono::system_clock::time_point& _time,
+bool drain::EndPointWrite::process(std11::chrono::system_clock::time_point& _time,
                                    void* _input,
                                    size_t _inputNbChunk,
                                    void*& _output,
@@ -50,7 +50,7 @@ bool drain::EndPointWrite::process(std::chrono::system_clock::time_point& _time,
 	// set output pointer:
 	_outputNbChunk = m_outputData.size()/(m_formatSize*m_output.getMap().size());
 	_output = &m_outputData[0];
-	std::unique_lock<std::mutex> lock(m_mutex);
+	std11::unique_lock<std11::mutex> lock(m_mutex);
 	// check if data in the tmpBuffer
 	if (m_tmpData.size() == 0) {
 		DRAIN_WARNING("No data in the user buffer (write null data ... " << _outputNbChunk << " chunks)");
@@ -71,7 +71,7 @@ bool drain::EndPointWrite::process(std::chrono::system_clock::time_point& _time,
 }
 
 void drain::EndPointWrite::write(const void* _value, size_t _nbChunk) {
-	std::unique_lock<std::mutex> lock(m_mutex);
+	std11::unique_lock<std11::mutex> lock(m_mutex);
 	DRAIN_INFO("[ASYNC] Write data : " << _nbChunk << " chunks"
 	              << " ==> " << _nbChunk*m_output.getMap().size() << " samples"
 	              << " formatSize=" << int32_t(m_formatSize)

@@ -15,7 +15,6 @@
 #include <drain/ChannelReorder.h>
 #include <drain/FormatUpdate.h>
 #include <drain/Resampler.h>
-#include <chrono>
 
 #undef __class__
 #define __class__ "Process"
@@ -25,12 +24,12 @@ drain::Process::Process() :
 	m_data.clear();
 }
 drain::Process::~Process() {
-	for (auto &it : m_listAlgo) {
-		it.reset();
+	for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
+		m_listAlgo[iii].reset();
 	}
 }
 
-bool drain::Process::push(std::chrono::system_clock::time_point& _time,
+bool drain::Process::push(std11::chrono::system_clock::time_point& _time,
                           void* _data,
                           size_t _nbChunk) {
 	void* out = nullptr;
@@ -40,7 +39,7 @@ bool drain::Process::push(std::chrono::system_clock::time_point& _time,
 	return true;
 }
 
-bool drain::Process::pull(std::chrono::system_clock::time_point& _time,
+bool drain::Process::pull(std11::chrono::system_clock::time_point& _time,
                           void* _data,
                           size_t _nbChunk,
                           size_t _chunkSize) {
@@ -89,7 +88,7 @@ bool drain::Process::pull(std::chrono::system_clock::time_point& _time,
 }
 
 
-bool drain::Process::process(std::chrono::system_clock::time_point& _time,
+bool drain::Process::process(std11::chrono::system_clock::time_point& _time,
                                 void* _inData,
                                 size_t _inNbChunk,
                                 void*& _outData,
@@ -112,12 +111,12 @@ bool drain::Process::process(std::chrono::system_clock::time_point& _time,
 	return true;
 }
 
-void drain::Process::pushBack(const std::shared_ptr<drain::Algo>& _algo) {
+void drain::Process::pushBack(const std11::shared_ptr<drain::Algo>& _algo) {
 	removeAlgoDynamic();
 	m_listAlgo.push_back(_algo);
 }
 
-void drain::Process::pushFront(const std::shared_ptr<drain::Algo>& _algo) {
+void drain::Process::pushFront(const std11::shared_ptr<drain::Algo>& _algo) {
 	removeAlgoDynamic();
 	m_listAlgo.insert(m_listAlgo.begin(), _algo);
 }
@@ -132,10 +131,10 @@ template<typename T> std::vector<T> getUnion(const std::vector<T>& _out, const s
 		// next is ok for all format
 	} else {
 		// must check all values
-		for (auto &itOut : _out) {
-			for (auto &itIn : _in) {
-				if (itOut == itIn) {
-					out.push_back(itOut);
+		for (size_t ooo=0; ooo<_out.size(); ++ooo) {
+			for (size_t iii=0; iii<_in.size(); ++iii) {
+				if (_out[ooo] == _in[iii]) {
+					out.push_back(_out[ooo]);
 				}
 			}
 		}
@@ -146,23 +145,23 @@ template<typename T> std::vector<T> getUnion(const std::vector<T>& _out, const s
 
 void drain::Process::displayAlgo() {
 	DRAIN_DEBUG("    Input : " << m_inputConfig);
-	for (auto &it : m_listAlgo) {
-		DRAIN_DEBUG("    [" << it->getType() << "] '" << it->getName() << "'");
-		if (it->getInputFormat().getConfigured() == true) {
-			DRAIN_DEBUG("        Input : " << it->getInputFormat());
+	for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
+		DRAIN_DEBUG("    [" << m_listAlgo[iii]->getType() << "] '" << m_listAlgo[iii]->getName() << "'");
+		if (m_listAlgo[iii]->getInputFormat().getConfigured() == true) {
+			DRAIN_DEBUG("        Input : " << m_listAlgo[iii]->getInputFormat());
 		} else {
 			DRAIN_DEBUG("        Input : Not configured");
-			DRAIN_DEBUG("            format : " << it->getFormatSupportedInput());
-			DRAIN_DEBUG("            frequency : " << it->getFrequencySupportedInput());
-			DRAIN_DEBUG("            map : " << it->getMapSupportedInput());
+			DRAIN_DEBUG("            format : " << m_listAlgo[iii]->getFormatSupportedInput());
+			DRAIN_DEBUG("            frequency : " << m_listAlgo[iii]->getFrequencySupportedInput());
+			DRAIN_DEBUG("            map : " << m_listAlgo[iii]->getMapSupportedInput());
 		}
-		if (it->getOutputFormat().getConfigured() == true) {
-			DRAIN_DEBUG("        Output: " << it->getOutputFormat());
+		if (m_listAlgo[iii]->getOutputFormat().getConfigured() == true) {
+			DRAIN_DEBUG("        Output: " << m_listAlgo[iii]->getOutputFormat());
 		} else {
 			DRAIN_DEBUG("        Output : Not configured");
-			DRAIN_DEBUG("            format : " << it->getFormatSupportedOutput());
-			DRAIN_DEBUG("            frequency : " << it->getFrequencySupportedOutput());
-			DRAIN_DEBUG("            map : " << it->getMapSupportedOutput());
+			DRAIN_DEBUG("            format : " << m_listAlgo[iii]->getFormatSupportedOutput());
+			DRAIN_DEBUG("            frequency : " << m_listAlgo[iii]->getFrequencySupportedOutput());
+			DRAIN_DEBUG("            map : " << m_listAlgo[iii]->getMapSupportedOutput());
 		}
 	}
 	DRAIN_DEBUG("    Output : " << m_outputConfig);
@@ -200,8 +199,8 @@ void drain::Process::updateAlgo(size_t _position) {
 		DRAIN_DEBUG("        freq union :" << freq);
 		
 		// step 2 : Check map:
-		std::vector<std::vector<audio::channel>> mapOut;
-		std::vector<std::vector<audio::channel>> mapIn;
+		std::vector<std::vector<audio::channel> > mapOut;
+		std::vector<std::vector<audio::channel> > mapIn;
 		if (_position == 0) {
 			mapOut.push_back(m_inputConfig.getMap());
 		} else {
@@ -212,7 +211,7 @@ void drain::Process::updateAlgo(size_t _position) {
 		} else {
 			mapIn = m_listAlgo[_position]->getMapSupportedInput();
 		}
-		std::vector<std::vector<audio::channel>> map = getUnion<std::vector<audio::channel>>(mapOut, mapIn);
+		std::vector<std::vector<audio::channel> > map = getUnion<std::vector<audio::channel> >(mapOut, mapIn);
 		DRAIN_VERBOSE("        map out   :" << mapOut);
 		DRAIN_VERBOSE("        map in    :" << mapIn);
 		DRAIN_DEBUG("        map union :" << map);
@@ -343,7 +342,7 @@ void drain::Process::updateAlgo(size_t _position) {
 			if (    out.getFormat() != audio::format_int16
 			     /* && out.getFormat() != format_float */) {
 				// need add a format Updater
-				std::shared_ptr<drain::FormatUpdate> algo = drain::FormatUpdate::create();
+				std11::shared_ptr<drain::FormatUpdate> algo = drain::FormatUpdate::create();
 				algo->setTemporary();
 				algo->setInputFormat(out);
 				out.setFormat(audio::format_int16);
@@ -353,7 +352,7 @@ void drain::Process::updateAlgo(size_t _position) {
 				_position++;
 			}
 			// need add a resampler
-			std::shared_ptr<drain::Resampler> algo = drain::Resampler::create();
+			std11::shared_ptr<drain::Resampler> algo = drain::Resampler::create();
 			algo->setTemporary();
 			algo->setInputFormat(out);
 			out.setFrequency(in.getFrequency());
@@ -365,7 +364,7 @@ void drain::Process::updateAlgo(size_t _position) {
 		}
 		if (out.getMap() != in.getMap()) {
 			// need add a channel Reorder
-			std::shared_ptr<drain::ChannelReorder> algo = drain::ChannelReorder::create();
+			std11::shared_ptr<drain::ChannelReorder> algo = drain::ChannelReorder::create();
 			algo->setTemporary();
 			algo->setInputFormat(out);
 			out.setMap(in.getMap());
@@ -376,7 +375,7 @@ void drain::Process::updateAlgo(size_t _position) {
 		}
 		if (out.getFormat() != in.getFormat()) {
 			// need add a format Updater
-			std::shared_ptr<drain::FormatUpdate> algo = drain::FormatUpdate::create();
+			std11::shared_ptr<drain::FormatUpdate> algo = drain::FormatUpdate::create();
 			algo->setTemporary();
 			algo->setInputFormat(out);
 			out.setFormat(in.getFormat());

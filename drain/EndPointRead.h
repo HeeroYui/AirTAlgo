@@ -18,13 +18,13 @@ namespace drain{
 			EndPointRead();
 			void init();
 		public:
-			static std::shared_ptr<EndPointRead> create();
+			static std11::shared_ptr<EndPointRead> create();
 			/**
 			 * @brief Destructor
 			 */
 			virtual ~EndPointRead() {};
 			virtual void configurationChange();
-			virtual bool process(std::chrono::system_clock::time_point& _time,
+			virtual bool process(std11::chrono::system_clock::time_point& _time,
 			                     void* _input,
 			                     size_t _inputNbChunk,
 			                     void*& _output,

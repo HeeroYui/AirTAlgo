@@ -14,8 +14,13 @@
 #include <audio/format.h>
 #include <audio/channel.h>
 #include <drain/Algo.h>
-#include <chrono>
-#include <memory>
+#if __cplusplus >= 201103L
+	#include <memory>
+	#include <chrono>
+#else
+	#include <etk/chrono.h>
+	#include <etk/memory.h>
+#endif
 
 namespace drain{
 	class Process {
@@ -33,7 +38,7 @@ namespace drain{
 			 * @return true The procress is done corectly.
 			 * @return false An error occured.
 			 */
-			bool push(std::chrono::system_clock::time_point& _time,
+			bool push(std11::chrono::system_clock::time_point& _time,
 			          void* _data,
 			          size_t _nbChunk);
 			/**
@@ -45,7 +50,7 @@ namespace drain{
 			 * @return true The procress is done corectly.
 			 * @return false An error occured.
 			 */
-			bool pull(std::chrono::system_clock::time_point& _time,
+			bool pull(std11::chrono::system_clock::time_point& _time,
 			          void* _data,
 			          size_t _nbChunk,
 			          size_t _chunkSize);
@@ -59,7 +64,7 @@ namespace drain{
 			 * @return true The procress is done corectly.
 			 * @return false An error occured.
 			 */
-			bool process(std::chrono::system_clock::time_point& _time,
+			bool process(std11::chrono::system_clock::time_point& _time,
 			             void* _inData,
 			             size_t _inNbChunk,
 			             void*& _outData,
@@ -68,7 +73,7 @@ namespace drain{
 			             size_t _inNbChunk,
 			             void*& _outData,
 			             size_t& _outNbChunk) {
-				std::chrono::system_clock::time_point time;
+				std11::chrono::system_clock::time_point time;
 				return process(time, _inData, _inNbChunk, _outData, _outNbChunk);
 			}
 			bool processIn(void* _inData,
@@ -94,10 +99,10 @@ namespace drain{
 				m_outputConfig = _interface;
 			}
 		protected:
-			std::vector<std::shared_ptr<drain::Algo> > m_listAlgo;
+			std::vector<std11::shared_ptr<drain::Algo> > m_listAlgo;
 		public:
-			void pushBack(const std::shared_ptr<drain::Algo>& _algo);
-			void pushFront(const std::shared_ptr<drain::Algo>& _algo);
+			void pushBack(const std11::shared_ptr<drain::Algo>& _algo);
+			void pushFront(const std11::shared_ptr<drain::Algo>& _algo);
 			void clear() {
 				m_isConfigured = false;
 				m_listAlgo.clear();
@@ -105,16 +110,41 @@ namespace drain{
 			size_t size() {
 				return m_listAlgo.size();
 			}
-			std::vector<std::shared_ptr<drain::Algo> >::iterator begin() {
+			std::vector<std11::shared_ptr<drain::Algo> >::iterator begin() {
 				return m_listAlgo.begin();
 			}
-			std::vector<std::shared_ptr<drain::Algo> >::iterator end() {
+			std::vector<std11::shared_ptr<drain::Algo> >::iterator end() {
 				return m_listAlgo.end();
 			}
 			
+			template<typename T> std11::shared_ptr<T> get(const std::string& _name) {
+				for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
+					if (m_listAlgo[iii] == nullptr) {
+						continue;
+					}
+					if (m_listAlgo[iii]->getName() == _name) {
+						return std11::dynamic_pointer_cast<T>(m_listAlgo[iii]);
+					}
+				}
+				return std11::shared_ptr<T>();
+			}
+			template<typename T> std11::shared_ptr<const T> get(const std::string& _name) const {
+				for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
+					if (m_listAlgo[iii] == nullptr) {
+						continue;
+					}
+					if (m_listAlgo[iii]->getName() == _name) {
+						return std11::dynamic_pointer_cast<T>(m_listAlgo[iii]);
+					}
+				}
+				return std11::shared_ptr<const T>();
+			}
+			template<typename T> std11::shared_ptr<T> get(int32_t _id) {
+				return std11::dynamic_pointer_cast<T>(m_listAlgo[_id]);
+			}
 			template<typename T> void removeIfFirst() {
 				if (m_listAlgo.size() > 0) {
-					std::shared_ptr<T> algoEP = std::dynamic_pointer_cast<T>(m_listAlgo[0]);
+					std11::shared_ptr<T> algoEP = get<T>(0);
 					if (algoEP != nullptr) {
 						m_listAlgo.erase(m_listAlgo.begin());
 					}
@@ -122,40 +152,15 @@ namespace drain{
 			}
 			template<typename T> void removeIfLast() {
 				if (m_listAlgo.size() > 0) {
-					std::shared_ptr<T> algoEP = std::dynamic_pointer_cast<T>(m_listAlgo[m_listAlgo.size()-1]);
+					std11::shared_ptr<T> algoEP = get<T>(m_listAlgo.size()-1);
 					if (algoEP != nullptr) {
 						m_listAlgo.erase(m_listAlgo.begin()+m_listAlgo.size()-1);
 					}
 				}
 			}
-			template<typename T> std::shared_ptr<T> get(int32_t _id) {
-				return std::dynamic_pointer_cast<T>(m_listAlgo[_id]);
-			}
-			template<typename T> std::shared_ptr<T> get(const std::string& _name) {
-				for (auto &it : m_listAlgo) {
-					if (it == nullptr) {
-						continue;
-					}
-					if (it->getName() == _name) {
-						return std::dynamic_pointer_cast<T>(it);
-					}
-				}
-				return nullptr;
-			}
-			template<typename T> std::shared_ptr<const T> get(const std::string& _name) const {
-				for (auto &it : m_listAlgo) {
-					if (it == nullptr) {
-						continue;
-					}
-					if (it->getName() == _name) {
-						return std::dynamic_pointer_cast<T>(it);
-					}
-				}
-				return nullptr;
-			}
 			template<typename T> bool hasType() {
-				for (auto &it : m_listAlgo) {
-					std::shared_ptr<T> tmp = std::dynamic_pointer_cast<T>(it);
+				for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
+					std11::shared_ptr<T> tmp = std11::dynamic_pointer_cast<T>(m_listAlgo[iii]);
 					if (tmp != nullptr) {
 						return true;
 					}

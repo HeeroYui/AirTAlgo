@@ -25,8 +25,8 @@ void drain::Volume::init() {
 	m_supportedFormat.push_back(audio::format_int16_on_int32);
 }
 
-std::shared_ptr<drain::Volume> drain::Volume::create() {
-	std::shared_ptr<drain::Volume> tmp(new drain::Volume());
+std11::shared_ptr<drain::Volume> drain::Volume::create() {
+	std11::shared_ptr<drain::Volume> tmp(new drain::Volume());
 	tmp->init();
 	return tmp;
 }
@@ -155,15 +155,15 @@ void drain::Volume::configurationChange() {
 void drain::Volume::volumeChange() {
 	//m_volumeAppli = 20 * log(m_volumedB);
 	float volumedB = 0.0f;
-	for (auto &it : m_volumeList) {
-		if (it == nullptr) {
+	for (size_t iii=0; iii<m_volumeList.size(); ++iii) {
+		if (m_volumeList[iii] == nullptr) {
 			continue;
 		}
-		volumedB += it->getVolume();
-		DRAIN_VERBOSE("append volume : '" << it->getName() << " vol=" << it->getVolume() << "dB");
+		volumedB += m_volumeList[iii]->getVolume();
+		DRAIN_VERBOSE("append volume : '" << m_volumeList[iii]->getName() << " vol=" << m_volumeList[iii]->getVolume() << "dB");
 	}
 	DRAIN_DEBUG(" Total volume : " << volumedB << "dB nbVolume=" << m_volumeList.size());
-	#if (defined(__TARGET_OS__MacOs) || defined(__TARGET_OS__IOs))
+	#if (defined(__TARGET_OS__MacOs) || defined(__TARGET_OS__IOs) || __cplusplus < 201103L)
 		m_volumeAppli = pow(10.0f, volumedB/20.0f);
 	#else
 		m_volumeAppli = std::pow(10.0f, volumedB/20.0f);
@@ -304,7 +304,7 @@ std::vector<audio::format> drain::Volume::getFormatSupportedOutput() {
 };
 
 
-bool drain::Volume::process(std::chrono::system_clock::time_point& _time,
+bool drain::Volume::process(std11::chrono::system_clock::time_point& _time,
                                void* _input,
                                size_t _inputNbChunk,
                                void*& _output,
@@ -334,19 +334,19 @@ bool drain::Volume::process(std::chrono::system_clock::time_point& _time,
 	return true;
 }
 
-void drain::Volume::addVolumeStage(const std::shared_ptr<VolumeElement>& _volume) {
+void drain::Volume::addVolumeStage(const std11::shared_ptr<VolumeElement>& _volume) {
 	if (_volume == nullptr) {
 		return;
 	}
-	for (auto &it : m_volumeList) {
-		if (it == nullptr) {
+	for (size_t iii=0; iii<m_volumeList.size(); ++iii) {
+		if (m_volumeList[iii] == nullptr) {
 			continue;
 		}
-		if (it == _volume) {
+		if (m_volumeList[iii] == _volume) {
 			// already done ...
 			return;
 		}
-		if (it->getName() == _volume->getName()) {
+		if (m_volumeList[iii]->getName() == _volume->getName()) {
 			return;
 		}
 	}
@@ -357,11 +357,11 @@ void drain::Volume::addVolumeStage(const std::shared_ptr<VolumeElement>& _volume
 bool drain::Volume::setParameter(const std::string& _parameter, const std::string& _value) {
 	if (_parameter == "FLOW") {
 		// set Volume ...
-		for (auto &it : m_volumeList) {
-			if (it == nullptr) {
+		for (size_t iii=0; iii<m_volumeList.size(); ++iii) {
+			if (m_volumeList[iii] == nullptr) {
 				continue;
 			}
-			if (it->getName() == "FLOW") {
+			if (m_volumeList[iii]->getName() == "FLOW") {
 				float value = 0;
 				if (sscanf(_value.c_str(), "%fdB", &value) != 1) {
 					return false;
@@ -371,7 +371,7 @@ bool drain::Volume::setParameter(const std::string& _parameter, const std::strin
 					DRAIN_ERROR("Can not set volume ... : '" << _parameter << "' out of range : [-300..300]");
 					return false;
 				}
-				it->setVolume(value);
+				m_volumeList[iii]->setVolume(value);
 				DRAIN_DEBUG("Set volume : FLOW = " << value << " dB (from:" << _value << ")");
 				volumeChange();
 				return true;
@@ -385,12 +385,12 @@ bool drain::Volume::setParameter(const std::string& _parameter, const std::strin
 std::string drain::Volume::getParameter(const std::string& _parameter) const {
 	if (_parameter == "FLOW") {
 		// set Volume ...
-		for (auto &it : m_volumeList) {
-			if (it == nullptr) {
+		for (size_t iii=0; iii<m_volumeList.size(); ++iii) {
+			if (m_volumeList[iii] == nullptr) {
 				continue;
 			}
-			if (it->getName() == "FLOW") {
-				return std::to_string(it->getVolume()) + "dB";
+			if (m_volumeList[iii]->getName() == "FLOW") {
+				return etk::to_string(m_volumeList[iii]->getVolume()) + "dB";
 			}
 		}
 	}
@@ -401,11 +401,11 @@ std::string drain::Volume::getParameter(const std::string& _parameter) const {
 std::string drain::Volume::getParameterProperty(const std::string& _parameter) const {
 	if (_parameter == "FLOW") {
 		// set Volume ...
-		for (auto &it : m_volumeList) {
-			if (it == nullptr) {
+		for (size_t iii=0; iii<m_volumeList.size(); ++iii) {
+			if (m_volumeList[iii] == nullptr) {
 				continue;
 			}
-			if (it->getName() == "FLOW") {
+			if (m_volumeList[iii]->getName() == "FLOW") {
 				return "[-300..300]dB";
 			}
 		}

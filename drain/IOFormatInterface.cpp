@@ -113,7 +113,6 @@ void drain::IOFormatInterface::configurationChange() {
 		m_ioChangeFunctor();
 	}
 }
-
-void drain::IOFormatInterface::setCallback(const std::function<void()>& _functor) {
+void drain::IOFormatInterface::setCallback(const std11::function<void()>& _functor) {
 	m_ioChangeFunctor = _functor;
 }

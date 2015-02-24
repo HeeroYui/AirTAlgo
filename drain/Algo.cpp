@@ -21,8 +21,8 @@ drain::Algo::Algo() :
 
 void drain::Algo::init() {
 	// set notification callback :
-	m_input.setCallback(std::bind(&drain::Algo::configurationChangeLocal, this));
-	m_output.setCallback(std::bind(&drain::Algo::configurationChangeLocal, this));
+	m_input.setCallback(std11::bind(&drain::Algo::configurationChangeLocal, this));
+	m_output.setCallback(std11::bind(&drain::Algo::configurationChangeLocal, this));
 	// first configure ==> update the internal parameters
 	configurationChange();
 }

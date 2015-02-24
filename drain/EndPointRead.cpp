@@ -20,8 +20,8 @@ void drain::EndPointRead::init() {
 	m_type = "EndPointRead";
 }
 
-std::shared_ptr<drain::EndPointRead> drain::EndPointRead::create() {
-	std::shared_ptr<drain::EndPointRead> tmp(new drain::EndPointRead());
+std11::shared_ptr<drain::EndPointRead> drain::EndPointRead::create() {
+	std11::shared_ptr<drain::EndPointRead> tmp(new drain::EndPointRead());
 	tmp->init();
 	return tmp;
 }
@@ -32,7 +32,7 @@ void drain::EndPointRead::configurationChange() {
 }
 
 
-bool drain::EndPointRead::process(std::chrono::system_clock::time_point& _time,
+bool drain::EndPointRead::process(std11::chrono::system_clock::time_point& _time,
                                             void* _input,
                                             size_t _inputNbChunk,
                                             void*& _output,

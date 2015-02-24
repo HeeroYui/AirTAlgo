@@ -10,7 +10,11 @@
 #include <string>
 #include <audio/format.h>
 #include <drain/channel.h>
-#include <chrono>
+#if __cplusplus >= 201103L
+	#include <chrono>
+#else
+	#include <etk/chrono.h>
+#endif
 
 namespace drain {
 	/**

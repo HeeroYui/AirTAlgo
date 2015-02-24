@@ -8,20 +8,25 @@
 #define __AIRT_ALGO_ALGO_END_POINT_WRITE_H__
 
 #include <drain/EndPoint.h>
-#include <mutex>
-#include <functional>
+#if __cplusplus >= 201103L
+	#include <functional>
+	#include <mutex>
+#else
+	#include <etk/functional.h>
+	#include <etk/mutex.h>
+#endif
 
 namespace drain{
-	typedef std::function<void (const std::chrono::system_clock::time_point& _time,
-	                            size_t _nbChunk,
-	                            enum audio::format _format,
-	                            uint32_t _frequency,
-	                            const std::vector<audio::channel>& _map)> playbackFunctionWrite;
+	typedef std11::function<void (const std11::chrono::system_clock::time_point& _time,
+	                              size_t _nbChunk,
+	                              enum audio::format _format,
+	                              uint32_t _frequency,
+	                              const std::vector<audio::channel>& _map)> playbackFunctionWrite;
 	class EndPointWrite : public EndPoint {
 		private:
 			std::vector<int8_t> m_tmpData;
 			playbackFunctionWrite m_function;
-			std::mutex m_mutex;
+			std11::mutex m_mutex;
 		protected:
 			/**
 			 * @brief Constructor
@@ -29,13 +34,13 @@ namespace drain{
 			EndPointWrite();
 			void init();
 		public:
-			static std::shared_ptr<EndPointWrite> create();
+			static std11::shared_ptr<EndPointWrite> create();
 			/**
 			 * @brief Destructor
 			 */
 			virtual ~EndPointWrite() {};
 			virtual void configurationChange();
-			virtual bool process(std::chrono::system_clock::time_point& _time,
+			virtual bool process(std11::chrono::system_clock::time_point& _time,
 			                     void* _input,
 			                     size_t _inputNbChunk,
 			                     void*& _output,

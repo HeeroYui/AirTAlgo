@@ -11,7 +11,11 @@
 #ifdef HAVE_SPEEX_DSP_RESAMPLE
 	#include <speex/speex_resampler.h>
 #endif
-#include <memory>
+#if __cplusplus >= 201103L
+	#include <memory>
+#else
+	#include <etk/memory.h>
+#endif
 
 namespace drain {
 	// data structure.
@@ -45,7 +49,7 @@ namespace drain {
 	// TODO: Manage set volume
 	class Volume : public Algo {
 		private:
-			std::vector<std::shared_ptr<drain::VolumeElement>> m_volumeList;
+			std::vector<std11::shared_ptr<drain::VolumeElement> > m_volumeList;
 			// for float input :
 			float m_volumeAppli;
 			// for integer input :
@@ -60,7 +64,7 @@ namespace drain {
 			Volume();
 			void init();
 		public:
-			static std::shared_ptr<Volume> create();
+			static std11::shared_ptr<Volume> create();
 			/**
 			 * @brief Destructor
 			 */
@@ -68,7 +72,7 @@ namespace drain {
 		protected:
 			virtual void configurationChange();
 		public:
-			virtual bool process(std::chrono::system_clock::time_point& _time,
+			virtual bool process(std11::chrono::system_clock::time_point& _time,
 			                     void* _input,
 			                     size_t _inputNbChunk,
 			                     void*& _output,
@@ -77,7 +81,7 @@ namespace drain {
 			virtual std::vector<audio::format> getFormatSupportedInput();
 			virtual std::vector<audio::format> getFormatSupportedOutput();
 		public:
-			virtual void addVolumeStage(const std::shared_ptr<drain::VolumeElement>& _volume);
+			virtual void addVolumeStage(const std11::shared_ptr<drain::VolumeElement>& _volume);
 			virtual bool setParameter(const std::string& _parameter, const std::string& _value);
 			virtual std::string getParameter(const std::string& _parameter) const;
 			virtual std::string getParameterProperty(const std::string& _parameter) const;

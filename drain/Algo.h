@@ -13,15 +13,21 @@
 #include <stdint.h>
 #include <audio/format.h>
 #include <audio/channel.h>
-#include <chrono>
-#include <functional>
-#include <memory>
+#if __cplusplus >= 201103L
+	#include <chrono>
+	#include <functional>
+	#include <memory>
+#else
+	#include <etk/chrono.h>
+	#include <etk/functional.h>
+	#include <etk/memory.h>
+#endif
 #include "AutoLogInOut.h"
 #include "IOFormatInterface.h"
 #include "debug.h"
 
 namespace drain{
-	class Algo : public std::enable_shared_from_this<Algo> {
+	class Algo : public std11::enable_shared_from_this<Algo> {
 		private:
 			std::string m_name;
 		public:
@@ -110,7 +116,7 @@ namespace drain{
 			 * @return true The process is done corectly
 			 * @return false An error occured
 			 */
-			virtual bool process(std::chrono::system_clock::time_point& _time,
+			virtual bool process(std11::chrono::system_clock::time_point& _time,
 			                     void* _input,
 			                     size_t _inputNbChunk,
 			                     void*& _output,
@@ -142,19 +148,19 @@ namespace drain{
 				return m_supportedFormat;
 			};
 		protected: // note when nothing ==> support all type
-			std::vector<std::vector<audio::channel>> m_supportedMap;
+			std::vector<std::vector<audio::channel> > m_supportedMap;
 		public:
-			virtual std::vector<std::vector<audio::channel>> getMapSupportedInput() {
+			virtual std::vector<std::vector<audio::channel> > getMapSupportedInput() {
 				if (m_output.getConfigured() == true) {
-					std::vector<std::vector<audio::channel>> out;
+					std::vector<std::vector<audio::channel> > out;
 					out.push_back(m_output.getMap());
 					return out;
 				}
 				return m_supportedMap;
 			};
-			virtual std::vector<std::vector<audio::channel>> getMapSupportedOutput() {
+			virtual std::vector<std::vector<audio::channel> > getMapSupportedOutput() {
 				if (m_input.getConfigured() == true) {
-					std::vector<std::vector<audio::channel>> out;
+					std::vector<std::vector<audio::channel> > out;
 					out.push_back(m_input.getMap());
 					return out;
 				}
