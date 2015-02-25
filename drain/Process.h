@@ -14,13 +14,8 @@
 #include <audio/format.h>
 #include <audio/channel.h>
 #include <drain/Algo.h>
-#if __cplusplus >= 201103L
-	#include <memory>
-	#include <chrono>
-#else
-	#include <etk/chrono.h>
-	#include <etk/memory.h>
-#endif
+#include <etk/chrono.h>
+#include <etk/memory.h>
 
 namespace drain{
 	class Process {

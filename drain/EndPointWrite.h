@@ -8,13 +8,8 @@
 #define __AIRT_ALGO_ALGO_END_POINT_WRITE_H__
 
 #include <drain/EndPoint.h>
-#if __cplusplus >= 201103L
-	#include <functional>
-	#include <mutex>
-#else
-	#include <etk/functional.h>
-	#include <etk/mutex.h>
-#endif
+#include <etk/functional.h>
+#include <etk/mutex.h>
 
 namespace drain{
 	typedef std11::function<void (const std11::chrono::system_clock::time_point& _time,

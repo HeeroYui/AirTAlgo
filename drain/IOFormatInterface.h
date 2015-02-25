@@ -13,15 +13,9 @@
 #include <stdint.h>
 #include <audio/format.h>
 #include <audio/channel.h>
-#if __cplusplus >= 201103L
-	#include <chrono>
-	#include <functional>
-	#include <memory>
-#else
-	#include <etk/chrono.h>
-	#include <etk/functional.h>
-	#include <etk/memory.h>
-#endif
+#include <etk/chrono.h>
+#include <etk/functional.h>
+#include <etk/memory.h>
 #include "AutoLogInOut.h"
 #include "debug.h"
 

@@ -11,11 +11,7 @@
 #ifdef HAVE_SPEEX_DSP_RESAMPLE
 	#include <speex/speex_resampler.h>
 #endif
-#if __cplusplus >= 201103L
-	#include <memory>
-#else
-	#include <etk/memory.h>
-#endif
+#include <etk/memory.h>
 
 namespace drain {
 	// data structure.

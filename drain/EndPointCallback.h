@@ -8,12 +8,7 @@
 #define __AIRT_ALGO_END_POINT_CALLBACK_H__
 
 #include <drain/EndPoint.h>
-#if __cplusplus >= 201103L
-	#include <functional>
-#else
-	#include <etk/functional.h>
-#endif
-
+#include <etk/functional.h>
 
 namespace drain {
 	typedef std11::function<void (void* _data,
