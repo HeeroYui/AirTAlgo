@@ -144,27 +144,27 @@ template<typename T> std::vector<T> getUnion(const std::vector<T>& _out, const s
 
 
 void drain::Process::displayAlgo() {
-	DRAIN_DEBUG("    Input : " << m_inputConfig);
+	DRAIN_VERBOSE("    Input : " << m_inputConfig);
 	for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
-		DRAIN_DEBUG("    [" << m_listAlgo[iii]->getType() << "] '" << m_listAlgo[iii]->getName() << "'");
+		DRAIN_VERBOSE("    [" << m_listAlgo[iii]->getType() << "] '" << m_listAlgo[iii]->getName() << "'");
 		if (m_listAlgo[iii]->getInputFormat().getConfigured() == true) {
-			DRAIN_DEBUG("        Input : " << m_listAlgo[iii]->getInputFormat());
+			DRAIN_VERBOSE("        Input : " << m_listAlgo[iii]->getInputFormat());
 		} else {
-			DRAIN_DEBUG("        Input : Not configured");
-			DRAIN_DEBUG("            format : " << m_listAlgo[iii]->getFormatSupportedInput());
-			DRAIN_DEBUG("            frequency : " << m_listAlgo[iii]->getFrequencySupportedInput());
-			DRAIN_DEBUG("            map : " << m_listAlgo[iii]->getMapSupportedInput());
+			DRAIN_VERBOSE("        Input : Not configured");
+			DRAIN_VERBOSE("            format : " << m_listAlgo[iii]->getFormatSupportedInput());
+			DRAIN_VERBOSE("            frequency : " << m_listAlgo[iii]->getFrequencySupportedInput());
+			DRAIN_VERBOSE("            map : " << m_listAlgo[iii]->getMapSupportedInput());
 		}
 		if (m_listAlgo[iii]->getOutputFormat().getConfigured() == true) {
-			DRAIN_DEBUG("        Output: " << m_listAlgo[iii]->getOutputFormat());
+			DRAIN_VERBOSE("        Output: " << m_listAlgo[iii]->getOutputFormat());
 		} else {
-			DRAIN_DEBUG("        Output : Not configured");
-			DRAIN_DEBUG("            format : " << m_listAlgo[iii]->getFormatSupportedOutput());
-			DRAIN_DEBUG("            frequency : " << m_listAlgo[iii]->getFrequencySupportedOutput());
-			DRAIN_DEBUG("            map : " << m_listAlgo[iii]->getMapSupportedOutput());
+			DRAIN_VERBOSE("        Output : Not configured");
+			DRAIN_VERBOSE("            format : " << m_listAlgo[iii]->getFormatSupportedOutput());
+			DRAIN_VERBOSE("            frequency : " << m_listAlgo[iii]->getFrequencySupportedOutput());
+			DRAIN_VERBOSE("            map : " << m_listAlgo[iii]->getMapSupportedOutput());
 		}
 	}
-	DRAIN_DEBUG("    Output : " << m_outputConfig);
+	DRAIN_VERBOSE("    Output : " << m_outputConfig);
 }
 
 void drain::Process::updateAlgo(size_t _position) {
@@ -196,7 +196,7 @@ void drain::Process::updateAlgo(size_t _position) {
 		std::vector<float> freq = getUnion<float>(freqOut, freqIn);
 		DRAIN_VERBOSE("        freq out   :" << freqOut);
 		DRAIN_VERBOSE("        freq in    :" << freqIn);
-		DRAIN_DEBUG("        freq union :" << freq);
+		DRAIN_VERBOSE("        freq union :" << freq);
 		
 		// step 2 : Check map:
 		std::vector<std::vector<audio::channel> > mapOut;
@@ -214,7 +214,7 @@ void drain::Process::updateAlgo(size_t _position) {
 		std::vector<std::vector<audio::channel> > map = getUnion<std::vector<audio::channel> >(mapOut, mapIn);
 		DRAIN_VERBOSE("        map out   :" << mapOut);
 		DRAIN_VERBOSE("        map in    :" << mapIn);
-		DRAIN_DEBUG("        map union :" << map);
+		DRAIN_VERBOSE("        map union :" << map);
 		// step 3 : Check Format:
 		std::vector<audio::format> formatOut;
 		std::vector<audio::format> formatIn;
@@ -231,12 +231,12 @@ void drain::Process::updateAlgo(size_t _position) {
 		std::vector<audio::format> format = getUnion<audio::format>(formatOut, formatIn);
 		DRAIN_VERBOSE("        format out   :" << formatOut);
 		DRAIN_VERBOSE("        format in    :" << formatIn);
-		DRAIN_DEBUG("        format union :" << format);
+		DRAIN_VERBOSE("        format union :" << format);
 		
 		if (    freq.size() >= 1
 		     && map.size() >= 1
 		     && format.size() >= 1) {
-			DRAIN_DEBUG("        find 1 compatibility :{format=" << format << ",frequency=" << freq << ",map=" << map << "}");
+			DRAIN_VERBOSE("        find 1 compatibility :{format=" << format << ",frequency=" << freq << ",map=" << map << "}");
 			drain::IOFormatInterface tmp(map[0], format[0], freq[0]);
 			if (_position > 0) {
 				m_listAlgo[_position-1]->setOutputFormat(tmp);
@@ -327,8 +327,8 @@ void drain::Process::updateAlgo(size_t _position) {
 				}
 			}
 		}
-		DRAIN_DEBUG("        update: out=" << out);
-		DRAIN_DEBUG("                in=" << in);
+		DRAIN_VERBOSE("        update: out=" << out);
+		DRAIN_VERBOSE("                in=" << in);
 		if (_position > 0) {
 			m_listAlgo[_position-1]->setOutputFormat(out);
 		}
@@ -348,7 +348,7 @@ void drain::Process::updateAlgo(size_t _position) {
 				out.setFormat(audio::format_int16);
 				algo->setOutputFormat(out);
 				m_listAlgo.insert(m_listAlgo.begin()+_position, algo);
-				DRAIN_DEBUG("convert " << out.getFormat() << " -> " << in.getFormat());
+				DRAIN_VERBOSE("convert " << out.getFormat() << " -> " << in.getFormat());
 				_position++;
 			}
 			// need add a resampler
@@ -358,7 +358,7 @@ void drain::Process::updateAlgo(size_t _position) {
 			out.setFrequency(in.getFrequency());
 			algo->setOutputFormat(out);
 			m_listAlgo.insert(m_listAlgo.begin()+_position, algo);
-			DRAIN_DEBUG("convert " << out.getFrequency() << " -> " << in.getFrequency());
+			DRAIN_VERBOSE("convert " << out.getFrequency() << " -> " << in.getFrequency());
 			out.setFrequency(in.getFrequency());
 			_position++;
 		}
@@ -370,7 +370,7 @@ void drain::Process::updateAlgo(size_t _position) {
 			out.setMap(in.getMap());
 			algo->setOutputFormat(out);
 			m_listAlgo.insert(m_listAlgo.begin()+_position, algo);
-			DRAIN_DEBUG("convert " << out.getMap() << " -> " << in.getMap());
+			DRAIN_VERBOSE("convert " << out.getMap() << " -> " << in.getMap());
 			_position++;
 		}
 		if (out.getFormat() != in.getFormat()) {
@@ -381,7 +381,7 @@ void drain::Process::updateAlgo(size_t _position) {
 			out.setFormat(in.getFormat());
 			algo->setOutputFormat(out);
 			m_listAlgo.insert(m_listAlgo.begin()+_position, algo);
-			DRAIN_DEBUG("convert " << out.getFormat() << " -> " << in.getFormat());
+			DRAIN_VERBOSE("convert " << out.getFormat() << " -> " << in.getFormat());
 			_position++;
 		}
 		
@@ -401,9 +401,9 @@ void drain::Process::updateInterAlgo() {
 		// cahin is already configured
 		return ;
 	}
-	DRAIN_DEBUG("Display properties : nbAlgo : " << m_listAlgo.size());
+	DRAIN_VERBOSE("Display properties : nbAlgo : " << m_listAlgo.size());
 	displayAlgo();
-	DRAIN_DEBUG("********* configuration START *************");
+	DRAIN_VERBOSE("********* configuration START *************");
 	// configure first the endpoint ...
 	if (m_listAlgo.size() > 1) {
 		updateAlgo(m_listAlgo.size());
@@ -411,7 +411,7 @@ void drain::Process::updateInterAlgo() {
 	for (size_t iii=0; iii<=m_listAlgo.size(); ++iii) {
 		updateAlgo(iii);
 	}
-	DRAIN_DEBUG("********* configuration will be done *************");
+	DRAIN_VERBOSE("********* configuration will be done *************");
 	displayAlgo();
 	m_isConfigured = true;
 	//exit(-1);

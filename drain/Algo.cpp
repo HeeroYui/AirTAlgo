@@ -57,7 +57,7 @@ void drain::Algo::configurationChange() {
 			m_formatSize = sizeof(double);
 			break;
 		case audio::format_unknow:
-			DRAIN_ERROR("format not configured...");
+			DRAIN_VERBOSE("format not configured...");
 			m_formatSize = 8;
 			break;
 	}
