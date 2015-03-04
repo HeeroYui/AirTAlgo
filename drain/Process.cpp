@@ -89,10 +89,10 @@ bool drain::Process::pull(std11::chrono::system_clock::time_point& _time,
 
 
 bool drain::Process::process(std11::chrono::system_clock::time_point& _time,
-                                void* _inData,
-                                size_t _inNbChunk,
-                                void*& _outData,
-                                size_t& _outNbChunk) {
+                             void* _inData,
+                             size_t _inNbChunk,
+                             void*& _outData,
+                             size_t& _outNbChunk) {
 	updateInterAlgo();
 	if (m_listAlgo.size() == 0) {
 		_outData = _inData;
@@ -144,27 +144,27 @@ template<typename T> std::vector<T> getUnion(const std::vector<T>& _out, const s
 
 
 void drain::Process::displayAlgo() {
-	DRAIN_VERBOSE("    Input : " << m_inputConfig);
+	DRAIN_DEBUG("    Input : " << m_inputConfig);
 	for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
-		DRAIN_VERBOSE("    [" << m_listAlgo[iii]->getType() << "] '" << m_listAlgo[iii]->getName() << "'");
+		DRAIN_DEBUG("    [" << m_listAlgo[iii]->getType() << "] '" << m_listAlgo[iii]->getName() << "'");
 		if (m_listAlgo[iii]->getInputFormat().getConfigured() == true) {
-			DRAIN_VERBOSE("        Input : " << m_listAlgo[iii]->getInputFormat());
+			DRAIN_DEBUG("        Input : " << m_listAlgo[iii]->getInputFormat());
 		} else {
-			DRAIN_VERBOSE("        Input : Not configured");
-			DRAIN_VERBOSE("            format : " << m_listAlgo[iii]->getFormatSupportedInput());
-			DRAIN_VERBOSE("            frequency : " << m_listAlgo[iii]->getFrequencySupportedInput());
-			DRAIN_VERBOSE("            map : " << m_listAlgo[iii]->getMapSupportedInput());
+			DRAIN_DEBUG("        Input : Not configured");
+			DRAIN_DEBUG("            format : " << m_listAlgo[iii]->getFormatSupportedInput());
+			DRAIN_DEBUG("            frequency : " << m_listAlgo[iii]->getFrequencySupportedInput());
+			DRAIN_DEBUG("            map : " << m_listAlgo[iii]->getMapSupportedInput());
 		}
 		if (m_listAlgo[iii]->getOutputFormat().getConfigured() == true) {
-			DRAIN_VERBOSE("        Output: " << m_listAlgo[iii]->getOutputFormat());
+			DRAIN_DEBUG("        Output: " << m_listAlgo[iii]->getOutputFormat());
 		} else {
-			DRAIN_VERBOSE("        Output : Not configured");
-			DRAIN_VERBOSE("            format : " << m_listAlgo[iii]->getFormatSupportedOutput());
-			DRAIN_VERBOSE("            frequency : " << m_listAlgo[iii]->getFrequencySupportedOutput());
-			DRAIN_VERBOSE("            map : " << m_listAlgo[iii]->getMapSupportedOutput());
+			DRAIN_DEBUG("        Output : Not configured");
+			DRAIN_DEBUG("            format : " << m_listAlgo[iii]->getFormatSupportedOutput());
+			DRAIN_DEBUG("            frequency : " << m_listAlgo[iii]->getFrequencySupportedOutput());
+			DRAIN_DEBUG("            map : " << m_listAlgo[iii]->getMapSupportedOutput());
 		}
 	}
-	DRAIN_VERBOSE("    Output : " << m_outputConfig);
+	DRAIN_DEBUG("    Output : " << m_outputConfig);
 }
 
 void drain::Process::updateAlgo(size_t _position) {
