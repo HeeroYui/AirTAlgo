@@ -50,10 +50,10 @@ void drain::ChannelReorder::configurationChange() {
 
 
 bool drain::ChannelReorder::process(std11::chrono::system_clock::time_point& _time,
-                                              void* _input,
-                                              size_t _inputNbChunk,
-                                              void*& _output,
-                                              size_t& _outputNbChunk) {
+                                    void* _input,
+                                    size_t _inputNbChunk,
+                                    void*& _output,
+                                    size_t& _outputNbChunk) {
 	drain::AutoLogInOut tmpLog("ChannelReorder");
 	_outputNbChunk = _inputNbChunk;
 	// check if we need to process:
