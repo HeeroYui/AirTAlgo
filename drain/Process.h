@@ -16,6 +16,7 @@
 #include <drain/Algo.h>
 #include <etk/chrono.h>
 #include <etk/memory.h>
+#include <etk/os/FSNode.h>
 
 namespace drain{
 	class Process {
@@ -111,6 +112,9 @@ namespace drain{
 			std::vector<std11::shared_ptr<drain::Algo> >::iterator end() {
 				return m_listAlgo.end();
 			}
+			std11::shared_ptr<drain::Algo> operator[](int32_t _id) {
+				return m_listAlgo[_id];
+			}
 			
 			template<typename T> std11::shared_ptr<T> get(const std::string& _name) {
 				for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
@@ -170,6 +174,8 @@ namespace drain{
 		private:
 			void displayAlgo();
 			void updateAlgo(size_t _position);
+		public:
+			void generateDot(etk::FSNode& _node, int32_t _offset, int32_t _basicID, std::string& _nameIn, std::string& _nameOut, bool _reserseGraph);
 	};
 };
 

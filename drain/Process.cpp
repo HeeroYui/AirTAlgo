@@ -442,3 +442,80 @@ bool drain::Process::processIn(void* _inData,
 	memcpy(_outData, outData, _outNbChunk*audio::getFormatBytes(m_outputConfig.getFormat()) * m_outputConfig.getMap().size());
 	return false;
 }
+
+static void link(etk::FSNode& _node, const std::string& _first, const std::string& _op, const std::string& _second, bool _isLink=true) {
+	if (_op == "->") {
+		if (_isLink) {
+			_node << "			" << _first << " -> " << _second << ";\n";
+		} else {
+			_node << "			" << _first << " -> " << _second << " [style=dashed];\n";
+		}
+	} else if (_op == "<-") {
+		_node << "			" << _first << " -> " <<_second<< " [color=transparent];\n";
+		if (_isLink) {
+			_node << "			" << _second << " -> " << _first << " [constraint=false];\n";
+		} else {
+			_node << "			" << _second << " -> " << _first << " [constraint=false, style=dashed];\n";
+		}
+	}
+}
+
+void drain::Process::generateDot(etk::FSNode& _node, int32_t _offset, int32_t _basicID, std::string& _nameIn, std::string& _nameOut, bool _reserseGraph) {
+	_node << "			subgraph clusterNode_" << _basicID << "_process {\n";
+	_node << "				label=\"Drain::Process\";\n";
+	_node << "				node [shape=ellipse];\n";
+	
+	if (_reserseGraph == false) {
+		_nameIn = "INTERFACE_ALGO_" + etk::to_string(_basicID) + "_in";
+		_node << "				" << _nameIn << " [ label=\"format=" << etk::to_string(getInputConfig().getFormat())
+		                                              << "\\n freq=" << getInputConfig().getFrequency()
+		                                        << "\\n channelMap=" << etk::to_string(getInputConfig().getMap()) << "\\n in\" ];\n";
+	} else {
+		_nameIn = "INTERFACE_ALGO_" + etk::to_string(_basicID) + "_out";
+		_node << "				" << _nameIn << " [ label=\"format=" << etk::to_string(getOutputConfig().getFormat())
+		                                              << "\\n freq=" << getOutputConfig().getFrequency()
+		                                        << "\\n channelMap=" << etk::to_string(getOutputConfig().getMap()) << "\\n out\" ];\n";
+	}
+	std::string connectString = _nameIn;
+	_node << "				node [shape=box];\n";
+	if (_reserseGraph == false) {
+		for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
+			if (m_listAlgo[iii] == nullptr) {
+				continue;
+			}
+			std::string connectStringSecond = "ALGO_" + etk::to_string(_basicID) + "__" + etk::to_string(iii);
+			_node << "				" << connectStringSecond << " [label=\"ALGO\\ntype='" << m_listAlgo[iii]->getType() << "'\\nname='" << m_listAlgo[iii]->getName() << "'\" ];\n";
+			link(_node, connectString, "->", connectStringSecond);
+			connectString = connectStringSecond;
+		}
+	} else {
+		for (int32_t iii=m_listAlgo.size()-1; iii>=0; --iii) {
+			if (m_listAlgo[iii] == nullptr) {
+				continue;
+			}
+			std::string connectStringSecond = "ALGO_" + etk::to_string(_basicID) + "__" + etk::to_string(iii);
+			_node << "				" << connectStringSecond << " [label=\"ALGO\\ntype='" << m_listAlgo[iii]->getType() << "'\\nname='" << m_listAlgo[iii]->getName() << "'\" ];\n";
+			link(_node, connectStringSecond, "<-", connectString);
+			connectString = connectStringSecond;
+		}
+	}
+	_node << "				node [shape=ellipse];\n";
+	if (_reserseGraph == false) {
+		_nameOut = "INTERFACE_ALGO_" + etk::to_string(_basicID) + "_out";
+		_node << "				" << _nameOut << " [ label=\"format=" << etk::to_string(getOutputConfig().getFormat())
+		                                               << "\\n freq=" << getOutputConfig().getFrequency()
+		                                         << "\\n channelMap=" << etk::to_string(getOutputConfig().getMap()) << "\\n out\" ];\n";
+	} else {
+		_nameOut = "INTERFACE_ALGO_" + etk::to_string(_basicID) + "_in";
+		_node << "				" << _nameOut << " [ label=\"format=" << etk::to_string(getInputConfig().getFormat())
+		                                               << "\\n freq=" << getInputConfig().getFrequency()
+		                                         << "\\n channelMap=" << etk::to_string(getInputConfig().getMap()) << "\\n in\" ];\n";
+	}
+	if (_reserseGraph == false) {
+		link(_node, connectString,                                      "->", _nameOut);
+	} else {
+		link(_node, _nameOut, "<-", connectString);
+	}
+	_node << "			}\n";
+}
+
