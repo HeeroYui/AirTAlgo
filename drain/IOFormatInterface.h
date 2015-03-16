@@ -69,6 +69,12 @@ namespace drain{
 			 * @param[in] _value New frequency.
 			 */
 			void setFrequency(float _value);
+		public:
+			/**
+			 * @brief Get the Chunk size in byte.
+			 * @return the number of byte used by chunk.
+			 */
+			int32_t getChunkSize() const;
 		protected:
 			std11::function<void()> m_ioChangeFunctor; //!< function pointer on the upper class
 			void configurationChange();

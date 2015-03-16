@@ -29,6 +29,36 @@ namespace drain{
 			                     size_t _inputNbChunk,
 			                     void*& _output,
 			                     size_t& _outputNbChunk);
+			/**
+			 * @brief Set buffer size in chunk number
+			 * @param[in] _nbChunk Number of chunk in the buffer
+			 */
+			virtual void setBufferSize(size_t _nbChunk);
+			/**
+			 * @brief Set buffer size size of the buffer with the stored time in µs
+			 * @param[in] _time Time in microsecond of the buffer
+			 */
+			virtual void setBufferSize(const std11::chrono::microseconds& _time);
+			/**
+			 * @brief get buffer size in chunk number
+			 * @return Number of chunk that can be written in the buffer
+			 */
+			virtual size_t getBufferSize();
+			/**
+			 * @brief Set buffer size size of the buffer with the stored time in µs
+			 * @return Time in microsecond that can be written in the buffer
+			 */
+			virtual std11::chrono::microseconds getBufferSizeMicrosecond();
+			/**
+			 * @brief Get buffer size filled in chunk number
+			 * @return Number of chunk in the buffer (that might be read/write)
+			 */
+			virtual size_t getBufferFillSize();
+			/**
+			 * @brief Set buffer size size of the buffer with the stored time in µs
+			 * @return Time in microsecond of the buffer (that might be read/write)
+			 */
+			virtual std11::chrono::microseconds getBufferFillSizeMicrosecond();
 	};
 };
 

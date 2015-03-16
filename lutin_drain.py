@@ -15,6 +15,7 @@ def create(target):
 		'drain/airtalgo.cpp',
 		'drain/Algo.cpp',
 		'drain/ChannelReorder.cpp',
+		'drain/CircularBuffer.cpp',
 		'drain/EndPointCallback.cpp',
 		'drain/EndPoint.cpp',
 		'drain/EndPointRead.cpp',

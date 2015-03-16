@@ -116,3 +116,8 @@ void drain::IOFormatInterface::configurationChange() {
 void drain::IOFormatInterface::setCallback(const std11::function<void()>& _functor) {
 	m_ioChangeFunctor = _functor;
 }
+
+
+int32_t drain::IOFormatInterface::getChunkSize() const {
+	return m_map.size() * audio::getFormatBytes(m_format);
+}

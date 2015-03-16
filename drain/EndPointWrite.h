@@ -10,6 +10,7 @@
 #include <drain/EndPoint.h>
 #include <etk/functional.h>
 #include <etk/mutex.h>
+#include <drain/CircularBuffer.h>
 
 namespace drain{
 	typedef std11::function<void (const std11::chrono::system_clock::time_point& _time,
@@ -19,7 +20,7 @@ namespace drain{
 	                              const std::vector<audio::channel>& _map)> playbackFunctionWrite;
 	class EndPointWrite : public EndPoint {
 		private:
-			std::vector<int8_t> m_tmpData;
+			drain::CircularBuffer m_buffer;
 			playbackFunctionWrite m_function;
 			std11::mutex m_mutex;
 		protected:
@@ -44,6 +45,40 @@ namespace drain{
 			virtual void setCallback(playbackFunctionWrite _function) {
 				m_function = _function;
 			}
+		protected:
+			std11::chrono::microseconds m_bufferSizeMicroseconds; // 0 if m_bufferSizeChunk != 0
+			size_t m_bufferSizeChunk; // 0 if m_bufferSizeMicroseconds != 0
+		public:
+			/**
+			 * @brief Set buffer size in chunk number
+			 * @param[in] _nbChunk Number of chunk in the buffer
+			 */
+			virtual void setBufferSize(size_t _nbChunk);
+			/**
+			 * @brief Set buffer size size of the buffer with the stored time in µs
+			 * @param[in] _time Time in microsecond of the buffer
+			 */
+			virtual void setBufferSize(const std11::chrono::microseconds& _time);
+			/**
+			 * @brief get buffer size in chunk number
+			 * @return Number of chunk that can be written in the buffer
+			 */
+			virtual size_t getBufferSize();
+			/**
+			 * @brief Set buffer size size of the buffer with the stored time in µs
+			 * @return Time in microsecond that can be written in the buffer
+			 */
+			virtual std11::chrono::microseconds getBufferSizeMicrosecond();
+			/**
+			 * @brief Get buffer size filled in chunk number
+			 * @return Number of chunk in the buffer (that might be read/write)
+			 */
+			virtual size_t getBufferFillSize();
+			/**
+			 * @brief Set buffer size size of the buffer with the stored time in µs
+			 * @return Time in microsecond of the buffer (that might be read/write)
+			 */
+			virtual std11::chrono::microseconds getBufferFillSizeMicrosecond();
 	};
 };
 

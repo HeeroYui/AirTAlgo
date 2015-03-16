@@ -11,13 +11,20 @@
 #define __class__ "EndPointWrite"
 
 drain::EndPointWrite::EndPointWrite() :
-  m_function(nullptr) {
+  m_function(nullptr),
+  m_bufferSizeMicroseconds(1000000) {
 	
 }
 
 void drain::EndPointWrite::init() {
 	drain::EndPoint::init();
 	m_type = "EndPoint";
+	if (    audio::getFormatBytes(m_output.getFormat())*m_output.getMap().size() != 0
+	     && m_output.getFrequency() != 0) {
+		m_buffer.setCapacity(m_bufferSizeMicroseconds,
+		                     audio::getFormatBytes(m_output.getFormat())*m_output.getMap().size(),
+		                     m_output.getFrequency());
+	}
 }
 
 std11::shared_ptr<drain::EndPointWrite> drain::EndPointWrite::create() {
@@ -28,6 +35,19 @@ std11::shared_ptr<drain::EndPointWrite> drain::EndPointWrite::create() {
 
 void drain::EndPointWrite::configurationChange() {
 	drain::EndPoint::configurationChange();
+	// update the buffer size ...
+	if (    audio::getFormatBytes(m_output.getFormat())*m_output.getMap().size() != 0
+	     && m_output.getFrequency() != 0) {
+		if (std11::chrono::microseconds(0) != m_bufferSizeMicroseconds) {
+			m_buffer.setCapacity(m_bufferSizeMicroseconds,
+			                     audio::getFormatBytes(m_output.getFormat())*m_output.getMap().size(),
+			                     m_output.getFrequency());
+		} else {
+			m_buffer.setCapacity(m_bufferSizeChunk,
+			                     audio::getFormatBytes(m_output.getFormat())*m_output.getMap().size(),
+			                     m_output.getFrequency());
+		}
+	}
 	m_needProcess = true;
 }
 
@@ -38,9 +58,10 @@ bool drain::EndPointWrite::process(std11::chrono::system_clock::time_point& _tim
                                    void*& _output,
                                    size_t& _outputNbChunk){
 	drain::AutoLogInOut tmpLog("EndPointWrite");
-	//DRAIN_INFO("                              nb Sample in buffer : " << m_tmpData.size());
+	//DRAIN_INFO("                              nb Sample in buffer : " << m_buffer.size());
 	if (m_function != nullptr) {
-		if (m_tmpData.size() <= 20000) {
+		// TODO : Rework this ...
+		if (m_buffer.getSize() <= 20000) {
 			m_function(_time, _inputNbChunk, m_output.getFormat(), m_output.getFrequency(), m_output.getMap());
 		}
 	}
@@ -52,21 +73,21 @@ bool drain::EndPointWrite::process(std11::chrono::system_clock::time_point& _tim
 	_output = &m_outputData[0];
 	std11::unique_lock<std11::mutex> lock(m_mutex);
 	// check if data in the tmpBuffer
-	if (m_tmpData.size() == 0) {
+	if (m_buffer.getSize() == 0) {
 		DRAIN_WARNING("No data in the user buffer (write null data ... " << _outputNbChunk << " chunks)");
 		// just send no data ...
 		return true;
 	}
 	DRAIN_INFO("Write " << _outputNbChunk << " chunks");
 	// check if we have enought data:
-	int32_t nbChunkToCopy = std::min(_inputNbChunk, m_tmpData.size()/(m_output.getMap().size()*m_formatSize));
+	int32_t nbChunkToCopy = std::min(_inputNbChunk, m_buffer.getSize());
 	
-	DRAIN_INFO("      " << nbChunkToCopy << " chunks ==> " << nbChunkToCopy*m_output.getMap().size()*m_formatSize << " Byte sizeBuffer=" << m_tmpData.size());
+	DRAIN_INFO("      " << nbChunkToCopy << " chunks ==> " << nbChunkToCopy*m_output.getMap().size()*m_formatSize << " Byte sizeBuffer=" << m_buffer.getSize());
 	// copy data to the output:
-	memcpy(_output, &m_tmpData[0], nbChunkToCopy*m_output.getMap().size()*m_formatSize);
-	// remove old data:
-	m_tmpData.erase(m_tmpData.begin(), m_tmpData.begin() + nbChunkToCopy*m_output.getMap().size()*m_formatSize);
-	//DRAIN_INFO("                              nb Sample in buffer : " << m_tmpData.size());
+	int32_t nbUnderflow = m_buffer.read(_output, nbChunkToCopy);
+	if (nbUnderflow != 0) {
+		DRAIN_WARNING("Undeflow in FIFO ...");
+	}
 	return true;
 }
 
@@ -75,9 +96,50 @@ void drain::EndPointWrite::write(const void* _value, size_t _nbChunk) {
 	DRAIN_INFO("[ASYNC] Write data : " << _nbChunk << " chunks"
 	              << " ==> " << _nbChunk*m_output.getMap().size() << " samples"
 	              << " formatSize=" << int32_t(m_formatSize)
-	              << " bufferSize=" << m_tmpData.size());
-	const int8_t* value = static_cast<const int8_t*>(_value);
-	for (size_t iii=0; iii<_nbChunk*m_formatSize*m_output.getMap().size(); ++iii) {
-		m_tmpData.push_back(*value++);
+	              << " bufferSize=" << m_buffer.getSize());
+	int32_t nbOverflow = m_buffer.write(_value, _nbChunk);
+	if (nbOverflow > 0) {
+		DRAIN_ERROR("Overflow in output buffer : " << nbOverflow << " / " << _nbChunk);
 	}
+}
+
+void drain::EndPointWrite::setBufferSize(size_t _nbChunk) {
+	m_bufferSizeMicroseconds = std11::chrono::microseconds(0);
+	m_bufferSizeChunk = _nbChunk;
+	if (    audio::getFormatBytes(m_output.getFormat())*m_output.getMap().size() != 0
+	     && m_output.getFrequency() != 0) {
+		m_buffer.setCapacity(_nbChunk,
+		                     audio::getFormatBytes(m_output.getFormat())*m_output.getMap().size(),
+		                     float(m_output.getFrequency()));
+	}
+}
+
+void drain::EndPointWrite::setBufferSize(const std11::chrono::microseconds& _time) {
+	m_bufferSizeMicroseconds = _time;
+	m_bufferSizeChunk = 0;
+	m_buffer.setCapacity(_time,
+	                     audio::getFormatBytes(m_output.getFormat())*m_output.getMap().size(),
+	                     float(m_output.getFrequency()));
+}
+
+size_t drain::EndPointWrite::getBufferSize() {
+	if (m_bufferSizeChunk != 0) {
+		return m_bufferSizeChunk;
+	}
+	return (int64_t(m_output.getFrequency())*m_bufferSizeMicroseconds.count())/1000000LL;
+}
+
+std11::chrono::microseconds drain::EndPointWrite::getBufferSizeMicrosecond() {
+	if (m_bufferSizeMicroseconds != std11::chrono::microseconds(0) ) {
+		return m_bufferSizeMicroseconds;
+	}
+	return std11::chrono::microseconds(m_bufferSizeChunk*1000000LL/int64_t(m_output.getFrequency()));
+}
+
+size_t drain::EndPointWrite::getBufferFillSize() {
+	return m_buffer.getSize()/(audio::getFormatBytes(m_output.getFormat())*m_output.getMap().size());
+}
+
+std11::chrono::microseconds drain::EndPointWrite::getBufferFillSizeMicrosecond() {
+	return std11::chrono::microseconds(getBufferFillSize()*1000000LL/int64_t(m_output.getFrequency()));
 }

@@ -48,6 +48,7 @@ add_library(${PROJECT_NAME}
   ../${PROJECT_NAME}/airtalgo.cpp
   ../${PROJECT_NAME}/Algo.cpp
   ../${PROJECT_NAME}/ChannelReorder.cpp
+  ../${PROJECT_NAME}/CircularBuffer.cpp
   ../${PROJECT_NAME}/EndPointCallback.cpp
   ../${PROJECT_NAME}/EndPoint.cpp
   ../${PROJECT_NAME}/EndPointRead.cpp
