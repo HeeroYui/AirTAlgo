@@ -61,10 +61,12 @@ add_library(${PROJECT_NAME}
   ../${PROJECT_NAME}/AutoLogInOut.cpp
 )
 
+message(STATUS "ETK_DEFINITIONS=${ETK_DEFINITIONS}")
+message(STATUS "etk_DEFINITIONS=${etk_DEFINITIONS}")
+message(STATUS "CMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}")
 #message("libspeex DSP file: ${LIB_SPEEX_DSP}")
 #message("libspeex DSP file: ${SPEEX_DSP}")
 
-set(CMAKE_CXX_FLAGS "-std=c++11 -DDEBUG_LEVEL=3 -DDEBUG=1 -D__CPP_VERSION__=2011")
 add_definitions(-DHAVE_SPEEX_DSP_RESAMPLE)
 
 ## Add cmake target dependencies of the executable/library
