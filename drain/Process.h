@@ -19,6 +19,7 @@
 #include <etk/os/FSNode.h>
 
 namespace drain{
+	typedef std11::function<void (const std::string& _origin, const std::string& _status)> statusFunction;
 	class Process {
 		protected:
 			std::vector<int8_t> m_data; //!< temporary overlap output buffer (change size of the output data)
@@ -167,6 +168,11 @@ namespace drain{
 				return false;
 			}
 		private:
+			statusFunction m_statusFunction;
+		public:
+			void generateStatus(const std::string& _origin, const std::string& _status);
+			void setStatusFunction(statusFunction _newFunction);
+		private:
 			bool m_isConfigured;
 		public:
 			void updateInterAlgo();
@@ -176,6 +182,8 @@ namespace drain{
 			void updateAlgo(size_t _position);
 		public:
 			void generateDot(etk::FSNode& _node, int32_t _offset, int32_t _basicID, std::string& _nameIn, std::string& _nameOut, bool _reserseGraph);
+			// TODO : Remove this one when we find a good way to do it ...
+			void generateDotProcess(etk::FSNode& _node, int32_t _offset, int32_t _basicID, std::string& _nameIn, std::string& _nameOut, bool _reserseGraph);
 	};
 };
 

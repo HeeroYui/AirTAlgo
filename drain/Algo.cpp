@@ -101,3 +101,17 @@ size_t drain::Algo::needInputData(size_t _output) {
 	}
 	return input;
 }
+
+void drain::Algo::setStatusFunction(algoStatusFunction _newFunction) {
+	m_statusFunction = _newFunction;
+}
+
+void drain::Algo::generateStatus(const std::string& _status) {
+	if (m_statusFunction != nullptr) {
+		if (m_name.size() == 0) {
+			m_statusFunction(m_type, _status);
+		} else {
+			m_statusFunction(m_name, _status);
+		}
+	}
+}

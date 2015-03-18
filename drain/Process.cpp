@@ -43,7 +43,6 @@ bool drain::Process::pull(std11::chrono::system_clock::time_point& _time,
                           void* _data,
                           size_t _nbChunk,
                           size_t _chunkSize) {
-	//std::cout << "        Interface DIRECT " << std::endl;
 	while(m_data.size()<_nbChunk*_chunkSize) {
 		void* in = NULL;
 		size_t nbChunkIn = _nbChunk - m_data.size()/_chunkSize;
@@ -63,26 +62,21 @@ bool drain::Process::pull(std11::chrono::system_clock::time_point& _time,
 		}
 		
 		// get data from the upstream
-		//std::cout << "         * request " << nbChunkIn << " chunk" << std::endl;
 		process(_time, in, nbChunkIn, out, nbChunkOut);
-		//std::cout << "         * get " << nbChunkOut << " chunk" << std::endl;
 		if (nbChunkOut > 0) {
 			size_t position = m_data.size();
 			m_data.resize(m_data.size() + nbChunkOut*_chunkSize);
 			memcpy(&m_data[position], out, nbChunkOut*_chunkSize);
 		} else {
-			// TODO : ERROR ...
+			// No more data in the process stream (0 input data might have flush data)
 			break;
 		}
 	}
-	if (m_data.size()>=_nbChunk*_chunkSize) {
-		//std::cout << "         * copy needed data" << std::endl;
-		memcpy(_data, &m_data[0], _nbChunk*_chunkSize);
-		m_data.erase(m_data.begin(), m_data.begin()+_nbChunk*_chunkSize);
-	} else {
-		DRAIN_WARNING("         * soft underflow");
-		// ERROR
-		m_data.clear();
+	// copy only data availlable :
+	int32_t minByTeSize = std::min(m_data.size(), _nbChunk*_chunkSize);
+	if (minByTeSize >= 0) {
+		memcpy(_data, &m_data[0], minByTeSize);
+		m_data.erase(m_data.begin(), m_data.begin()+minByTeSize);
 	}
 	return true;
 }
@@ -113,11 +107,13 @@ bool drain::Process::process(std11::chrono::system_clock::time_point& _time,
 
 void drain::Process::pushBack(const std11::shared_ptr<drain::Algo>& _algo) {
 	removeAlgoDynamic();
+	_algo->setStatusFunction(std11::bind(&drain::Process::generateStatus, this, std11::placeholders::_1, std11::placeholders::_2));
 	m_listAlgo.push_back(_algo);
 }
 
 void drain::Process::pushFront(const std11::shared_ptr<drain::Algo>& _algo) {
 	removeAlgoDynamic();
+	_algo->setStatusFunction(std11::bind(&drain::Process::generateStatus, this, std11::placeholders::_1, std11::placeholders::_2));
 	m_listAlgo.insert(m_listAlgo.begin(), _algo);
 }
 
@@ -347,6 +343,7 @@ void drain::Process::updateAlgo(size_t _position) {
 				algo->setInputFormat(out);
 				out.setFormat(audio::format_int16);
 				algo->setOutputFormat(out);
+				algo->setStatusFunction(std11::bind(&drain::Process::generateStatus, this, std11::placeholders::_1, std11::placeholders::_2));
 				m_listAlgo.insert(m_listAlgo.begin()+_position, algo);
 				DRAIN_VERBOSE("convert " << out.getFormat() << " -> " << in.getFormat());
 				_position++;
@@ -357,6 +354,7 @@ void drain::Process::updateAlgo(size_t _position) {
 			algo->setInputFormat(out);
 			out.setFrequency(in.getFrequency());
 			algo->setOutputFormat(out);
+			algo->setStatusFunction(std11::bind(&drain::Process::generateStatus, this, std11::placeholders::_1, std11::placeholders::_2));
 			m_listAlgo.insert(m_listAlgo.begin()+_position, algo);
 			DRAIN_VERBOSE("convert " << out.getFrequency() << " -> " << in.getFrequency());
 			out.setFrequency(in.getFrequency());
@@ -369,6 +367,7 @@ void drain::Process::updateAlgo(size_t _position) {
 			algo->setInputFormat(out);
 			out.setMap(in.getMap());
 			algo->setOutputFormat(out);
+			algo->setStatusFunction(std11::bind(&drain::Process::generateStatus, this, std11::placeholders::_1, std11::placeholders::_2));
 			m_listAlgo.insert(m_listAlgo.begin()+_position, algo);
 			DRAIN_VERBOSE("convert " << out.getMap() << " -> " << in.getMap());
 			_position++;
@@ -380,6 +379,7 @@ void drain::Process::updateAlgo(size_t _position) {
 			algo->setInputFormat(out);
 			out.setFormat(in.getFormat());
 			algo->setOutputFormat(out);
+			algo->setStatusFunction(std11::bind(&drain::Process::generateStatus, this, std11::placeholders::_1, std11::placeholders::_2));
 			m_listAlgo.insert(m_listAlgo.begin()+_position, algo);
 			DRAIN_VERBOSE("convert " << out.getFormat() << " -> " << in.getFormat());
 			_position++;
@@ -462,7 +462,7 @@ static void link(etk::FSNode& _node, const std::string& _first, const std::strin
 
 void drain::Process::generateDot(etk::FSNode& _node, int32_t _offset, int32_t _basicID, std::string& _nameIn, std::string& _nameOut, bool _reserseGraph) {
 	_node << "			subgraph clusterNode_" << _basicID << "_process {\n";
-	_node << "				label=\"Drain::Process\";\n";
+	_node << "				label=\"Drain::Process" << (_reserseGraph?"_R":"_N") << "\";\n";
 	_node << "				node [shape=ellipse];\n";
 	
 	if (_reserseGraph == false) {
@@ -489,7 +489,8 @@ void drain::Process::generateDot(etk::FSNode& _node, int32_t _offset, int32_t _b
 			connectString = connectStringSecond;
 		}
 	} else {
-		for (int32_t iii=m_listAlgo.size()-1; iii>=0; --iii) {
+		//for (int32_t iii=m_listAlgo.size()-1; iii>=0; --iii) {
+		for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
 			if (m_listAlgo[iii] == nullptr) {
 				continue;
 			}
@@ -519,3 +520,73 @@ void drain::Process::generateDot(etk::FSNode& _node, int32_t _offset, int32_t _b
 	_node << "			}\n";
 }
 
+void drain::Process::generateDotProcess(etk::FSNode& _node, int32_t _offset, int32_t _basicID, std::string& _nameIn, std::string& _nameOut, bool _reserseGraph) {
+	_node << "			subgraph clusterNode_" << _basicID << "_process {\n";
+	_node << "				label=\"Drain::Process" << (_reserseGraph?"_R":"_N") << "\";\n";
+	_node << "				node [shape=ellipse];\n";
+	
+	if (_reserseGraph == true) {
+		_nameIn = "INTERFACE_ALGO_" + etk::to_string(_basicID) + "_in";
+		_node << "				" << _nameIn << " [ label=\"format=" << etk::to_string(getInputConfig().getFormat())
+		                                              << "\\n freq=" << getInputConfig().getFrequency()
+		                                        << "\\n channelMap=" << etk::to_string(getInputConfig().getMap()) << "\\n in\" ];\n";
+	} else {
+		_nameIn = "INTERFACE_ALGO_" + etk::to_string(_basicID) + "_out";
+		_node << "				" << _nameIn << " [ label=\"format=" << etk::to_string(getOutputConfig().getFormat())
+		                                              << "\\n freq=" << getOutputConfig().getFrequency()
+		                                        << "\\n channelMap=" << etk::to_string(getOutputConfig().getMap()) << "\\n out\" ];\n";
+	}
+	std::string connectString = _nameIn;
+	_node << "				node [shape=box];\n";
+	if (_reserseGraph == false) {
+		for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
+			if (m_listAlgo[iii] == nullptr) {
+				continue;
+			}
+			std::string connectStringSecond = "ALGO_" + etk::to_string(_basicID) + "__" + etk::to_string(iii);
+			_node << "				" << connectStringSecond << " [label=\"ALGO\\ntype='" << m_listAlgo[iii]->getType() << "'\\nname='" << m_listAlgo[iii]->getName() << "'\" ];\n";
+			link(_node, connectString, "->", connectStringSecond);
+			connectString = connectStringSecond;
+		}
+	} else {
+		//for (int32_t iii=m_listAlgo.size()-1; iii>=0; --iii) {
+		for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
+			if (m_listAlgo[iii] == nullptr) {
+				continue;
+			}
+			std::string connectStringSecond = "ALGO_" + etk::to_string(_basicID) + "__" + etk::to_string(iii);
+			_node << "				" << connectStringSecond << " [label=\"ALGO\\ntype='" << m_listAlgo[iii]->getType() << "'\\nname='" << m_listAlgo[iii]->getName() << "'\" ];\n";
+			link(_node, connectStringSecond, "<-", connectString);
+			connectString = connectStringSecond;
+		}
+	}
+	_node << "				node [shape=ellipse];\n";
+	if (_reserseGraph == true) {
+		_nameOut = "INTERFACE_ALGO_" + etk::to_string(_basicID) + "_out";
+		_node << "				" << _nameOut << " [ label=\"format=" << etk::to_string(getOutputConfig().getFormat())
+		                                               << "\\n freq=" << getOutputConfig().getFrequency()
+		                                         << "\\n channelMap=" << etk::to_string(getOutputConfig().getMap()) << "\\n out\" ];\n";
+	} else {
+		_nameOut = "INTERFACE_ALGO_" + etk::to_string(_basicID) + "_in";
+		_node << "				" << _nameOut << " [ label=\"format=" << etk::to_string(getInputConfig().getFormat())
+		                                               << "\\n freq=" << getInputConfig().getFrequency()
+		                                         << "\\n channelMap=" << etk::to_string(getInputConfig().getMap()) << "\\n in\" ];\n";
+	}
+	if (_reserseGraph == false) {
+		link(_node, connectString,                                      "->", _nameOut);
+	} else {
+		link(_node, _nameOut, "<-", connectString);
+	}
+	_node << "			}\n";
+}
+
+
+void drain::Process::generateStatus(const std::string& _origin, const std::string& _status) {
+	if (m_statusFunction != nullptr) {
+		m_statusFunction(_origin, _status);
+	}
+}
+
+void drain::Process::setStatusFunction(statusFunction _newFunction) {
+	m_statusFunction = _newFunction;
+}

@@ -21,6 +21,7 @@
 #include "debug.h"
 
 namespace drain{
+	typedef std11::function<void (const std::string& _origin, const std::string& _status)> algoStatusFunction;
 	class Algo : public std11::enable_shared_from_this<Algo> {
 		private:
 			std::string m_name;
@@ -37,8 +38,8 @@ namespace drain{
 			const std::string& getType() const {
 				return m_type;
 			}
-			void setType(const std::string& _name) {
-				m_type = _name;
+			void setType(const std::string& _type) {
+				m_type = _type;
 			}
 		private:
 			bool m_temporary;
@@ -49,6 +50,12 @@ namespace drain{
 			bool getTemporary() const {
 				return m_temporary;
 			}
+		private:
+			algoStatusFunction m_statusFunction;
+		public:
+			void setStatusFunction(algoStatusFunction _newFunction);
+		protected:
+			void generateStatus(const std::string& _status);
 		protected:
 			std::vector<int8_t> m_outputData;
 			int8_t m_formatSize; //!< sample size
