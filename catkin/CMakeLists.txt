@@ -61,17 +61,10 @@ add_library(${PROJECT_NAME}
   ../${PROJECT_NAME}/AutoLogInOut.cpp
 )
 
-message(STATUS "ETK_DEFINITIONS=${ETK_DEFINITIONS}")
-message(STATUS "etk_DEFINITIONS=${etk_DEFINITIONS}")
-message(STATUS "CMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}")
 #message("libspeex DSP file: ${LIB_SPEEX_DSP}")
 #message("libspeex DSP file: ${SPEEX_DSP}")
 
 add_definitions(-DHAVE_SPEEX_DSP_RESAMPLE)
-
-## Add cmake target dependencies of the executable/library
-## as an example, message headers may need to be generated before nodes
-#add_dependencies(${PROJECT_NAME} test_perfo_core_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}
