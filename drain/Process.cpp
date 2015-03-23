@@ -405,7 +405,7 @@ void drain::Process::updateInterAlgo() {
 	displayAlgo();
 	DRAIN_VERBOSE("********* configuration START *************");
 	// configure first the endpoint ...
-	if (m_listAlgo.size() > 1) {
+	if (m_listAlgo.size() >= 1) {
 		updateAlgo(m_listAlgo.size());
 	}
 	for (size_t iii=0; iii<=m_listAlgo.size(); ++iii) {
