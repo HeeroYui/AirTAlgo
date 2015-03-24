@@ -3,8 +3,8 @@
  * @copyright 2011, Edouard DUPIN, all right reserved
  * @license APACHE v2.0 (see license file)
  */
-#ifndef __AIRT_ALGO_FORMAT_UPDATE_H__
-#define __AIRT_ALGO_FORMAT_UPDATE_H__
+#ifndef __DRAIN_ALGO_FORMAT_UPDATE_H__
+#define __DRAIN_ALGO_FORMAT_UPDATE_H__
 
 #include <drain/Algo.h>
 

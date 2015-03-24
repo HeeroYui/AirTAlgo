@@ -5,8 +5,8 @@
  */
 
 
-#ifndef __AIRT_ALGO_CORE_ALGO_H__
-#define __AIRT_ALGO_CORE_ALGO_H__
+#ifndef __DRAIN_ALGO_CORE_ALGO_H__
+#define __DRAIN_ALGO_CORE_ALGO_H__
 
 #include <string>
 #include <vector>

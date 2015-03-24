@@ -5,8 +5,8 @@
  */
 
 
-#ifndef __AIRT_ALGO_AUTO_LOG_IN_OUT_H__
-#define __AIRT_ALGO_AUTO_LOG_IN_OUT_H__
+#ifndef __DRAIN_ALGO_AUTO_LOG_IN_OUT_H__
+#define __DRAIN_ALGO_AUTO_LOG_IN_OUT_H__
 
 #include <string>
 #include "debug.h"

@@ -4,8 +4,8 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#ifndef __AIRT_ALGO_RESAMPLER_H__
-#define __AIRT_ALGO_RESAMPLER_H__
+#ifndef __DRAIN_ALGO_RESAMPLER_H__
+#define __DRAIN_ALGO_RESAMPLER_H__
 
 #include <drain/Algo.h>
 #ifdef HAVE_SPEEX_DSP_RESAMPLE

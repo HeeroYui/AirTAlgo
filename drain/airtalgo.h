@@ -4,8 +4,8 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#ifndef __AIRT_ALGO_CORE_H__
-#define __AIRT_ALGO_CORE_H__
+#ifndef __DRAIN_ALGO_CORE_H__
+#define __DRAIN_ALGO_CORE_H__
 
 #include <string>
 #include <audio/format.h>

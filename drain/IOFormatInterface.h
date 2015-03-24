@@ -5,8 +5,8 @@
  */
 
 
-#ifndef __AIRT_ALGO_IO_FORMAT_INTERFACE_H__
-#define __AIRT_ALGO_IO_FORMAT_INTERFACE_H__
+#ifndef __DRAIN_ALGO_IO_FORMAT_INTERFACE_H__
+#define __DRAIN_ALGO_IO_FORMAT_INTERFACE_H__
 
 #include <string>
 #include <vector>

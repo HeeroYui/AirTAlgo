@@ -4,8 +4,8 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#ifndef __AIRT_ALGO_ALGO_END_POINT_WRITE_H__
-#define __AIRT_ALGO_ALGO_END_POINT_WRITE_H__
+#ifndef __DRAIN_ALGO_ALGO_END_POINT_WRITE_H__
+#define __DRAIN_ALGO_ALGO_END_POINT_WRITE_H__
 
 #include <drain/EndPoint.h>
 #include <etk/functional.h>
