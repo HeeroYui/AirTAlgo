@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sizer mode="hori" expand="true" fill="true" lock="true" max-size="20,100%">
+	<scroll gravity="top" expand="true" fill="true">
+		<sizer mode="vert" expand="false,true" fill="true" lock="true" max-size="100%" addmode="invert">
+			<!--
+			<sizer mode="hori">
+				<button name="save">
+					<label>Save</label>
+				</button>
+				<button name="load">
+					<label>Load</label>
+				</button>
+			</sizer>
+			-->
+			<label>Global parameter:</label>
+			<sizer mode="vert"expand="true" border="0.2%" addmode="invert">
+				<spacer min-size="5,5px"/>
+				<sizer mode="hori">
+					<label>SampleRate:</label>
+					<entry expand="true" name="sample-rate" regex="[0-9]*" value="48000"/>
+					<!--
+					<combo expand="true" name="sample-rate" select="48">
+						<item value="96">96000</item>
+						<item value="48">48000</item>
+						<item value="32">32000</item>
+						<item value="16">16000</item>
+						<item value="8">8000</item>
+					</combo>
+					-->
+				</sizer>
+			</sizer>
+			<label>Filter:</label>
+			<sizer mode="vert"expand="true" border="0.2%" addmode="invert">
+				<spacer min-size="5,5px"/>
+				<sizer mode="hori">
+					<label>type:</label>
+					<entry expand="true" name="type" value="HPF"/>
+					<!--
+					<combo expand="true" name="type" select="HPF">
+						<item value="HPF">High Pass Filter</item>
+						<item value="LPF">Low Pass Filter</item>
+					</combo>
+					-->
+				</sizer>
+				<sizer mode="hori">
+					<label>gain:</label>
+					<entry expand="true" name="gain" regex="-?[0-9]*" value="0"/>
+				</sizer>
+				<sizer mode="hori">
+					<label>frequency:</label>
+					<entry expand="true" name="frequency" regex="[0-9]*" value="1000"/>
+				</sizer>
+				<sizer mode="hori">
+					<label>Band width:</label>
+					<entry expand="true" name="band-width" regex="[0-9]*" value="100"/>
+				</sizer>
+			</sizer>
+			<button name="display">
+				<label>Display</label>
+			</button>
+		</sizer>
+	</scroll>
+	<DisplayFrequency name="displayer" fill="true" expand="true"/>
+</sizer>
