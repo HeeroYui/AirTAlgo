@@ -12,16 +12,7 @@
 namespace drain {
 	int32_t getLogId();
 };
-// TODO : Review this problem of multiple intanciation of "std::stringbuf sb"
-#define DRAIN_BASE(info,data) \
-	do { \
-		if (info <= etk::log::getLevel(drain::getLogId())) { \
-			std::stringbuf sb; \
-			std::ostream tmpStream(&sb); \
-			tmpStream << data; \
-			etk::log::logStream(drain::getLogId(), info, __LINE__, __class__, __func__, tmpStream); \
-		} \
-	} while(0)
+#define DRAIN_BASE(info,data) TK_LOG_BASE(drain::getLogId(),info,data)
 
 #define DRAIN_CRITICAL(data)      DRAIN_BASE(1, data)
 #define DRAIN_ERROR(data)         DRAIN_BASE(2, data)
