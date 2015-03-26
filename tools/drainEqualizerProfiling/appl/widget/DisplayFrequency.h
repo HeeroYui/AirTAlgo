@@ -28,20 +28,22 @@ namespace appl {
 				//! @brief destructor
 				virtual ~DisplayFrequency();
 			private:
-				std::vector<float> m_data; //!< data that might be displayed
+				std::vector<std::pair<float,float> > m_data; //!< data that might be displayed
 			public:
-				void setValue(const std::vector<float>& _data);
+				void setValue(const std::vector<std::pair<float,float> >& _data);
 			private:
-				bool m_autoDisplay;
+				float m_gainMin; //!< display minimum gain value
+				float m_gainMax; //!< display maximum gain value
 			public:
-				void ToggleAuto();
+				void setGainRange(float _min, float _max);
 			private:
-				float m_minVal; //!< display minimum value
-				float m_maxVal; //!< display maximum value
+				float m_frequencyMin; //!< display minimum gain value
+				float m_frequencyMax; //!< display maximum gain value
+			public:
+				void setFrequencyRange(float _min, float _max);
 			public: // herited function
 				virtual void onDraw();
 				virtual void onRegenerateDisplay();
-				virtual void periodicCall(const ewol::event::Time& _event);
 		};
 	}
 }
