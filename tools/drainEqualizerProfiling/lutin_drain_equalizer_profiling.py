@@ -17,7 +17,7 @@ def create(target):
 		'appl/widget/DisplayFrequency.cpp',
 		])
 	# add Library dependency name
-	myModule.add_module_depend(['ewol', 'drain'])
+	myModule.add_module_depend(['ewol', 'drain', 'river'])
 	# add application C flags
 	myModule.compile_flags_CC([
 		"-DPROJECT_NAME=\"\\\""+myModule.name+"\\\"\""])

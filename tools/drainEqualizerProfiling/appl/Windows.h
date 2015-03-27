@@ -13,6 +13,7 @@
 #include <ewol/widget/Layer.h>
 #include <ewol/widget/Composer.h>
 #include <drain/Equalizer.h>
+#include <appl/widget/DisplayFrequency.h>
 
 namespace appl {
 	class Windows : public ewol::widget::Windows {
@@ -23,6 +24,7 @@ namespace appl {
 			DECLARE_FACTORY(Windows);
 		protected:
 			std::shared_ptr<ewol::widget::Composer> m_gui;
+			std::shared_ptr<appl::widget::DisplayFrequency> m_displayer;
 			void onCallbackSampleRate(const std::string& _value);
 			void onCallbackType(const std::string& _value);
 			void onCallbackGain(const std::string& _value);
@@ -35,7 +37,7 @@ namespace appl {
 			float m_cutFrequency;
 			float m_gain;
 			float m_bandWidth;
-			std::vector<std::pair<float,float> > m_data;
+			std::vector<std::pair<float,float> > calculateTheory(double _sampleRate, std::vector<float> _coef);
 	};
 };
 

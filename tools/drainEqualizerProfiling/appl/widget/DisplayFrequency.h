@@ -28,8 +28,11 @@ namespace appl {
 				//! @brief destructor
 				virtual ~DisplayFrequency();
 			private:
-				std::vector<std::pair<float,float> > m_data; //!< data that might be displayed
+				std::vector<std::vector<std::pair<float,float> > > m_data; //!< data that might be displayed
 			public:
+				void clear() {
+					m_data.clear();
+				}
 				void setValue(const std::vector<std::pair<float,float> >& _data);
 			private:
 				float m_gainMin; //!< display minimum gain value
@@ -44,6 +47,8 @@ namespace appl {
 			public: // herited function
 				virtual void onDraw();
 				virtual void onRegenerateDisplay();
+			private:
+				vec2 m_borderSize;
 		};
 	}
 }

@@ -12,16 +12,14 @@
 
 namespace drain {
 	enum filterType {
-		filterType_none, //!< no filter
-		filterType_LPF, //!< low pass filter
-		filterType_HPF, //!< High pass filter
-		filterType_BPF, //!< band pass filter
-		filterType_NOTCH, //!< Notch Filter
-		filterType_APF, //!< All pass Filter
-		filterType_PeakingEQ, //!< Peaking band EQ filter
-		filterType_LSH, //!< Low shelf filter
-		filterType_HSH, //!< High shelf filter 
-		filterType_EQU //!< Equalizer
+		filterType_none, //!< no filter (pass threw...)
+		filterType_lowPass, //!< low pass filter
+		filterType_highPass, //!< High pass filter
+		filterType_bandPass, //!< band pass filter
+		filterType_notch, //!< Notch Filter
+		filterType_peak, //!< Peaking band EQ filter
+		filterType_lowShelf, //!< Low shelf filter
+		filterType_highShelf, //!< High shelf filter
 	};
 	class BGHistory {
 		public:
@@ -64,18 +62,33 @@ namespace drain {
 			//-----------------------------------------
 			// START parameters:
 			enum filterType m_type; //!< current filter type.
-			float m_gain; //!< Gain to apply in dB
-			float m_frequency; //!< Frequency to apply filter
-			float m_bandWidth; //!< Band With to apply filter
+			float m_gain; //!< Gain to apply in dB  ??? limit : -30, +30
+			float m_frequencyCut; //!< Frequency to apply filter ???? LIMIT : [0..sampleRate/2]
+			// good value of 0.707 ==> permit to not ower gain
+			float m_qualityFactor; //!< Quality factor ??? limit [0.01 .. 10]
 			// END parameters:
 			//-----------------------------------------
-			float m_a[2]; //!< A bi-Quad coef
-			float m_b[3]; //!< B bi-Quad coef
+			float m_a[3]; //!< A bi-Quad coef
+			float m_b[2]; //!< B bi-Quad coef
 			std::vector<BGHistory> m_history;
 			/**
 			 * @brief Configure the current biquad.
 			 */
 			bool configureBiQuad();
+		public:
+			/**
+			 * @brief Configure the current biquad.
+			 */
+			void calcBiquad(enum drain::filterType _type, double _frequencyCut, double _qualityFactor, double _gain);
+			std::vector<float> getCoef() {
+				std::vector<float> out;
+				out.push_back(m_a[0]);
+				out.push_back(m_a[1]);
+				out.push_back(m_a[2]);
+				out.push_back(m_b[0]);
+				out.push_back(m_b[1]);
+				return out;
+			}
 	};
 };
 

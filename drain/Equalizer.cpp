@@ -9,6 +9,7 @@
 #include <drain/Algo.h>
 
 // see http://www.musicdsp.org/files/Audio-EQ-Cookbook.txt
+// see http://www.earlevel.com/main/2013/10/13/biquad-calculator-v2/
 
 drain::Equalizer::Equalizer() {
 	
@@ -18,17 +19,18 @@ void drain::Equalizer::init() {
 	drain::Algo::init();
 	drain::Algo::m_type = "Equalizer";
 	m_supportedFormat.push_back(audio::format_int16);
+	m_supportedFormat.push_back(audio::format_float);
 	m_type = drain::filterType_none;
-	m_gain = 0;
-	m_frequency = 1000;
-	m_bandWidth = 200;
+	m_gain = 6;
+	m_frequencyCut = 1000;
+	m_qualityFactor = 0.707;
 	configureBiQuad();
 	// reset coefficients
-	m_b[0] = 1.0;
-	m_b[1] = 0.0;
-	m_b[2] = 0.0;
-	m_a[0] = 0.0;
+	m_a[0] = 1.0;
 	m_a[1] = 0.0;
+	m_a[2] = 0.0;
+	m_b[0] = 0.0;
+	m_b[1] = 0.0;
 }
 
 std11::shared_ptr<drain::Equalizer> drain::Equalizer::create() {
@@ -58,46 +60,58 @@ bool drain::Equalizer::process(std11::chrono::system_clock::time_point& _time,
 	if (_input == nullptr) {
 		return false;
 	}
-	for (size_t jjj=0; jjj<getOutputFormat().getMap().size(); ++jjj) {
-		// get pointer on data:
-		int16_t* data = static_cast<int16_t*>(_input);
-		// move to sample offset:
-		data += jjj;
-		for (size_t iii=0; iii<_inputNbChunk; ++iii) {
-			// process in float the biquad.
-			float out = processFloat(*data, m_history[jjj]);
-			// Limit output.
-			out = std::avg(-32768.0f, out, 32767.0f);
-			*data = static_cast<int16_t>(out);
-			// move to the sample on the same channel.
-			data += getOutputFormat().getMap().size();
+	if (getOutputFormat().getFormat() == audio::format_float) {
+		for (size_t jjj=0; jjj<getOutputFormat().getMap().size(); ++jjj) {
+			// get pointer on data:
+			float* data = static_cast<float*>(_input);
+			// move to sample offset:
+			data += jjj;
+			for (size_t iii=0; iii<_inputNbChunk; ++iii) {
+				// process in float the biquad.
+				*data = processFloat(*data, m_history[jjj]);
+				// move to the sample on the same channel.
+				data += getOutputFormat().getMap().size();
+			}
+		}
+	} else if (getOutputFormat().getFormat() == audio::format_int16) {
+		for (size_t jjj=0; jjj<getOutputFormat().getMap().size(); ++jjj) {
+			// get pointer on data:
+			int16_t* data = static_cast<int16_t*>(_input);
+			// move to sample offset:
+			data += jjj;
+			for (size_t iii=0; iii<_inputNbChunk; ++iii) {
+				// process in float the biquad.
+				float out = processFloat(*data, m_history[jjj]);
+				// Limit output.
+				out = std::avg(-32768.0f, out, 32767.0f);
+				*data = static_cast<int16_t>(out);
+				// move to the sample on the same channel.
+				data += getOutputFormat().getMap().size();
+			}
 		}
 	}
 	return true;
 }
 
 bool drain::Equalizer::setParameter(const std::string& _parameter, const std::string& _value) {
+	//DRAIN_WARNING("set : " << _parameter << " " << _value);
 	if (_parameter == "type") {
 		if (_value == "none") {
 			m_type = drain::filterType_none;
 		} else if (_value == "LPF") {
-			m_type = drain::filterType_LPF;
+			m_type = drain::filterType_lowPass;
 		} else if (_value == "HPF") {
-			m_type = drain::filterType_HPF;
+			m_type = drain::filterType_highPass;
 		} else if (_value == "BPF") {
-			m_type = drain::filterType_BPF;
+			m_type = drain::filterType_bandPass;
 		} else if (_value == "NOTCH") {
-			m_type = drain::filterType_NOTCH;
-		} else if (_value == "APF") {
-			m_type = drain::filterType_APF;
+			m_type = drain::filterType_notch;
 		} else if (_value == "PeakingEQ") {
-			m_type = drain::filterType_PeakingEQ;
+			m_type = drain::filterType_peak;
 		} else if (_value == "LSH") {
-			m_type = drain::filterType_LSH;
+			m_type = drain::filterType_lowShelf;
 		} else if (_value == "HSH") {
-			m_type = drain::filterType_HSH;
-		} else if (_value == "EQU"){
-			m_type = drain::filterType_EQU;
+			m_type = drain::filterType_highShelf;
 		} else {
 			DRAIN_ERROR("Can not set equalizer type : " << _value);
 			return false;
@@ -105,16 +119,20 @@ bool drain::Equalizer::setParameter(const std::string& _parameter, const std::st
 		configureBiQuad();
 		return true;
 	} else if (_parameter == "gain") {
-		m_gain = etk::string_to_int32_t(_value);
+		m_gain = etk::string_to_double(_value);
 		configureBiQuad();
 		return true;
 	} else if (_parameter == "frequency") {
-		m_frequency = etk::string_to_int32_t(_value);
+		m_frequencyCut = etk::string_to_double(_value);
 		configureBiQuad();
 		return true;
-	} else if (_parameter == "band-width") {
-		m_bandWidth = etk::string_to_int32_t(_value);
+	} else if (_parameter == "quality") {
+		m_qualityFactor = etk::string_to_double(_value);
 		configureBiQuad();
+		return true;
+	} else if (_parameter == "reset") {
+		m_history.clear();
+		m_history.resize(getOutputFormat().getMap().size());
 		return true;
 	}
 	return false;
@@ -131,116 +149,162 @@ std::string drain::Equalizer::getParameterProperty(const std::string& _parameter
 float drain::Equalizer::processFloat(float _sample, drain::BGHistory& _history) {
 	float result;
 	// compute
-	result =   m_b[0] * _sample
-	         + m_b[1] * _history.m_x[0]
-	         + m_b[2] * _history.m_x[1]
-	         - m_a[0] * _history.m_y[0]
-	         - m_a[1] * _history.m_y[1];
+	result =   m_a[0] * _sample
+	         + m_a[1] * _history.m_x[0]
+	         + m_a[2] * _history.m_x[1]
+	         - m_b[0] * _history.m_y[0]
+	         - m_b[1] * _history.m_y[1];
 	//update history of X
-	_history.m_x[0] = _history.m_x[1];
-	_history.m_x[1] = _sample;
+	_history.m_x[1] = _history.m_x[0];
+	_history.m_x[0] = _sample;
 	//update history of Y
-	_history.m_y[0] = _history.m_y[1];
-	_history.m_y[1] = result;
+	_history.m_y[1] = _history.m_y[0];
+	_history.m_y[0] = result;
 	return result;
 }
 
 bool drain::Equalizer::configureBiQuad() {
-	// reset biQuad.
-	m_b[0] = 1.0;
-	m_b[1] = 0.0;
-	m_b[2] = 0.0;
-	m_a[0] = 0.0;
-	m_a[1] = 0.0;
-	if (m_type == filterType_none) {
-		return true;
-	}
-	double a0, a1, a2, b0, b1, b2;
-	/* setup variables */
-	double A = std::pow(10, m_gain /40); // used for peaking and shelving EQ filters only
-	double w0 = 2.0 * M_PI * double(m_frequency) / double(getOutputFormat().getFrequency());
-	
-	// 2*sqrt(A)*alpha  =  sin(w0) * sqrt( (A^2 + 1)*(1/S - 1) + 2*A )
-	//    is a handy intermediate variable for shelving EQ filters.
-	double alpha = std::sin(w0) * std::sqrt((A*A+1.0)*(1.0/m_bandWidth - 1.0) + 2*A);
-	alpha /= 2.0*std::sqrt(A);
-	
-	
-	switch (m_type) {
-		case drain::filterType_LPF:
-			b0 = (1.0 - std::cos(w0)) * 0.5;
-			b1 = 1.0 - std::cos(w0);
-			b2 = (1.0 - std::cos(w0)) * 0.5;
-			a0 = 1.0 + alpha;
-			a1 = -2.0 * std::cos(w0);
-			a2 = 1.0 - alpha;
-			break;
-		case drain::filterType_HPF:
-			b0 = (1.0 + std::cos(w0)) * 0.5;
-			b1 = -(1.0 + std::cos(w0));
-			b2 = (1.0 + std::cos(w0)) * 0.5;
-			a0 = 1.0 + alpha;
-			a1 = -2.0 * std::cos(w0);
-			a2 = 1.0 - alpha;
-			break;
-		case drain::filterType_BPF: // constant 0dB peak gain
-			b0 = alpha;
-			b1 = 0.0;
-			b2 = -alpha;
-			a0 = 1.0 + alpha;
-			a1 = -2.0 * std::cos(w0);
-			a2 = 1.0 - alpha;
-			break;
-		case drain::filterType_NOTCH:
-			b0 = 1.0;
-			b1 = -2.0 * std::cos(w0);
-			b2 = 1.0;
-			a0 = 1.0 + alpha;
-			a1 = -2.0 * std::cos(w0);
-			a2 = 1.0 - alpha;
-			break;
-		case drain::filterType_APF:
-			b0 = 1.0 - alpha;
-			b1 = -2.0 * std::cos(w0);
-			b2 = 1.0 + alpha;
-			a0 = 1.0 + alpha;
-			a1 = -2.0 * std::cos(w0);
-			a2 = 1.0 - alpha;
-			break;
-		case drain::filterType_PeakingEQ:
-			b0 = 1.0 + (alpha * A);
-			b1 = -2.0 * std::cos(w0);
-			b2 = 1.0 - (alpha * A);
-			a0 = 1.0 + (alpha /A);
-			a1 = -2.0 * std::cos(w0);
-			a2 = 1.0 - (alpha /A);
-			break;
-		case drain::filterType_LSH:
-			b0 =     A*( (A+1.0) - (A-1.0)*std::cos(w0) + 2.0*std::sqrt(A)*alpha );
-			b1 = 2.0*A*( (A-1.0) - (A+1.0)*std::cos(w0)                        );
-			b2 =     A*( (A+1.0) - (A-1.0)*std::cos(w0) - 2.0*std::sqrt(A)*alpha );
-			a0 =         (A+1.0) + (A-1.0)*std::cos(w0) + 2.0*std::sqrt(A)*alpha;
-			a1 =  -2.0*( (A-1.0) + (A+1.0)*std::cos(w0)                        );
-			a2 =         (A+1.0) + (A-1.0)*std::cos(w0) - 2.0*std::sqrt(A)*alpha;
-			break;
-		case drain::filterType_HSH:
-			b0 =      A*( (A+1.0) + (A-1.0) * std::cos(w0) + 2.0*std::sqrt(A)*alpha );
-			b1 = -2.0*A*( (A-1.0) + (A+1.0) * std::cos(w0)                        );
-			b2 =      A*( (A+1.0) + (A-1.0) * std::cos(w0) - 2.0*std::sqrt(A)*alpha );
-			a0 =          (A+1.0) - (A-1.0) * std::cos(w0) + 2.0*std::sqrt(A)*alpha;
-			a1 =    2.0*( (A-1.0) - (A+1.0) * std::cos(w0)                        );
-			a2 =          (A+1.0) - (A-1.0) * std::cos(w0) - 2.0*std::sqrt(A)*alpha;
-			break;
-		default:
-			DRAIN_CRITICAL("Impossible case ...");
-			return false;
-	}
-	// precalculate coefficients:
-	m_b[0] = b0 /a0;
-	m_b[1] = b1 /a0;
-	m_b[2] = b2 /a0;
-	m_a[0] = a1 /a0;
-	m_a[1] = a2 /a0;
+	calcBiquad(m_type, m_frequencyCut, m_qualityFactor, m_gain);
 	return true;
 }
 
+void drain::Equalizer::calcBiquad(enum drain::filterType _type, double _frequencyCut, double _qualityFactor, double _gain) {
+	m_type = _type;
+	m_frequencyCut = _frequencyCut;
+	m_qualityFactor = _qualityFactor;
+	m_gain = _gain;
+	
+	if (getOutputFormat().getFrequency() < 1) {
+		m_a[0] = 1.0;
+		m_a[1] = 0.0;
+		m_a[2] = 0.0;
+		m_b[0] = 0.0;
+		m_b[1] = 0.0;
+		return;
+	}
+	if (m_frequencyCut > getOutputFormat().getFrequency()/2) {
+		m_frequencyCut = getOutputFormat().getFrequency()/2;
+	} else if (m_frequencyCut < 0) {
+		m_frequencyCut = 0;
+	}
+	if (m_qualityFactor < 0.01) {
+		m_qualityFactor = 0.01;
+	}
+	switch (m_type) {
+		case filterType_lowPass:
+		case filterType_highPass:
+		case filterType_bandPass:
+		case filterType_notch:
+			// Quality : USE IT
+			// Gain : Not USE IT
+			break;
+		case filterType_peak:
+			// Quality : USE IT
+			// Gain : USE IT
+			break;
+		case filterType_lowShelf:
+		case filterType_highShelf:
+			// Quality : NOT USE IT
+			// Gain : USE IT
+			break;
+		default:
+			// Quality : USE IT
+			// Gain : USE IT
+			break;
+	}
+	double norm;
+	double V = std::pow(10.0, std::abs(m_gain) / 20.0);
+	double K = std::tan(M_PI * m_frequencyCut / getOutputFormat().getFrequency());
+	switch (m_type) {
+		case filterType_none:
+			m_a[0] = 1.0;
+			m_a[1] = 0.0;
+			m_a[2] = 0.0;
+			m_b[0] = 0.0;
+			m_b[1] = 0.0;
+			break;
+		case filterType_lowPass:
+			norm = 1 / (1 + K / m_qualityFactor + K * K);
+			m_a[0] = K * K * norm;
+			m_a[1] = 2 * m_a[0];
+			m_a[2] = m_a[0];
+			m_b[0] = 2 * (K * K - 1) * norm;
+			m_b[1] = (1 - K / m_qualityFactor + K * K) * norm;
+			break;
+		case filterType_highPass:
+			norm = 1 / (1 + K / m_qualityFactor + K * K);
+			m_a[0] = 1 * norm;
+			m_a[1] = -2 * m_a[0];
+			m_a[2] = m_a[0];
+			m_b[0] = 2 * (K * K - 1) * norm;
+			m_b[1] = (1 - K / m_qualityFactor + K * K) * norm;
+			break;
+		case filterType_bandPass:
+			norm = 1 / (1 + K / m_qualityFactor + K * K);
+			m_a[0] = K / m_qualityFactor * norm;
+			m_a[1] = 0;
+			m_a[2] = -m_a[0];
+			m_b[0] = 2 * (K * K - 1) * norm;
+			m_b[1] = (1 - K / m_qualityFactor + K * K) * norm;
+			break;
+		case filterType_notch:
+			norm = 1 / (1 + K / m_qualityFactor + K * K);
+			m_a[0] = (1 + K * K) * norm;
+			m_a[1] = 2 * (K * K - 1) * norm;
+			m_a[2] = m_a[0];
+			m_b[0] = m_a[1];
+			m_b[1] = (1 - K / m_qualityFactor + K * K) * norm;
+			break;
+		case filterType_peak:
+			if (m_gain >= 0) {
+				norm = 1 / (1 + 1/m_qualityFactor * K + K * K);
+				m_a[0] = (1 + V/m_qualityFactor * K + K * K) * norm;
+				m_a[1] = 2 * (K * K - 1) * norm;
+				m_a[2] = (1 - V/m_qualityFactor * K + K * K) * norm;
+				m_b[0] = m_a[1];
+				m_b[1] = (1 - 1/m_qualityFactor * K + K * K) * norm;
+			} else {
+				norm = 1 / (1 + V/m_qualityFactor * K + K * K);
+				m_a[0] = (1 + 1/m_qualityFactor * K + K * K) * norm;
+				m_a[1] = 2 * (K * K - 1) * norm;
+				m_a[2] = (1 - 1/m_qualityFactor * K + K * K) * norm;
+				m_b[0] = m_a[1];
+				m_b[1] = (1 - V/m_qualityFactor * K + K * K) * norm;
+			}
+			break;
+		case filterType_lowShelf:
+			if (m_gain >= 0) {
+				norm = 1 / (1 + M_SQRT2 * K + K * K);
+				m_a[0] = (1 + std::sqrt(2*V) * K + V * K * K) * norm;
+				m_a[1] = 2 * (V * K * K - 1) * norm;
+				m_a[2] = (1 - std::sqrt(2*V) * K + V * K * K) * norm;
+				m_b[0] = 2 * (K * K - 1) * norm;
+				m_b[1] = (1 - M_SQRT2 * K + K * K) * norm;
+			} else {
+				norm = 1 / (1 + std::sqrt(2*V) * K + V * K * K);
+				m_a[0] = (1 + M_SQRT2 * K + K * K) * norm;
+				m_a[1] = 2 * (K * K - 1) * norm;
+				m_a[2] = (1 - M_SQRT2 * K + K * K) * norm;
+				m_b[0] = 2 * (V * K * K - 1) * norm;
+				m_b[1] = (1 - std::sqrt(2*V) * K + V * K * K) * norm;
+			}
+			break;
+		case filterType_highShelf:
+			if (m_gain >= 0) {
+				norm = 1 / (1 + M_SQRT2 * K + K * K);
+				m_a[0] = (V + std::sqrt(2*V) * K + K * K) * norm;
+				m_a[1] = 2 * (K * K - V) * norm;
+				m_a[2] = (V - std::sqrt(2*V) * K + K * K) * norm;
+				m_b[0] = 2 * (K * K - 1) * norm;
+				m_b[1] = (1 - M_SQRT2 * K + K * K) * norm;
+			} else {
+				norm = 1 / (V + std::sqrt(2*V) * K + K * K);
+				m_a[0] = (1 + M_SQRT2 * K + K * K) * norm;
+				m_a[1] = 2 * (K * K - 1) * norm;
+				m_a[2] = (1 - M_SQRT2 * K + K * K) * norm;
+				m_b[0] = 2 * (K * K - V) * norm;
+				m_b[1] = (V - std::sqrt(2*V) * K + K * K) * norm;
+			}
+			break;
+	}
+}
