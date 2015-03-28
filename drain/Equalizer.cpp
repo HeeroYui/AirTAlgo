@@ -308,3 +308,32 @@ void drain::Equalizer::calcBiquad(enum drain::filterType _type, double _frequenc
 			break;
 	}
 }
+
+static const char* listValues[] = {
+	"none",
+	"low-pass",
+	"high-pass",
+	"band-pass",
+	"notch",
+	"peak",
+	"low-shelf",
+	"high-shelf"
+};
+static int32_t listValuesSize = sizeof(listValues)/sizeof(char*);
+
+
+namespace etk {
+	template<> std::string to_string<enum drain::filterType>(const enum drain::filterType& _variable) {
+		return listValues[_variable];
+	}
+	template <> bool from_string<enum drain::filterType>(enum drain::filterType& _variableRet, const std::string& _value) {
+		for (int32_t iii=0; iii<listValuesSize; ++iii) {
+			if (_value == listValues[iii]) {
+				_variableRet = static_cast<enum drain::filterType>(iii);
+				return true;
+			}
+		}
+		_variableRet = drain::filterType_none;
+		return false;
+	}
+}

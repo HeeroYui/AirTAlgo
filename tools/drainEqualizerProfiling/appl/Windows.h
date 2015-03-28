@@ -25,18 +25,25 @@ namespace appl {
 		protected:
 			std::shared_ptr<ewol::widget::Composer> m_gui;
 			std::shared_ptr<appl::widget::DisplayFrequency> m_displayer;
-			void onCallbackSampleRate(const std::string& _value);
-			void onCallbackType(const std::string& _value);
+			void onCallbackSampleRateLow();
+			void onCallbackSampleRateUp();
+			void onCallbackTypeUp();
+			void onCallbackTypeLow();
 			void onCallbackGain(const std::string& _value);
+			void onCallbackGainSlider(const float& _value);
 			void onCallbackFrequency(const std::string& _value);
-			void onCallbackBandWidth(const std::string& _value);
+			void onCallbackFrequencySlider(const float& _value);
+			void onCallbackQuality(const std::string& _value);
+			void onCallbackQualitySlider(const float& _value);
 			void onCallbackStart();
 		protected:
 			int32_t m_sampleRate;
+			std::vector<int32_t> m_listSampleRate;
 			enum drain::filterType m_type;
+			std::vector<enum drain::filterType> m_listType;
 			float m_cutFrequency;
 			float m_gain;
-			float m_bandWidth;
+			float m_quality;
 			std::vector<std::pair<float,float> > calculateTheory(double _sampleRate, std::vector<float> _coef);
 	};
 };

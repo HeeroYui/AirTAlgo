@@ -12,6 +12,7 @@
 
 #include <ewol/widget/Widget.h>
 #include <ewol/compositing/Drawing.h>
+#include <ewol/compositing/Text.h>
 #include <ewol/widget/Manager.h>
 
 namespace appl {
@@ -19,6 +20,7 @@ namespace appl {
 		class DisplayFrequency : public ewol::Widget {
 			private:
 				ewol::compositing::Drawing m_draw; //!< drawing instance
+				ewol::compositing::Text m_text; //!< drawing instance
 			protected:
 				//! @brief constructor
 				DisplayFrequency();

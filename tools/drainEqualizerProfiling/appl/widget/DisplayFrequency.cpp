@@ -20,6 +20,7 @@ appl::widget::DisplayFrequency::DisplayFrequency() :
   m_frequencyMin(0.0f),
   m_frequencyMax(24000.0f) {
 	addObjectType("appl::widget::DisplayFrequency");
+	m_text.setFontSize(13);
 }
 
 void appl::widget::DisplayFrequency::init() {
@@ -52,6 +53,7 @@ void appl::widget::DisplayFrequency::setFrequencyRange(float _min, float _max) {
 
 void appl::widget::DisplayFrequency::onDraw() {
 	m_draw.draw();
+	m_text.draw();
 }
 
 
@@ -62,9 +64,9 @@ void appl::widget::DisplayFrequency::onRegenerateDisplay() {
 	}
 	// remove previous data
 	m_draw.clear();
+	m_text.clear();
 	
 	m_borderSize = m_size * 0.05;
-	
 	
 	
 	// set background
@@ -91,18 +93,27 @@ void appl::widget::DisplayFrequency::onRegenerateDisplay() {
 	m_frequencyMax = -99999999.0;
 	for (size_t kkk=0; kkk<m_data.size(); kkk++) {
 		for (size_t iii=0; iii<m_data[kkk].size(); ++iii) {
-			m_gainMax = std::max(m_gainMax, m_data[kkk][iii].second);
-			m_gainMin = std::min(m_gainMin, m_data[kkk][iii].second);
-			m_frequencyMax = std::max(m_frequencyMax, m_data[kkk][iii].first);
-			m_frequencyMin = std::min(m_frequencyMin, m_data[kkk][iii].first);
+			if (std::abs(m_data[kkk][iii].second) != std::numeric_limits<float>::infinity()) {
+				m_gainMax = std::max(m_gainMax, m_data[kkk][iii].second);
+				m_gainMin = std::min(m_gainMin, m_data[kkk][iii].second);
+			}
+			if (std::abs(m_data[kkk][iii].first) != std::numeric_limits<float>::infinity()) {
+				m_frequencyMax = std::max(m_frequencyMax, m_data[kkk][iii].first);
+				m_frequencyMin = std::min(m_frequencyMin, m_data[kkk][iii].first);
+			}
 		}
 	}
-	m_gainMin = -20;
+	// TODO : limit unit at a unit value.
+	/*
+	for (size_t iii=0; iii<m_data[0].size() && m_data[1].size(); ++iii) {
+		APPL_INFO(" f=" << m_data[0][iii].first << " val=" << m_data[0][iii].second << " f=" << m_data[1][iii].first << " val=" << m_data[1][iii].second);
+	}
+	*/
 	// set all the line:
 	m_draw.setThickness(1);
-	APPL_ERROR("---------------------------");
+	//APPL_ERROR("---------------------------");
 	for (size_t kkk=0; kkk<m_data.size(); ++kkk) {
-		APPL_ERROR("kjhkjhkj " << kkk << "  " << m_data.size());
+		//APPL_ERROR("kjhkjhkj " << kkk << "  " << m_data.size());
 		if (kkk == 0) {
 			m_draw.setColor(etk::color::green);
 		} else if (kkk == 0) {
@@ -123,6 +134,25 @@ void appl::widget::DisplayFrequency::onRegenerateDisplay() {
 			                      ratioY*(m_data[kkk][iii].second - m_gainMin)));
 		}
 	}
-	// TODO : Draw text ...
+	m_text.setDefaultColorFg(etk::color::green);
+	std::string textToDisplay = etk::to_string(m_frequencyMin) + " Hz";
+	vec3 size = m_text.calculateSize(textToDisplay);
+	m_text.setPos(vec2(m_borderSize.x(), m_borderSize.y()-size.y()));
+	m_text.print(textToDisplay);
 	
+	textToDisplay = etk::to_string(m_frequencyMax) + " Hz";
+	size = m_text.calculateSize(textToDisplay);
+	m_text.setPos(vec2(m_size.x()-m_borderSize.x()-size.x(), m_borderSize.y()-size.y()));
+	m_text.print(textToDisplay);
+	
+	m_text.setDefaultColorFg(etk::color::blue);
+	textToDisplay = etk::to_string(m_gainMin) + " dB";
+	size = m_text.calculateSize(textToDisplay);
+	m_text.setPos(vec2(m_borderSize.x(), m_borderSize.y()));
+	m_text.print(textToDisplay);
+	
+	textToDisplay = etk::to_string(m_gainMax) + " dB";
+	size = m_text.calculateSize(textToDisplay);
+	m_text.setPos(vec2(m_borderSize.x(), m_size.y() - m_borderSize.y()));
+	m_text.print(textToDisplay);
 }

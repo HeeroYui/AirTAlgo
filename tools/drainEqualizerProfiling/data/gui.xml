@@ -14,50 +14,55 @@
 		<label>Global parameter: .........</label>
 		<sizer mode="vert" expand="true,false" lock="true" border="0.2%" addmode="invert">
 			<spacer min-size="5,5px"/>
+			<label>Sample rate:</label>
 			<sizer mode="hori">
-				<label>SampleRate:</label>
-				<entry expand="true" fill="true" name="sample-rate" regex="[0-9]*" value="48000"/>
-				<Spacer name="sample-rate-valid" min-size="10,10px" max-size="10,10px" color="green"/>
-				<!--
-				<combo expand="true" name="sample-rate" select="48">
-					<item value="96">96000</item>
-					<item value="48">48000</item>
-					<item value="32">32000</item>
-					<item value="16">16000</item>
-					<item value="8">8000</item>
-				</combo>
-				-->
+				<button name="sample-rate-low">
+					<label>---</label>
+				</button>
+				<label expand="true" fill="true" name="sample-rate">
+					48000
+				</label>
+				<button name="sample-rate-up">
+					<label>+++</label>
+				</button>
 			</sizer>
 		</sizer>
 		<label>Filter:</label>
 		<sizer mode="vert" expand="true,false" lock="true" border="0.2%" addmode="invert">
 			<spacer min-size="5,5px"/>
+			<label>type:</label>
 			<sizer mode="hori">
-				<label>type:</label>
-				<entry expand="true" fill="true" name="type" value="HPF"/>
-				<Spacer name="type-valid" min-size="10,10px" max-size="10,10px" color="green"/>
-				<!--
-				<combo expand="true" name="type" select="HPF">
-					<item value="HPF">High Pass Filter</item>
-					<item value="LPF">Low Pass Filter</item>
-				</combo>
-				-->
+				<button name="type-low">
+					<label>---</label>
+				</button>
+				<label expand="true" fill="true" name="type">
+					Low-pass
+				</label>
+				<button name="type-up">
+					<label>+++</label>
+				</button>
 			</sizer>
+			<spacer min-size="5,5px"/>
+			
 			<sizer mode="hori">
 				<label>gain:</label>
-				<entry expand="true" fill="true" name="gain" regex="-?[0-9]*" value="0"/>
-				<Spacer name="gain-valid" min-size="10,10px" max-size="10,10px" color="green"/>
+				<entry expand="true" fill="true" name="gain" regex="-?(\.|[0-9])*" value="0"/>
 			</sizer>
+			<slider expand="true" name="gain-slider" value="0" min="-30" max="+30" step="0.01"/>
+			<spacer min-size="5,5px"/>
+			
 			<sizer mode="hori">
-				<label>frequency:</label>
+				<label>cut frequency:</label>
 				<entry expand="true" fill="true" name="frequency" regex="[0-9]*" value="1000"/>
-				<Spacer name="frequency-valid" min-size="10,10px" max-size="10,10px" color="green"/>
 			</sizer>
+			<slider expand="true" name="frequency-slider" value="8000" min="1" max="24000" step="0.01"/>
+			<spacer min-size="5,5px"/>
+			
 			<sizer mode="hori">
-				<label>Band width:</label>
-				<entry expand="true" fill="true" name="band-width" regex="[0-9]*" value="100"/>
-				<Spacer name="band-width-valid" min-size="10,10px" max-size="10,10px" color="green"/>
+				<label>Quality factor:</label>
+				<entry expand="true" fill="true" name="quality" regex="[0-9]*" value="100"/>
 			</sizer>
+			<slider expand="true" name="quality-slider" value="0.707" min="0.001" max="50" step="0.001"/>
 		</sizer>
 		<button name="display">
 			<label>Display</label>
