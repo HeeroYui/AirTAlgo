@@ -9,29 +9,10 @@
 
 #include <drain/Algo.h>
 #include <etk/memory.h>
+#include <ejson/Object.h>
+#include <drain/BiQuadFloat.h>
 
 namespace drain {
-	enum filterType {
-		filterType_none, //!< no filter (pass threw...)
-		filterType_lowPass, //!< low pass filter
-		filterType_highPass, //!< High pass filter
-		filterType_bandPass, //!< band pass filter
-		filterType_notch, //!< Notch Filter
-		filterType_peak, //!< Peaking band EQ filter
-		filterType_lowShelf, //!< Low shelf filter
-		filterType_highShelf, //!< High shelf filter
-	};
-	class BGHistory {
-		public:
-			BGHistory() {
-				m_x[0] = 0;
-				m_y[1] = 0;
-				m_x[0] = 0;
-				m_y[1] = 0;
-			}
-			float m_x[2]; //!< X history
-			float m_y[2]; //!< Y histiry
-	};
 	class Equalizer : public Algo {
 		protected:
 			/**
@@ -53,42 +34,24 @@ namespace drain {
 			                     size_t _inputNbChunk,
 			                     void*& _output,
 			                     size_t& _outputNbChunk);
+		protected:
+			std11::shared_ptr<ejson::Object> m_config; // configuration of the equalizer.
+		public:
 			virtual bool setParameter(const std::string& _parameter, const std::string& _value);
 			virtual std::string getParameter(const std::string& _parameter) const;
 			virtual std::string getParameterProperty(const std::string& _parameter) const;
 			
 		protected:
-			float processFloat(float _sample, drain::BGHistory& _history);
-			//-----------------------------------------
-			// START parameters:
-			enum filterType m_type; //!< current filter type.
-			float m_gain; //!< Gain to apply in dB  ??? limit : -30, +30
-			float m_frequencyCut; //!< Frequency to apply filter ???? LIMIT : [0..sampleRate/2]
-			// good value of 0.707 ==> permit to not ower gain
-			float m_qualityFactor; //!< Quality factor ??? limit [0.01 .. 10]
-			// END parameters:
-			//-----------------------------------------
-			float m_a[3]; //!< A bi-Quad coef
-			float m_b[2]; //!< B bi-Quad coef
-			std::vector<BGHistory> m_history;
 			/**
-			 * @brief Configure the current biquad.
+			 * @brief repesent all the biquad to process:
+			 * The first vector represent the number of channel to process
+			 * The second vector represent the number of biquad to process
 			 */
-			bool configureBiQuad();
-		public:
+			std::vector<std::vector<BiQuadFloat> > m_biquads;
 			/**
-			 * @brief Configure the current biquad.
+			 * @brief Configure biquad with the  user spec.
 			 */
-			void calcBiquad(enum drain::filterType _type, double _frequencyCut, double _qualityFactor, double _gain);
-			std::vector<float> getCoef() {
-				std::vector<float> out;
-				out.push_back(m_a[0]);
-				out.push_back(m_a[1]);
-				out.push_back(m_a[2]);
-				out.push_back(m_b[0]);
-				out.push_back(m_b[1]);
-				return out;
-			}
+			void configureBiQuad();
 	};
 };
 

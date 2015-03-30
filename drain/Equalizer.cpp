@@ -19,18 +19,7 @@ void drain::Equalizer::init() {
 	drain::Algo::init();
 	drain::Algo::m_type = "Equalizer";
 	m_supportedFormat.push_back(audio::format_int16);
-	m_supportedFormat.push_back(audio::format_float);
-	m_type = drain::filterType_none;
-	m_gain = 6;
-	m_frequencyCut = 1000;
-	m_qualityFactor = 0.707;
 	configureBiQuad();
-	// reset coefficients
-	m_a[0] = 1.0;
-	m_a[1] = 0.0;
-	m_a[2] = 0.0;
-	m_b[0] = 0.0;
-	m_b[1] = 0.0;
 }
 
 std11::shared_ptr<drain::Equalizer> drain::Equalizer::create() {
@@ -45,9 +34,9 @@ drain::Equalizer::~Equalizer() {
 
 void drain::Equalizer::configurationChange() {
 	drain::Algo::configurationChange();
-	// Resize the configuration ouput of algirithm
-	m_history.clear();
-	m_history.resize(getOutputFormat().getMap().size());
+	if (m_biquads.size() != getOutputFormat().getMap().size()) {
+		configureBiQuad();
+	}
 }
 
 bool drain::Equalizer::process(std11::chrono::system_clock::time_point& _time,
@@ -66,11 +55,8 @@ bool drain::Equalizer::process(std11::chrono::system_clock::time_point& _time,
 			float* data = static_cast<float*>(_input);
 			// move to sample offset:
 			data += jjj;
-			for (size_t iii=0; iii<_inputNbChunk; ++iii) {
-				// process in float the biquad.
-				*data = processFloat(*data, m_history[jjj]);
-				// move to the sample on the same channel.
-				data += getOutputFormat().getMap().size();
+			for (size_t iii=0; iii<m_biquads[jjj].size(); ++iii) {
+				m_biquads[jjj][iii].processFloat(data, data, _inputNbChunk, getInputFormat().getMap().size(), getOutputFormat().getMap().size() );
 			}
 		}
 	} else if (getOutputFormat().getFormat() == audio::format_int16) {
@@ -79,14 +65,8 @@ bool drain::Equalizer::process(std11::chrono::system_clock::time_point& _time,
 			int16_t* data = static_cast<int16_t*>(_input);
 			// move to sample offset:
 			data += jjj;
-			for (size_t iii=0; iii<_inputNbChunk; ++iii) {
-				// process in float the biquad.
-				float out = processFloat(*data, m_history[jjj]);
-				// Limit output.
-				out = std::avg(-32768.0f, out, 32767.0f);
-				*data = static_cast<int16_t>(out);
-				// move to the sample on the same channel.
-				data += getOutputFormat().getMap().size();
+			for (size_t iii=0; iii<m_biquads[jjj].size(); ++iii) {
+				m_biquads[jjj][iii].processInt16(data, data, _inputNbChunk, getInputFormat().getMap().size(), getOutputFormat().getMap().size() );
 			}
 		}
 	}
@@ -95,44 +75,15 @@ bool drain::Equalizer::process(std11::chrono::system_clock::time_point& _time,
 
 bool drain::Equalizer::setParameter(const std::string& _parameter, const std::string& _value) {
 	//DRAIN_WARNING("set : " << _parameter << " " << _value);
-	if (_parameter == "type") {
-		if (_value == "none") {
-			m_type = drain::filterType_none;
-		} else if (_value == "LPF") {
-			m_type = drain::filterType_lowPass;
-		} else if (_value == "HPF") {
-			m_type = drain::filterType_highPass;
-		} else if (_value == "BPF") {
-			m_type = drain::filterType_bandPass;
-		} else if (_value == "NOTCH") {
-			m_type = drain::filterType_notch;
-		} else if (_value == "PeakingEQ") {
-			m_type = drain::filterType_peak;
-		} else if (_value == "LSH") {
-			m_type = drain::filterType_lowShelf;
-		} else if (_value == "HSH") {
-			m_type = drain::filterType_highShelf;
-		} else {
-			DRAIN_ERROR("Can not set equalizer type : " << _value);
-			return false;
-		}
+	if (_parameter == "config") {
+		m_config = ejson::Object::create(_value);
 		configureBiQuad();
-		return true;
-	} else if (_parameter == "gain") {
-		m_gain = etk::string_to_double(_value);
-		configureBiQuad();
-		return true;
-	} else if (_parameter == "frequency") {
-		m_frequencyCut = etk::string_to_double(_value);
-		configureBiQuad();
-		return true;
-	} else if (_parameter == "quality") {
-		m_qualityFactor = etk::string_to_double(_value);
-		configureBiQuad();
-		return true;
 	} else if (_parameter == "reset") {
-		m_history.clear();
-		m_history.resize(getOutputFormat().getMap().size());
+		for (int32_t iii=0; iii<m_biquads.size(); ++iii) {
+			for (int32_t jjj=0; jjj<m_biquads[iii].size(); ++jjj) {
+				m_biquads[iii][jjj].reset();
+			}
+		}
 		return true;
 	}
 	return false;
@@ -146,194 +97,75 @@ std::string drain::Equalizer::getParameterProperty(const std::string& _parameter
 	return "error";
 }
 
-float drain::Equalizer::processFloat(float _sample, drain::BGHistory& _history) {
-	float result;
-	// compute
-	result =   m_a[0] * _sample
-	         + m_a[1] * _history.m_x[0]
-	         + m_a[2] * _history.m_x[1]
-	         - m_b[0] * _history.m_y[0]
-	         - m_b[1] * _history.m_y[1];
-	//update history of X
-	_history.m_x[1] = _history.m_x[0];
-	_history.m_x[0] = _sample;
-	//update history of Y
-	_history.m_y[1] = _history.m_y[0];
-	_history.m_y[0] = result;
-	return result;
+static drain::BiQuadFloat getBiquad(const std11::shared_ptr<const ejson::Object>& _object, float _frequency) {
+	drain::BiQuadFloat out;
+	// get type:
+	std::string typeString = _object->getStringValue("type", "none");
+	if (typeString == "direct-value") {
+		double a0 = _object->getNumberValue("a0", 0.0);
+		double a1 = _object->getNumberValue("a1", 0.0);
+		double a2 = _object->getNumberValue("a2", 0.0);
+		double b0 = _object->getNumberValue("b0", 0.0);
+		double b1 = _object->getNumberValue("b1", 0.0);
+		out.setBiquadCoef(a0, a1, a2, b0, b1);
+	} else {
+		enum drain::filterType type;
+		if (etk::from_string(type, typeString) == false) {
+			DRAIN_ERROR("Can not parse equalizer type:'" << typeString << "'");
+		}
+		double gain = _object->getNumberValue("gain", 0.0);
+		double frequency = _object->getNumberValue("cut-frequency", 0.0);
+		double quality = _object->getNumberValue("quality", 0.0);
+		out.setBiquad(type, frequency, quality, gain, _frequency);
+	}
+	return out;
 }
 
-bool drain::Equalizer::configureBiQuad() {
-	calcBiquad(m_type, m_frequencyCut, m_qualityFactor, m_gain);
-	return true;
-}
-
-void drain::Equalizer::calcBiquad(enum drain::filterType _type, double _frequencyCut, double _qualityFactor, double _gain) {
-	m_type = _type;
-	m_frequencyCut = _frequencyCut;
-	m_qualityFactor = _qualityFactor;
-	m_gain = _gain;
-	
-	if (getOutputFormat().getFrequency() < 1) {
-		m_a[0] = 1.0;
-		m_a[1] = 0.0;
-		m_a[2] = 0.0;
-		m_b[0] = 0.0;
-		m_b[1] = 0.0;
+void drain::Equalizer::configureBiQuad() {
+	m_biquads.clear();
+	m_biquads.resize(getOutputFormat().getMap().size());
+	if (m_config == nullptr) {
 		return;
 	}
-	if (m_frequencyCut > getOutputFormat().getFrequency()/2) {
-		m_frequencyCut = getOutputFormat().getFrequency()/2;
-	} else if (m_frequencyCut < 0) {
-		m_frequencyCut = 0;
-	}
-	if (m_qualityFactor < 0.01) {
-		m_qualityFactor = 0.01;
-	}
-	switch (m_type) {
-		case filterType_lowPass:
-		case filterType_highPass:
-		case filterType_bandPass:
-		case filterType_notch:
-			// Quality : USE IT
-			// Gain : Not USE IT
-			break;
-		case filterType_peak:
-			// Quality : USE IT
-			// Gain : USE IT
-			break;
-		case filterType_lowShelf:
-		case filterType_highShelf:
-			// Quality : NOT USE IT
-			// Gain : USE IT
-			break;
-		default:
-			// Quality : USE IT
-			// Gain : USE IT
-			break;
-	}
-	double norm;
-	double V = std::pow(10.0, std::abs(m_gain) / 20.0);
-	double K = std::tan(M_PI * m_frequencyCut / getOutputFormat().getFrequency());
-	switch (m_type) {
-		case filterType_none:
-			m_a[0] = 1.0;
-			m_a[1] = 0.0;
-			m_a[2] = 0.0;
-			m_b[0] = 0.0;
-			m_b[1] = 0.0;
-			break;
-		case filterType_lowPass:
-			norm = 1 / (1 + K / m_qualityFactor + K * K);
-			m_a[0] = K * K * norm;
-			m_a[1] = 2 * m_a[0];
-			m_a[2] = m_a[0];
-			m_b[0] = 2 * (K * K - 1) * norm;
-			m_b[1] = (1 - K / m_qualityFactor + K * K) * norm;
-			break;
-		case filterType_highPass:
-			norm = 1 / (1 + K / m_qualityFactor + K * K);
-			m_a[0] = 1 * norm;
-			m_a[1] = -2 * m_a[0];
-			m_a[2] = m_a[0];
-			m_b[0] = 2 * (K * K - 1) * norm;
-			m_b[1] = (1 - K / m_qualityFactor + K * K) * norm;
-			break;
-		case filterType_bandPass:
-			norm = 1 / (1 + K / m_qualityFactor + K * K);
-			m_a[0] = K / m_qualityFactor * norm;
-			m_a[1] = 0;
-			m_a[2] = -m_a[0];
-			m_b[0] = 2 * (K * K - 1) * norm;
-			m_b[1] = (1 - K / m_qualityFactor + K * K) * norm;
-			break;
-		case filterType_notch:
-			norm = 1 / (1 + K / m_qualityFactor + K * K);
-			m_a[0] = (1 + K * K) * norm;
-			m_a[1] = 2 * (K * K - 1) * norm;
-			m_a[2] = m_a[0];
-			m_b[0] = m_a[1];
-			m_b[1] = (1 - K / m_qualityFactor + K * K) * norm;
-			break;
-		case filterType_peak:
-			if (m_gain >= 0) {
-				norm = 1 / (1 + 1/m_qualityFactor * K + K * K);
-				m_a[0] = (1 + V/m_qualityFactor * K + K * K) * norm;
-				m_a[1] = 2 * (K * K - 1) * norm;
-				m_a[2] = (1 - V/m_qualityFactor * K + K * K) * norm;
-				m_b[0] = m_a[1];
-				m_b[1] = (1 - 1/m_qualityFactor * K + K * K) * norm;
-			} else {
-				norm = 1 / (1 + V/m_qualityFactor * K + K * K);
-				m_a[0] = (1 + 1/m_qualityFactor * K + K * K) * norm;
-				m_a[1] = 2 * (K * K - 1) * norm;
-				m_a[2] = (1 - 1/m_qualityFactor * K + K * K) * norm;
-				m_b[0] = m_a[1];
-				m_b[1] = (1 - V/m_qualityFactor * K + K * K) * norm;
+	// check for a global config:
+	const std11::shared_ptr<const ejson::Array> global = m_config->getArray("global");
+	if (global != nullptr) {
+		// only global configuration get all elements:
+		for (size_t kkk=0; kkk<global->size(); ++kkk) {
+			const std11::shared_ptr<const ejson::Object> tmpObject = global->getObject(kkk);
+			if (tmpObject == nullptr) {
+				DRAIN_ERROR("Parse the configuration error : not a correct parameter:" << kkk);
+				continue;
 			}
-			break;
-		case filterType_lowShelf:
-			if (m_gain >= 0) {
-				norm = 1 / (1 + M_SQRT2 * K + K * K);
-				m_a[0] = (1 + std::sqrt(2*V) * K + V * K * K) * norm;
-				m_a[1] = 2 * (V * K * K - 1) * norm;
-				m_a[2] = (1 - std::sqrt(2*V) * K + V * K * K) * norm;
-				m_b[0] = 2 * (K * K - 1) * norm;
-				m_b[1] = (1 - M_SQRT2 * K + K * K) * norm;
-			} else {
-				norm = 1 / (1 + std::sqrt(2*V) * K + V * K * K);
-				m_a[0] = (1 + M_SQRT2 * K + K * K) * norm;
-				m_a[1] = 2 * (K * K - 1) * norm;
-				m_a[2] = (1 - M_SQRT2 * K + K * K) * norm;
-				m_b[0] = 2 * (V * K * K - 1) * norm;
-				m_b[1] = (1 - std::sqrt(2*V) * K + V * K * K) * norm;
-			}
-			break;
-		case filterType_highShelf:
-			if (m_gain >= 0) {
-				norm = 1 / (1 + M_SQRT2 * K + K * K);
-				m_a[0] = (V + std::sqrt(2*V) * K + K * K) * norm;
-				m_a[1] = 2 * (K * K - V) * norm;
-				m_a[2] = (V - std::sqrt(2*V) * K + K * K) * norm;
-				m_b[0] = 2 * (K * K - 1) * norm;
-				m_b[1] = (1 - M_SQRT2 * K + K * K) * norm;
-			} else {
-				norm = 1 / (V + std::sqrt(2*V) * K + K * K);
-				m_a[0] = (1 + M_SQRT2 * K + K * K) * norm;
-				m_a[1] = 2 * (K * K - 1) * norm;
-				m_a[2] = (1 - M_SQRT2 * K + K * K) * norm;
-				m_b[0] = 2 * (K * K - V) * norm;
-				m_b[1] = (V - std::sqrt(2*V) * K + K * K) * norm;
-			}
-			break;
-	}
-}
-
-static const char* listValues[] = {
-	"none",
-	"low-pass",
-	"high-pass",
-	"band-pass",
-	"notch",
-	"peak",
-	"low-shelf",
-	"high-shelf"
-};
-static int32_t listValuesSize = sizeof(listValues)/sizeof(char*);
-
-
-namespace etk {
-	template<> std::string to_string<enum drain::filterType>(const enum drain::filterType& _variable) {
-		return listValues[_variable];
-	}
-	template <> bool from_string<enum drain::filterType>(enum drain::filterType& _variableRet, const std::string& _value) {
-		for (int32_t iii=0; iii<listValuesSize; ++iii) {
-			if (_value == listValues[iii]) {
-				_variableRet = static_cast<enum drain::filterType>(iii);
-				return true;
+			// declare biquad:
+			drain::BiQuadFloat biquad = getBiquad(tmpObject, getOutputFormat().getFrequency());
+			// add this bequad for every Channel:
+			for (size_t iii=0; iii<m_biquads.size(); ++iii) {
+				m_biquads[iii].push_back(biquad);
 			}
 		}
-		_variableRet = drain::filterType_none;
-		return false;
+		return;
 	}
+	for (size_t iii=0; iii<getOutputFormat().getMap().size(); ++iii) {
+		std::string channelName = etk::to_string(getOutputFormat().getMap()[iii]);
+		const std11::shared_ptr<const ejson::Array> channelConfig = m_config->getArray(channelName);
+		
+		if (channelConfig == nullptr) {
+			// no config ... not a problem ...
+			continue;
+		}
+		// only global configuration get all elements:
+		for (size_t kkk=0; kkk<channelConfig->size(); ++kkk) {
+			const std11::shared_ptr<const ejson::Object> tmpObject = channelConfig->getObject(kkk);
+			if (tmpObject == nullptr) {
+				DRAIN_ERROR("Parse the configuration error : not a correct parameter:" << kkk);
+				continue;
+			}
+			// declare biquad:
+			drain::BiQuadFloat biquad = getBiquad(tmpObject, getOutputFormat().getFrequency());
+			// add this bequad for specific channel:
+			m_biquads[iii].push_back(biquad);
+		}
+	}
+	return;
 }

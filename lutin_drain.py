@@ -14,6 +14,7 @@ def create(target):
 		'drain/debug.cpp',
 		'drain/airtalgo.cpp',
 		'drain/Algo.cpp',
+		'drain/BiQuadFloat.cpp',
 		'drain/ChannelReorder.cpp',
 		'drain/CircularBuffer.cpp',
 		'drain/EndPointCallback.cpp',
@@ -32,7 +33,7 @@ def create(target):
 	
 	# TODO: myModule.add_optional_module_depend('speexdsp', "HAVE_SPEEX_DSP_RESAMPLE")
 	myModule.compile_flags_CC("-DHAVE_SPEEX_DSP_RESAMPLE")
-	myModule.add_module_depend(['etk', 'audio', 'speexdsp'])
+	myModule.add_module_depend(['etk', 'audio', 'ejson', 'speexdsp'])
 	myModule.add_export_path(tools.get_current_path(__file__))
 	
 	# add the currrent module at the 
