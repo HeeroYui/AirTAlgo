@@ -26,7 +26,8 @@ def create(target):
 		'drain/Volume.cpp',
 		'drain/IOFormatInterface.cpp',
 		'drain/AutoLogInOut.cpp',
-		'drain/Equalizer.cpp'
+		'drain/Equalizer.cpp',
+		'drain/echoCanceller/Lms.cpp'
 		])
 	
 	# TODO: myModule.add_optional_module_depend('speexdsp', "HAVE_SPEEX_DSP_RESAMPLE")
