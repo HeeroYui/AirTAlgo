@@ -11,8 +11,9 @@
 #include <etk/chrono.h>
 
 namespace drain {
-	// Least Mean Square (LMS) algorithm "echo canceller"
-	/*
+	/**
+	 * @brief Least Mean Square (LMS) algorithm "echo canceller"
+	 * base on publication: http://www.arpapress.com/Volumes/Vol7Issue1/IJRRAS_7_1_05.pdf
 	    Shcématic description:
 	                                            /                                                                 
 	                                     o---o /|                                                                 
@@ -111,10 +112,20 @@ namespace drain {
 			 * @param[in] _nbSample Sample size of the filter
 			 */
 			void setFilterSize(size_t _nbSample);
+			/**
+			 * @brief Set Mu value for basic LMS value
+			 * @param[in] _val new mu value
+			 */
+			void setMu(float _val);
 		private:
-			std::vector<float> m_filtre; //!< Current filter
+			std::vector<float> m_filter; //!< Current filter
 			std::vector<float> m_feedBack; //!< Feedback history
 			float m_mu; //!< mu step size
+		public:
+			// for debug only:
+			std::vector<float> getFilter() {
+				return m_filter;
+			}
 	};
 }
 
