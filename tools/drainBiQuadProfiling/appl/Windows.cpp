@@ -228,7 +228,7 @@ void appl::Windows::onCallbackStart16() {
 	bq.setBiquad(m_type, m_cutFrequency, m_quality, m_gain, m_sampleRate);
 	std::vector<std::pair<float,float> > pratic;
 	size_t len = 512;
-	for (size_t iii=0; iii < len; iii++) {
+	for (size_t iii=1; iii < len; iii++) {
 		float freq = iii / (len - 1.0) * m_sampleRate / 2.0;
 		// To reset filter
 		bq.reset();
@@ -250,11 +250,11 @@ void appl::Windows::onCallbackStart16() {
 		void* outputVoid = nullptr;
 		size_t outputNbChunk = 0;
 		std11::chrono::system_clock::time_point time;
-		//RIVER_SAVE_FILE_MACRO(int16_t,"aaa_test_INPUT_16.raw",&data[0],data.size());
+		RIVER_SAVE_FILE_MACRO(int16_t,"aaa_test_INPUT_16.raw",&data[0],data.size());
 		bq.processInt16(&data[0], &data[0], data.size(), 1, 1);
-		//RIVER_SAVE_FILE_MACRO(int16_t,"aaa_test_OUTPUT_16.raw",&data[0],data.size());
+		RIVER_SAVE_FILE_MACRO(int16_t,"aaa_test_OUTPUT_16.raw",&data[0],data.size());
 		int16_t value = 0;
-		for (size_t iii=200; iii<data.size()-200; ++iii) {
+		for (size_t iii=800; iii<data.size()-200; ++iii) {
 			value = std::max(value, data[iii]);
 		}
 		gain = 20.0 * std::log10(double(value)/32000.0);
@@ -272,7 +272,7 @@ void appl::Windows::onCallbackStartFloat() {
 	bq.setBiquad(m_type, m_cutFrequency, m_quality, m_gain, m_sampleRate);
 	std::vector<std::pair<float,float> > pratic;
 	size_t len = 512;
-	for (size_t iii=0; iii < len; iii++) {
+	for (size_t iii=1; iii < len; iii++) {
 		float freq = iii / (len - 1.0) * m_sampleRate / 2.0;
 		// To reset filter
 		bq.reset();
@@ -289,11 +289,11 @@ void appl::Windows::onCallbackStartFloat() {
 				m_phase -= 2*M_PI;
 			}
 		}
-		//RIVER_SAVE_FILE_MACRO(float,"aaa_test_INPUT_F.raw",&data[0],data.size());
+		RIVER_SAVE_FILE_MACRO(float,"aaa_test_INPUT_F.raw",&data[0],data.size());
 		bq.processFloat(&data[0], &data[0], data.size(), 1, 1);
-		//RIVER_SAVE_FILE_MACRO(float,"aaa_test_OUTPUT_F.raw",&data[0],data.size());
-		float value = 0;
-		for (size_t iii=200; iii<data.size()-200; ++iii) {
+		RIVER_SAVE_FILE_MACRO(float,"aaa_test_OUTPUT_F.raw",&data[0],data.size());
+		float value = 0.0f;
+		for (size_t iii=800; iii<data.size()-200; ++iii) {
 			value = std::max(value, data[iii]);
 		}
 		gain = 20.0 * std::log10(double(value)/1.0);

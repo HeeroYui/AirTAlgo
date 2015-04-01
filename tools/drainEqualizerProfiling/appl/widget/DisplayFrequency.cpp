@@ -92,6 +92,7 @@ void appl::widget::DisplayFrequency::onRegenerateDisplay() {
 			if (std::abs(m_data[kkk][iii].second) != std::numeric_limits<float>::infinity()) {
 				m_gainMax = std::max(m_gainMax, m_data[kkk][iii].second);
 				m_gainMin = std::min(m_gainMin, m_data[kkk][iii].second);
+				//APPL_INFO("plop " << m_data[kkk][iii].second);
 			}
 			if (displayLog == false) {
 				if (std::abs(m_data[kkk][iii].first) != std::numeric_limits<float>::infinity()) {
@@ -105,12 +106,15 @@ void appl::widget::DisplayFrequency::onRegenerateDisplay() {
 					}
 					m_frequencyMax = std::max(m_frequencyMax, std::log(m_data[kkk][iii].first));
 					m_frequencyMin = std::min(m_frequencyMin, std::log(m_data[kkk][iii].first));
-					APPL_INFO("plop " << m_data[kkk][iii].first << " " << std::log(m_data[kkk][iii].first));
+					//APPL_INFO("plop " << m_data[kkk][iii].first << " " << std::log(m_data[kkk][iii].first));
 				}
 			}
 		}
 	}
 	// TODO : limit unit at a unit value.
+	
+	m_gainMin = int32_t(m_gainMin - 1);
+	m_gainMax = int32_t(m_gainMax + 1);
 	/*
 	for (size_t iii=0; iii<m_data[0].size() && m_data[1].size(); ++iii) {
 		APPL_INFO(" f=" << m_data[0][iii].first << " val=" << m_data[0][iii].second << " f=" << m_data[1][iii].first << " val=" << m_data[1][iii].second);
@@ -118,9 +122,14 @@ void appl::widget::DisplayFrequency::onRegenerateDisplay() {
 	*/
 	// set all the line:
 	m_draw.setThickness(1);
-	//APPL_ERROR("---------------------------");
+	m_draw.setColor(etk::color::red);
+	
+	float ratioX = (m_size.x()-m_borderSize.x()*2.0) / (m_frequencyMax - m_frequencyMin);
+	float ratioY = (m_size.y()-m_borderSize.y()*2.0) / (m_gainMax - m_gainMin);
+	
+	m_draw.setPos(m_borderSize + vec2(0, ratioY*(- m_gainMin)));
+	m_draw.lineTo(m_borderSize + vec2(ratioX*(m_frequencyMax - m_frequencyMin), ratioY*(- m_gainMin)));
 	for (size_t kkk=0; kkk<m_data.size(); ++kkk) {
-		//APPL_ERROR("kjhkjhkj " << kkk << "  " << m_data.size());
 		if (kkk == 0) {
 			m_draw.setColor(etk::color::green);
 		} else if (kkk == 0) {
@@ -129,8 +138,6 @@ void appl::widget::DisplayFrequency::onRegenerateDisplay() {
 			m_draw.setColor(etk::color::red);
 		}
 		
-		float ratioX = (m_size.x()-m_borderSize.x()*2.0) / (m_frequencyMax - m_frequencyMin);
-		float ratioY = (m_size.y()-m_borderSize.y()*2.0) / (m_gainMax - m_gainMin);
 		if (displayLog == false) {
 			m_draw.setPos(   m_borderSize
 			               + vec2(ratioX*(m_data[kkk][0].first - m_frequencyMin),

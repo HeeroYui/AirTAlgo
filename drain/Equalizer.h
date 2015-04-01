@@ -52,6 +52,9 @@ namespace drain {
 			 * @brief Configure biquad with the  user spec.
 			 */
 			void configureBiQuad();
+		public:
+			// for debug & tools only
+			std::vector<std::pair<float,float> > calculateTheory();
 	};
 };
 

@@ -169,3 +169,18 @@ void drain::Equalizer::configureBiQuad() {
 	}
 	return;
 }
+
+std::vector<std::pair<float,float> > drain::Equalizer::calculateTheory() {
+	std::vector<std::pair<float,float> > out;
+	for (size_t iii=0; iii<m_biquads[0].size(); ++iii) {
+		if (iii == 0) {
+			out = m_biquads[0][iii].calculateTheory(getOutputFormat().getFrequency());
+		} else {
+			std::vector<std::pair<float,float> > tmp = m_biquads[0][iii].calculateTheory(getOutputFormat().getFrequency());
+			for (size_t jjj=0; jjj< out.size(); ++jjj) {
+				out[jjj].second += tmp[jjj].second;
+			}
+		}
+	}
+	return out;
+}

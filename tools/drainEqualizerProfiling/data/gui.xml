@@ -29,40 +29,56 @@
 		</sizer>
 		<label>Filter:</label>
 		<sizer mode="vert" expand="true,false" lock="true" border="0.2%" addmode="invert">
-			<spacer min-size="5,5px"/>
-			<label>type:</label>
 			<sizer mode="hori">
-				<button name="type-low">
-					<label>---</label>
-				</button>
-				<label expand="true" fill="true" name="type">
-					Low-pass
-				</label>
-				<button name="type-up">
-					<label>+++</label>
-				</button>
+				<label>Band 0:</label>
 			</sizer>
+			<slider expand="true" name="gain-0" value="0" min="-30" max="+30" step="0.01"/>
 			<spacer min-size="5,5px"/>
-			
 			<sizer mode="hori">
-				<label>gain:</label>
-				<entry expand="true" fill="true" name="gain" regex="-?(\.|[0-9])*" value="0"/>
+				<label>Band 1:</label>
 			</sizer>
-			<slider expand="true" name="gain-slider" value="0" min="-30" max="+30" step="0.01"/>
+			<slider expand="true" name="gain-1" value="0" min="-30" max="+30" step="0.01"/>
 			<spacer min-size="5,5px"/>
-			
 			<sizer mode="hori">
-				<label>cut frequency:</label>
-				<entry expand="true" fill="true" name="frequency" regex="[0-9]*" value="1000"/>
+				<label>Band 2:</label>
 			</sizer>
-			<slider expand="true" name="frequency-slider" value="8000" min="1" max="24000" step="0.01"/>
+			<slider expand="true" name="gain-2" value="0" min="-30" max="+30" step="0.01"/>
 			<spacer min-size="5,5px"/>
-			
 			<sizer mode="hori">
-				<label>Quality factor:</label>
-				<entry expand="true" fill="true" name="quality" regex="[0-9]*" value="100"/>
+				<label>Band 3:</label>
 			</sizer>
-			<slider expand="true" name="quality-slider" value="0.707" min="0.001" max="50" step="0.001"/>
+			<slider expand="true" name="gain-3" value="0" min="-30" max="+30" step="0.01"/>
+			<spacer min-size="5,5px"/>
+			<sizer mode="hori">
+				<label>Band 4:</label>
+			</sizer>
+			<slider expand="true" name="gain-4" value="0" min="-30" max="+30" step="0.01"/>
+			<spacer min-size="5,5px"/>
+			<sizer mode="hori">
+				<label>Band 5:</label>
+			</sizer>
+			<slider expand="true" name="gain-5" value="0" min="-30" max="+30" step="0.01"/>
+			<spacer min-size="5,5px"/>
+			<sizer mode="hori">
+				<label>Band 6:</label>
+			</sizer>
+			<slider expand="true" name="gain-6" value="0" min="-30" max="+30" step="0.01"/>
+			<spacer min-size="5,5px"/>
+			<sizer mode="hori">
+				<label>Band 7:</label>
+			</sizer>
+			<slider expand="true" name="gain-7" value="0" min="-30" max="+30" step="0.01"/>
+			<spacer min-size="5,5px"/>
+			<sizer mode="hori">
+				<label>Band 8:</label>
+			</sizer>
+			<slider expand="true" name="gain-8" value="0" min="-30" max="+30" step="0.01"/>
+			<spacer min-size="5,5px"/>
+			<sizer mode="hori">
+				<label>Band 9:</label>
+			</sizer>
+			<slider expand="true" name="gain-9" value="0" min="-30" max="+30" step="0.01"/>
+			<spacer min-size="5,5px"/>
 		</sizer>
 		<button name="display16">
 			<label>test int16_t</label>
