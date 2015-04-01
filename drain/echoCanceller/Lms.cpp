@@ -10,7 +10,7 @@
 drain::Lms::Lms(void) :
   m_filtre(),
   m_feedBack(),
-  m_micro(0.1f) {
+  m_mu(0.08f) {
 	setFilterSize(256);
 }
 
@@ -23,7 +23,7 @@ void drain::Lms::reset(void) {
 	setFilterSize(m_filtre.size());
 }
 
-bool drain::Lms::process(int16_t* _output, int16_t* _feedback, int16_t* _microphone, int32_t _nbSample) {
+bool drain::Lms::process(int16_t* _output, const int16_t* _feedback, const int16_t* _microphone, int32_t _nbSample) {
 	float output[_nbSample];
 	float feedback[_nbSample];
 	float microphone[_nbSample];
@@ -38,7 +38,7 @@ bool drain::Lms::process(int16_t* _output, int16_t* _feedback, int16_t* _microph
 	return ret;
 }
 
-bool drain::Lms::process(float* _output, float* _feedback, float* _microphone, int32_t _nbSample) {
+bool drain::Lms::process(float* _output, const float* _feedback, const float* _microphone, int32_t _nbSample) {
 	// add sample in the feedback history:
 	m_feedBack.resize(m_filtre.size(), 0.0f);
 	memcpy(&m_feedBack[m_filtre.size()], _feedback, _nbSample*sizeof(float));
@@ -70,7 +70,7 @@ float drain::Lms::processValue(float* _feedback, float _microphone) {
 	float convolutionValue = convolution(_feedback, &m_filtre[0], m_filtre.size());
 	float error = _microphone - convolutionValue;
 	float out = std::avg(-1.0f, error, 1.0f);
-	updateFilter(&m_filtre[0], _feedback, 2.0f*m_micro, m_filtre.size());
+	updateFilter(&m_filtre[0], _feedback, error*m_mu, m_filtre.size());
 	return out;
 }
 
