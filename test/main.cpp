@@ -4,6 +4,7 @@
  * @license APACHE v2.0 (see license file)
  */
 
+#include <etk/etk.h>
 #include <test/debug.h>
 #include <gtest/gtest.h>
 
@@ -11,9 +12,9 @@
 #undef __class__
 #define __class__ "test"
 
-int main(int argc, char **argv) {
+int main(int _argc, const char** _argv) {
 	// init Google test :
-	::testing::InitGoogleTest(&argc, const_cast<char **>(argv));
+	::testing::InitGoogleTest(&_argc, const_cast<char **>(_argv));
 	// the only one init for etk:
 	etk::init(_argc, _argv);
 	for (int32_t iii=0; iii<_argc ; ++iii) {
