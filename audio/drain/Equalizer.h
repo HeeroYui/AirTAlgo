@@ -30,7 +30,7 @@ namespace audio {
 			protected:
 				virtual void configurationChange();
 			public:
-				virtual bool process(std11::chrono::system_clock::time_point& _time,
+				virtual bool process(audio::Time& _time,
 				                     void* _input,
 				                     size_t _inputNbChunk,
 				                     void*& _output,

@@ -24,7 +24,7 @@ void audio::drain::Resampler::init() {
 	audio::drain::Algo::init();
 	m_type = "Resampler";
 	m_supportedFormat.push_back(audio::format_int16);
-	m_residualTimeInResampler = std11::chrono::nanoseconds(0);
+	m_residualTimeInResampler = audio::Duration(0);
 }
 
 std11::shared_ptr<audio::drain::Resampler> audio::drain::Resampler::create() {
@@ -78,14 +78,14 @@ void audio::drain::Resampler::configurationChange() {
 		                                        m_input.getFrequency(),
 		                                        m_output.getFrequency(),
 		                                        10, &err);
-		m_residualTimeInResampler = std11::chrono::nanoseconds(0);
+		m_residualTimeInResampler = audio::Duration(0);
 	#else
 		DRAIN_WARNING("SPEEX DSP lib not accessible ==> can not resample");
 		m_needProcess = false;
 	#endif
 }
 
-bool audio::drain::Resampler::process(std11::chrono::system_clock::time_point& _time,
+bool audio::drain::Resampler::process(audio::Time& _time,
                                       void* _input,
                                       size_t _inputNbChunk,
                                       void*& _output,
@@ -109,7 +109,7 @@ bool audio::drain::Resampler::process(std11::chrono::system_clock::time_point& _
 	DRAIN_VERBOSE("Resampler correct timestamp : " << _time << " ==> " << (_time - m_residualTimeInResampler));
 	_time -= m_residualTimeInResampler;
 	
-	std11::chrono::nanoseconds inTime((int64_t(_inputNbChunk)*1000000000LL) / int64_t(m_input.getFrequency()));
+	audio::Duration inTime(0, (int64_t(_inputNbChunk)*1000000000LL) / int64_t(m_input.getFrequency()));
 	m_residualTimeInResampler += inTime;
 	#ifdef HAVE_SPEEX_DSP_RESAMPLE
 		float nbInputTime = float(_inputNbChunk)/m_input.getFrequency();
@@ -148,7 +148,7 @@ bool audio::drain::Resampler::process(std11::chrono::system_clock::time_point& _
 		}
 		_outputNbChunk = nbChunkOutput;
 		DRAIN_VERBOSE("                               process chunk=" << nbChunkInput << " out=" << nbChunkOutput);
-		std11::chrono::nanoseconds outTime((int64_t(_outputNbChunk)*1000000000LL) / int64_t(m_output.getFrequency()));
+		audio::Duration outTime(0, (int64_t(_outputNbChunk)*1000000000LL) / int64_t(m_output.getFrequency()));
 		DRAIN_VERBOSE("convert " << _inputNbChunk << " ==> " << _outputNbChunk << "    " << inTime.count() << " => " << outTime.count());
 		// correct time :
 		m_residualTimeInResampler -= outTime;

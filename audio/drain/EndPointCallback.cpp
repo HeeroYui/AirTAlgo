@@ -46,7 +46,7 @@ void audio::drain::EndPointCallback::configurationChange() {
 }
 
 
-bool audio::drain::EndPointCallback::process(std11::chrono::system_clock::time_point& _time,
+bool audio::drain::EndPointCallback::process(audio::Time& _time,
                                              void* _input,
                                              size_t _inputNbChunk,
                                              void*& _output,

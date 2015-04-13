@@ -39,7 +39,7 @@ void audio::drain::Equalizer::configurationChange() {
 	}
 }
 
-bool audio::drain::Equalizer::process(std11::chrono::system_clock::time_point& _time,
+bool audio::drain::Equalizer::process(audio::Time& _time,
                                       void* _input,
                                       size_t _inputNbChunk,
                                       void*& _output,

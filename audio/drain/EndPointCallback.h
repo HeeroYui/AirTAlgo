@@ -13,13 +13,13 @@
 namespace audio {
 	namespace drain {
 		typedef std11::function<void (void* _data,
-		                              const std11::chrono::system_clock::time_point& _playTime,
+		                              const audio::Time& _playTime,
 		                              size_t _nbChunk,
 		                              enum audio::format _format,
 		                              uint32_t _frequency,
 		                              const std::vector<audio::channel>& _map)> playbackFunction;
 		typedef std11::function<void (const void* _data,
-		                              const std11::chrono::system_clock::time_point& _readTime,
+		                              const audio::Time& _readTime,
 		                              size_t _nbChunk,
 		                              enum audio::format _format,
 		                              uint32_t _frequency,
@@ -43,7 +43,7 @@ namespace audio {
 				 */
 				virtual ~EndPointCallback() {};
 				virtual void configurationChange();
-				virtual bool process(std11::chrono::system_clock::time_point& _time,
+				virtual bool process(audio::Time& _time,
 				                     void* _input,
 				                     size_t _inputNbChunk,
 				                     void*& _output,

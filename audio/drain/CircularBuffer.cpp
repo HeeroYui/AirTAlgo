@@ -110,10 +110,10 @@ size_t audio::drain::CircularBuffer::getFreeSizeBeforEnd() const {
 		return size;
 }
 size_t audio::drain::CircularBuffer::write(const void* _data, size_t _nbChunk) {
-	return write(_data, _nbChunk, std11::chrono::system_clock::now());//m_timeRead + )
+	return write(_data, _nbChunk, audio::Time::now());//m_timeRead + )
 }
 
-size_t audio::drain::CircularBuffer::write(const void* _data, size_t _nbChunk, const std11::chrono::system_clock::time_point& _time) {
+size_t audio::drain::CircularBuffer::write(const void* _data, size_t _nbChunk, const audio::Time& _time) {
 	if (m_data.size() == 0) {
 		DRAIN_ERROR("EMPTY Buffer");
 		return _nbChunk;
@@ -183,14 +183,14 @@ size_t audio::drain::CircularBuffer::read(void* _data, size_t _nbChunk) {
 	return read(_data, _nbChunk, m_timeRead);
 }
 
-size_t audio::drain::CircularBuffer::read(void* _data, size_t _nbChunk, const std11::chrono::system_clock::time_point& _time) {
+size_t audio::drain::CircularBuffer::read(void* _data, size_t _nbChunk, const audio::Time& _time) {
 	size_t nbElementDrop = 0;
 	// Critical section (theoriquely protected by Mutex)
 	size_t usedSizeBeforeEnd = getUsedSizeBeforEnd();
 	// verify if we have elements in the Buffer
 	if (0 < m_size) {
 		// check the time of the read :
-		std11::chrono::nanoseconds deltaTime = m_timeRead - _time;
+		audio::Duration deltaTime = m_timeRead - _time;
 		if (deltaTime.count() == 0) {
 			// nothing to do ==> just copy data ...
 		} else if (deltaTime.count() > 0) {
@@ -251,16 +251,16 @@ size_t audio::drain::CircularBuffer::read(void* _data, size_t _nbChunk, const st
 	return nbElementDrop;
 }
 
-void audio::drain::CircularBuffer::setReadPosition(const std11::chrono::system_clock::time_point& _time) {
+void audio::drain::CircularBuffer::setReadPosition(const audio::Time& _time) {
 	// Critical section (theoriquely protected by Mutex)
 	size_t usedSizeBeforeEnd = getUsedSizeBeforEnd();
 	if (0 < m_size) {
 		// check the time of the read :
-		std11::chrono::nanoseconds deltaTime = _time - m_timeRead;
+		audio::Duration deltaTime = _time - m_timeRead;
 		size_t nbSampleToRemove = int64_t(m_frequency)*int64_t(deltaTime.count())/1000000000LL;
 		nbSampleToRemove = std::min(nbSampleToRemove, m_size);
 		DRAIN_VERBOSE("Remove sample in the buffer " << nbSampleToRemove << " / " << m_size);
-		std11::chrono::nanoseconds updateTime((int64_t(nbSampleToRemove)*1000000000LL)/int64_t(m_frequency));
+		audio::Duration updateTime(0,(int64_t(nbSampleToRemove)*1000000000LL)/int64_t(m_frequency));
 		DRAIN_VERBOSE(" add time : " << updateTime.count() << "ns / " << deltaTime.count() << "ns");
 		if (usedSizeBeforeEnd >= nbSampleToRemove) {
 			usedSizeBeforeEnd -= nbSampleToRemove;
@@ -274,7 +274,7 @@ void audio::drain::CircularBuffer::setReadPosition(const std11::chrono::system_c
 		m_timeRead += updateTime;
 		//m_timeRead += deltaTime;
 	} else {
-		m_timeRead = std11::chrono::system_clock::time_point();
+		m_timeRead = audio::Time();
 	}
 }
 

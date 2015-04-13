@@ -36,7 +36,7 @@ namespace audio {
 				 * @return true The procress is done corectly.
 				 * @return false An error occured.
 				 */
-				bool push(std11::chrono::system_clock::time_point& _time,
+				bool push(audio::Time& _time,
 				          void* _data,
 				          size_t _nbChunk);
 				/**
@@ -48,7 +48,7 @@ namespace audio {
 				 * @return true The procress is done corectly.
 				 * @return false An error occured.
 				 */
-				bool pull(std11::chrono::system_clock::time_point& _time,
+				bool pull(audio::Time& _time,
 				          void* _data,
 				          size_t _nbChunk,
 				          size_t _chunkSize);
@@ -62,7 +62,7 @@ namespace audio {
 				 * @return true The procress is done corectly.
 				 * @return false An error occured.
 				 */
-				bool process(std11::chrono::system_clock::time_point& _time,
+				bool process(audio::Time& _time,
 				             void* _inData,
 				             size_t _inNbChunk,
 				             void*& _outData,
@@ -71,7 +71,7 @@ namespace audio {
 				             size_t _inNbChunk,
 				             void*& _outData,
 				             size_t& _outNbChunk) {
-					std11::chrono::system_clock::time_point time;
+					audio::Time time;
 					return process(time, _inData, _inNbChunk, _outData, _outNbChunk);
 				}
 				bool processIn(void* _inData,

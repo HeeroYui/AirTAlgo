@@ -32,7 +32,7 @@ void audio::drain::EndPointRead::configurationChange() {
 }
 
 
-bool audio::drain::EndPointRead::process(std11::chrono::system_clock::time_point& _time,
+bool audio::drain::EndPointRead::process(audio::Time& _time,
                                          void* _input,
                                          size_t _inputNbChunk,
                                          void*& _output,

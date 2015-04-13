@@ -11,6 +11,8 @@
 #include <etk/types.h>
 #include <vector>
 #include <etk/chrono.h>
+#include <audio/Time.h>
+#include <audio/Duration.h>
 
 namespace audio {
 	namespace drain {
@@ -44,7 +46,7 @@ namespace audio {
 				std::vector<uint8_t> m_data; //!< data pointer
 				void* m_write; //!< write pointer
 				void* m_read; //!< read pointer
-				std11::chrono::system_clock::time_point m_timeRead; //!< current read time
+				audio::Time m_timeRead; //!< current read time
 				uint32_t m_frequency;
 				// TODO : Remove the m_size ==> this is a bad element to be mutex-less
 				size_t m_size; //!< number of chunk availlable in this buffer
@@ -106,7 +108,7 @@ namespace audio {
 				 * @param[in] _time Time to start write data (if before end ==> not replace data, write only if after end)
 				 * @return Number of chunk copied.
 				 */
-				size_t write(const void* _data, size_t _nbChunk, const std11::chrono::system_clock::time_point& _time);
+				size_t write(const void* _data, size_t _nbChunk, const audio::Time& _time);
 				size_t write(const void* _data, size_t _nbChunk);
 				/**
 				 * @brief Read Chunk from the buffer to the pointer data.
@@ -115,12 +117,12 @@ namespace audio {
 				 * @param[in] _time Time to start read data (if before start ==> add 0 at start, if after, remove unread data)
 				 * @return Number of chunk copied.
 				 */
-				size_t read(void* _data, size_t _nbChunk, const std11::chrono::system_clock::time_point& _time);
+				size_t read(void* _data, size_t _nbChunk, const audio::Time& _time);
 				//! @previous
 				size_t read(void* _data, size_t _nbChunk);
-				void setReadPosition(const std11::chrono::system_clock::time_point& _time);
+				void setReadPosition(const audio::Time& _time);
 				
-				std11::chrono::system_clock::time_point getReadTimeStamp() {
+				audio::Time getReadTimeStamp() {
 					return m_timeRead;
 				}
 				/**

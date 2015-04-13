@@ -49,7 +49,7 @@ void audio::drain::ChannelReorder::configurationChange() {
 }
 
 
-bool audio::drain::ChannelReorder::process(std11::chrono::system_clock::time_point& _time,
+bool audio::drain::ChannelReorder::process(audio::Time& _time,
                                            void* _input,
                                            size_t _inputNbChunk,
                                            void*& _output,

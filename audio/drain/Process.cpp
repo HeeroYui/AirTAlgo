@@ -28,7 +28,7 @@ audio::drain::Process::~Process() {
 	}
 }
 
-bool audio::drain::Process::push(std11::chrono::system_clock::time_point& _time,
+bool audio::drain::Process::push(audio::Time& _time,
                                  void* _data,
                                  size_t _nbChunk) {
 	void* out = nullptr;
@@ -38,7 +38,7 @@ bool audio::drain::Process::push(std11::chrono::system_clock::time_point& _time,
 	return true;
 }
 
-bool audio::drain::Process::pull(std11::chrono::system_clock::time_point& _time,
+bool audio::drain::Process::pull(audio::Time& _time,
                                  void* _data,
                                  size_t _nbChunk,
                                  size_t _chunkSize) {
@@ -81,7 +81,7 @@ bool audio::drain::Process::pull(std11::chrono::system_clock::time_point& _time,
 }
 
 
-bool audio::drain::Process::process(std11::chrono::system_clock::time_point& _time,
+bool audio::drain::Process::process(audio::Time& _time,
                                     void* _inData,
                                     size_t _inNbChunk,
                                     void*& _outData,

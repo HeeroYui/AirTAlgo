@@ -304,7 +304,7 @@ std::vector<audio::format> audio::drain::Volume::getFormatSupportedOutput() {
 };
 
 
-bool audio::drain::Volume::process(std11::chrono::system_clock::time_point& _time,
+bool audio::drain::Volume::process(audio::Time& _time,
                                    void* _input,
                                    size_t _inputNbChunk,
                                    void*& _output,

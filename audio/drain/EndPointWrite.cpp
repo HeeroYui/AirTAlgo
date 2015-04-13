@@ -52,7 +52,7 @@ void audio::drain::EndPointWrite::configurationChange() {
 }
 
 
-bool audio::drain::EndPointWrite::process(std11::chrono::system_clock::time_point& _time,
+bool audio::drain::EndPointWrite::process(audio::Time& _time,
                                           void* _input,
                                           size_t _inputNbChunk,
                                           void*& _output,
