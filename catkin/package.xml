@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>drain</name>
+  <name>audio_drain</name>
   <version>0.1.0</version>
   <description>Ewol audio basic flow algo (really simple)</description>
   <maintainer email="yui.heero@gmail.com">Edouard DUPIN</maintainer>

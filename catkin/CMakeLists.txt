@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(drain)
+project(audio_drain)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -44,21 +44,21 @@ include_directories(
 
 ## Declare a cpp library
 add_library(${PROJECT_NAME}
-  ../${PROJECT_NAME}/debug.cpp
-  ../${PROJECT_NAME}/airtalgo.cpp
-  ../${PROJECT_NAME}/Algo.cpp
-  ../${PROJECT_NAME}/ChannelReorder.cpp
-  ../${PROJECT_NAME}/CircularBuffer.cpp
-  ../${PROJECT_NAME}/EndPointCallback.cpp
-  ../${PROJECT_NAME}/EndPoint.cpp
-  ../${PROJECT_NAME}/EndPointRead.cpp
-  ../${PROJECT_NAME}/EndPointWrite.cpp
-  ../${PROJECT_NAME}/FormatUpdate.cpp
-  ../${PROJECT_NAME}/Process.cpp
-  ../${PROJECT_NAME}/Resampler.cpp
-  ../${PROJECT_NAME}/Volume.cpp
-  ../${PROJECT_NAME}/IOFormatInterface.cpp
-  ../${PROJECT_NAME}/AutoLogInOut.cpp
+  ../audio/drain/debug.cpp
+  ../audio/drain/airtalgo.cpp
+  ../audio/drain/Algo.cpp
+  ../audio/drain/ChannelReorder.cpp
+  ../audio/drain/CircularBuffer.cpp
+  ../audio/drain/EndPointCallback.cpp
+  ../audio/drain/EndPoint.cpp
+  ../audio/drain/EndPointRead.cpp
+  ../audio/drain/EndPointWrite.cpp
+  ../audio/drain/FormatUpdate.cpp
+  ../audio/drain/Process.cpp
+  ../audio/drain/Resampler.cpp
+  ../audio/drain/Volume.cpp
+  ../audio/drain/IOFormatInterface.cpp
+  ../audio/drain/AutoLogInOut.cpp
 )
 
 #message("libspeex DSP file: ${LIB_SPEEX_DSP}")
@@ -83,7 +83,7 @@ install(TARGETS ${PROJECT_NAME}
 )
 
 ## Mark cpp header files for installation
-install(DIRECTORY ../${PROJECT_NAME}/
+install(DIRECTORY ../audio/drain/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
   FILES_MATCHING PATTERN "*.h"
 )
