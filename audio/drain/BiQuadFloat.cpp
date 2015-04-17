@@ -6,6 +6,7 @@
 
 #include <audio/drain/debug.h>
 #include <audio/drain/BiQuadFloat.h>
+#include <cmath>
 
 static const char* listValues[] = {
 	"none",
@@ -117,8 +118,8 @@ void audio::drain::BiQuadFloat::setBiquad(enum audio::drain::filterType _type, d
 		_qualityFactor = 0.01;
 	}
 	double norm;
-	double V = std::pow(10.0, std::abs(_gain) / 20.0);
-	double K = std::tan(M_PI * _frequencyCut / _sampleRate);
+	double V = std11::pow(10.0, std11::abs(_gain) / 20.0);
+	double K = std11::tan(M_PI * _frequencyCut / _sampleRate);
 	switch (_type) {
 		case filterType_none:
 			m_a[0] = 1.0;
@@ -179,35 +180,35 @@ void audio::drain::BiQuadFloat::setBiquad(enum audio::drain::filterType _type, d
 		case filterType_lowShelf:
 			if (_gain >= 0) {
 				norm = 1 / (1 + M_SQRT2 * K + K * K);
-				m_a[0] = (1 + std::sqrt(2*V) * K + V * K * K) * norm;
+				m_a[0] = (1 + std11::sqrt(2*V) * K + V * K * K) * norm;
 				m_a[1] = 2 * (V * K * K - 1) * norm;
-				m_a[2] = (1 - std::sqrt(2*V) * K + V * K * K) * norm;
+				m_a[2] = (1 - std11::sqrt(2*V) * K + V * K * K) * norm;
 				m_b[0] = 2 * (K * K - 1) * norm;
 				m_b[1] = (1 - M_SQRT2 * K + K * K) * norm;
 			} else {
-				norm = 1 / (1 + std::sqrt(2*V) * K + V * K * K);
+				norm = 1 / (1 + std11::sqrt(2*V) * K + V * K * K);
 				m_a[0] = (1 + M_SQRT2 * K + K * K) * norm;
 				m_a[1] = 2 * (K * K - 1) * norm;
 				m_a[2] = (1 - M_SQRT2 * K + K * K) * norm;
 				m_b[0] = 2 * (V * K * K - 1) * norm;
-				m_b[1] = (1 - std::sqrt(2*V) * K + V * K * K) * norm;
+				m_b[1] = (1 - std11::sqrt(2*V) * K + V * K * K) * norm;
 			}
 			break;
 		case filterType_highShelf:
 			if (_gain >= 0) {
 				norm = 1 / (1 + M_SQRT2 * K + K * K);
-				m_a[0] = (V + std::sqrt(2*V) * K + K * K) * norm;
+				m_a[0] = (V + std11::sqrt(2*V) * K + K * K) * norm;
 				m_a[1] = 2 * (K * K - V) * norm;
-				m_a[2] = (V - std::sqrt(2*V) * K + K * K) * norm;
+				m_a[2] = (V - std11::sqrt(2*V) * K + K * K) * norm;
 				m_b[0] = 2 * (K * K - 1) * norm;
 				m_b[1] = (1 - M_SQRT2 * K + K * K) * norm;
 			} else {
-				norm = 1 / (V + std::sqrt(2*V) * K + K * K);
+				norm = 1 / (V + std11::sqrt(2*V) * K + K * K);
 				m_a[0] = (1 + M_SQRT2 * K + K * K) * norm;
 				m_a[1] = 2 * (K * K - 1) * norm;
 				m_a[2] = (1 - M_SQRT2 * K + K * K) * norm;
 				m_b[0] = 2 * (K * K - V) * norm;
-				m_b[1] = (V - std::sqrt(2*V) * K + K * K) * norm;
+				m_b[1] = (V - std11::sqrt(2*V) * K + K * K) * norm;
 			}
 			break;
 	}
@@ -261,16 +262,16 @@ std::vector<std::pair<float,float> > audio::drain::BiQuadFloat::calculateTheory(
 			w = iii / (len - 1.0) * M_PI;
 		} else {
 			// 0.001 to 1, times pi, log scale
-			w = std::exp(std::log(1.0 / 0.001) * iii / (len - 1.0)) * 0.001 * M_PI;
+			w = std11::exp(std11::log(1.0 / 0.001) * iii / (len - 1.0)) * 0.001 * M_PI;
 		}
 		double freq = iii / (len - 1.0) * _sampleRate / 2.0;
-		double phi = std::pow(std::sin(w/2.0), 2.0);
-		double y =   std::log(   std::pow(m_a[0]+m_a[1]+m_a[2], 2.0)
-		                       - 4.0*(m_a[0]*m_a[1] + 4.0*m_a[0]*m_a[2] + m_a[1]*m_a[2])*phi
-		                       + 16.0*m_a[0]*m_a[2]*phi*phi)
-		           - std::log(   std::pow(1.0+m_b[0]+m_b[1], 2.0)
-		                       - 4.0*(m_b[0] + 4.0*m_b[1] + m_b[0]*m_b[1])*phi
-		                       + 16.0*m_b[1]*phi*phi);
+		double phi = std11::pow(std11::sin(w/2.0), 2.0);
+		double y =   std11::log(   std11::pow(m_a[0]+m_a[1]+m_a[2], 2.0)
+		                         - 4.0*(m_a[0]*m_a[1] + 4.0*m_a[0]*m_a[2] + m_a[1]*m_a[2])*phi
+		                         + 16.0*m_a[0]*m_a[2]*phi*phi)
+		           - std11::log(   std11::pow(1.0+m_b[0]+m_b[1], 2.0)
+		                         - 4.0*(m_b[0] + 4.0*m_b[1] + m_b[0]*m_b[1])*phi
+		                         + 16.0*m_b[1]*phi*phi);
 		y = y * 10.0 / M_LN10;
 		
 		if (y <= -200) {
