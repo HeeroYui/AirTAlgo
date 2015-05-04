@@ -19,6 +19,7 @@ void audio::drain::Equalizer::init() {
 	audio::drain::Algo::init();
 	audio::drain::Algo::m_type = "Equalizer";
 	m_supportedFormat.push_back(audio::format_int16);
+	m_supportedFormat.push_back(audio::format_int16);
 	configureBiQuad();
 }
 
@@ -34,9 +35,7 @@ audio::drain::Equalizer::~Equalizer() {
 
 void audio::drain::Equalizer::configurationChange() {
 	audio::drain::Algo::configurationChange();
-	if (m_biquads.size() != getOutputFormat().getMap().size()) {
-		configureBiQuad();
-	}
+	configureBiQuad();
 }
 
 bool audio::drain::Equalizer::process(audio::Time& _time,
@@ -49,27 +48,7 @@ bool audio::drain::Equalizer::process(audio::Time& _time,
 	if (_input == nullptr) {
 		return false;
 	}
-	if (getOutputFormat().getFormat() == audio::format_float) {
-		for (size_t jjj=0; jjj<getOutputFormat().getMap().size(); ++jjj) {
-			// get pointer on data:
-			float* data = static_cast<float*>(_input);
-			// move to sample offset:
-			data += jjj;
-			for (size_t iii=0; iii<m_biquads[jjj].size(); ++iii) {
-				m_biquads[jjj][iii].processFloat(data, data, _inputNbChunk, getInputFormat().getMap().size(), getOutputFormat().getMap().size() );
-			}
-		}
-	} else if (getOutputFormat().getFormat() == audio::format_int16) {
-		for (size_t jjj=0; jjj<getOutputFormat().getMap().size(); ++jjj) {
-			// get pointer on data:
-			int16_t* data = static_cast<int16_t*>(_input);
-			// move to sample offset:
-			data += jjj;
-			for (size_t iii=0; iii<m_biquads[jjj].size(); ++iii) {
-				m_biquads[jjj][iii].processInt16(data, data, _inputNbChunk, getInputFormat().getMap().size(), getOutputFormat().getMap().size() );
-			}
-		}
-	}
+	m_algo.process(_output, _input, _inputNbChunk);
 	return true;
 }
 
@@ -79,11 +58,7 @@ bool audio::drain::Equalizer::setParameter(const std::string& _parameter, const 
 		m_config = ejson::Object::create(_value);
 		configureBiQuad();
 	} else if (_parameter == "reset") {
-		for (int32_t iii=0; iii<m_biquads.size(); ++iii) {
-			for (int32_t jjj=0; jjj<m_biquads[iii].size(); ++jjj) {
-				m_biquads[iii][jjj].reset();
-			}
-		}
+		// TODO : m_algo.reset();
 		return true;
 	}
 	return false;
@@ -97,8 +72,7 @@ std::string audio::drain::Equalizer::getParameterProperty(const std::string& _pa
 	return "error";
 }
 
-static audio::drain::BiQuadFloat getBiquad(const std11::shared_ptr<const ejson::Object>& _object, float _frequency) {
-	audio::drain::BiQuadFloat out;
+void audio::drain::Equalizer::addBiquad(int32_t _idBiquad, const std11::shared_ptr<const ejson::Object>& _object) {
 	// get type:
 	std::string typeString = _object->getStringValue("type", "none");
 	if (typeString == "direct-value") {
@@ -107,23 +81,31 @@ static audio::drain::BiQuadFloat getBiquad(const std11::shared_ptr<const ejson::
 		double a2 = _object->getNumberValue("a2", 0.0);
 		double b0 = _object->getNumberValue("b0", 0.0);
 		double b1 = _object->getNumberValue("b1", 0.0);
-		out.setBiquadCoef(a0, a1, a2, b0, b1);
+		if (_idBiquad < 0) {
+			m_algo.addBiquad(a0, a1, a2, b0, b1);
+		} else {
+			m_algo.addBiquad(_idBiquad, a0, a1, a2, b0, b1);
+		}
 	} else {
-		enum audio::drain::filterType type;
+		enum audio::algo::drain::biQuadType type;
 		if (etk::from_string(type, typeString) == false) {
 			DRAIN_ERROR("Can not parse equalizer type:'" << typeString << "'");
 		}
 		double gain = _object->getNumberValue("gain", 0.0);
 		double frequency = _object->getNumberValue("cut-frequency", 0.0);
 		double quality = _object->getNumberValue("quality", 0.0);
-		out.setBiquad(type, frequency, quality, gain, _frequency);
+		if (_idBiquad < 0) {
+			m_algo.addBiquad(type, frequency, quality, gain);
+		} else {
+			m_algo.addBiquad(_idBiquad, type, frequency, quality, gain);
+		}
 	}
-	return out;
 }
 
 void audio::drain::Equalizer::configureBiQuad() {
-	m_biquads.clear();
-	m_biquads.resize(getOutputFormat().getMap().size());
+	m_algo.init(getOutputFormat().getFrequency(),
+	            getOutputFormat().getMap().size(),
+	            getOutputFormat().getFormat());
 	if (m_config == nullptr) {
 		return;
 	}
@@ -137,19 +119,14 @@ void audio::drain::Equalizer::configureBiQuad() {
 				DRAIN_ERROR("Parse the configuration error : not a correct parameter:" << kkk);
 				continue;
 			}
-			// declare biquad:
-			audio::drain::BiQuadFloat biquad = getBiquad(tmpObject, getOutputFormat().getFrequency());
-			// add this bequad for every Channel:
-			for (size_t iii=0; iii<m_biquads.size(); ++iii) {
-				m_biquads[iii].push_back(biquad);
-			}
+			// Add biquad...
+			addBiquad(-1, tmpObject);
 		}
 		return;
 	}
 	for (size_t iii=0; iii<getOutputFormat().getMap().size(); ++iii) {
 		std::string channelName = etk::to_string(getOutputFormat().getMap()[iii]);
 		const std11::shared_ptr<const ejson::Array> channelConfig = m_config->getArray(channelName);
-		
 		if (channelConfig == nullptr) {
 			// no config ... not a problem ...
 			continue;
@@ -161,26 +138,13 @@ void audio::drain::Equalizer::configureBiQuad() {
 				DRAIN_ERROR("Parse the configuration error : not a correct parameter:" << kkk);
 				continue;
 			}
-			// declare biquad:
-			audio::drain::BiQuadFloat biquad = getBiquad(tmpObject, getOutputFormat().getFrequency());
-			// add this bequad for specific channel:
-			m_biquads[iii].push_back(biquad);
+			// add biquad:
+			addBiquad(kkk, tmpObject);
 		}
 	}
 	return;
 }
 
 std::vector<std::pair<float,float> > audio::drain::Equalizer::calculateTheory() {
-	std::vector<std::pair<float,float> > out;
-	for (size_t iii=0; iii<m_biquads[0].size(); ++iii) {
-		if (iii == 0) {
-			out = m_biquads[0][iii].calculateTheory(getOutputFormat().getFrequency());
-		} else {
-			std::vector<std::pair<float,float> > tmp = m_biquads[0][iii].calculateTheory(getOutputFormat().getFrequency());
-			for (size_t jjj=0; jjj< out.size(); ++jjj) {
-				out[jjj].second += tmp[jjj].second;
-			}
-		}
-	}
-	return out;
+	return m_algo.calculateTheory();
 }

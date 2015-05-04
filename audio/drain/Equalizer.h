@@ -10,7 +10,7 @@
 #include <audio/drain/Algo.h>
 #include <etk/memory.h>
 #include <ejson/Object.h>
-#include <audio/drain/BiQuadFloat.h>
+#include <audio/algo/drain/Equalizer.h>
 
 namespace audio {
 	namespace drain {
@@ -41,14 +41,9 @@ namespace audio {
 				virtual bool setParameter(const std::string& _parameter, const std::string& _value);
 				virtual std::string getParameter(const std::string& _parameter) const;
 				virtual std::string getParameterProperty(const std::string& _parameter) const;
-				
 			protected:
-				/**
-				 * @brief repesent all the biquad to process:
-				 * The first vector represent the number of channel to process
-				 * The second vector represent the number of biquad to process
-				 */
-				std::vector<std::vector<BiQuadFloat> > m_biquads;
+				void addBiquad(int32_t _idBiquad, const std11::shared_ptr<const ejson::Object>& _object);
+				audio::algo::drain::Equalizer m_algo;
 				/**
 				 * @brief Configure biquad with the  user spec.
 				 */
