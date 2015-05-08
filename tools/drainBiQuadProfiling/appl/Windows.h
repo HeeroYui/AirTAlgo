@@ -12,7 +12,7 @@
 #include <ewol/widget/Windows.h>
 #include <ewol/widget/Layer.h>
 #include <ewol/widget/Composer.h>
-#include <drain/Equalizer.h>
+#include <audio/algo/drain/BiQuadType.h>
 #include <appl/widget/DisplayFrequency.h>
 
 namespace appl {
@@ -41,8 +41,8 @@ namespace appl {
 		protected:
 			int32_t m_sampleRate;
 			std::vector<int32_t> m_listSampleRate;
-			enum drain::filterType m_type;
-			std::vector<enum drain::filterType> m_listType;
+			enum audio::algo::drain::biQuadType m_type;
+			std::vector<enum audio::algo::drain::biQuadType> m_listType;
 			float m_cutFrequency;
 			float m_gain;
 			float m_quality;

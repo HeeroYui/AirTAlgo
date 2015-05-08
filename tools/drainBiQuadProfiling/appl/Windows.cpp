@@ -13,13 +13,14 @@
 #include <ewol/widget/Entry.h>
 #include <ewol/widget/Button.h>
 #include <ewol/widget/Slider.h>
+#include <audio/drain/Equalizer.h>
 
 #undef __class__
 #define __class__ "Windows"
 
 appl::Windows::Windows() :
   m_sampleRate(48000),
-  m_type(drain::filterType::filterType_lowPass),
+  m_type(audio::algo::drain::biQuadType_lowPass),
   m_cutFrequency(8000.0),
   m_gain(0.0),
   m_quality(0.707) {
@@ -36,14 +37,14 @@ appl::Windows::Windows() :
 	m_listSampleRate.push_back(11025);
 	m_listSampleRate.push_back(8000);
 	m_listSampleRate.push_back(4000);
-	m_listType.push_back(drain::filterType_none);
-	m_listType.push_back(drain::filterType_lowPass);
-	m_listType.push_back(drain::filterType_highPass);
-	m_listType.push_back(drain::filterType_bandPass);
-	m_listType.push_back(drain::filterType_notch);
-	m_listType.push_back(drain::filterType_peak);
-	m_listType.push_back(drain::filterType_lowShelf);
-	m_listType.push_back(drain::filterType_highShelf);
+	m_listType.push_back(audio::algo::drain::biQuadType_none);
+	m_listType.push_back(audio::algo::drain::biQuadType_lowPass);
+	m_listType.push_back(audio::algo::drain::biQuadType_highPass);
+	m_listType.push_back(audio::algo::drain::biQuadType_bandPass);
+	m_listType.push_back(audio::algo::drain::biQuadType_notch);
+	m_listType.push_back(audio::algo::drain::biQuadType_peak);
+	m_listType.push_back(audio::algo::drain::biQuadType_lowShelf);
+	m_listType.push_back(audio::algo::drain::biQuadType_highShelf);
 }
 
 void appl::Windows::init() {
@@ -201,17 +202,20 @@ void appl::Windows::onCallbackFrequencySlider(const float& _value) {
 	onCallbackStart();
 }
 
-#include <river/debug.h>
+#include <audio/river/debug.h>
+#include <audio/algo/drain/BiQuad.h>
+#include <audio/float_t.h>
+#include <audio/int16_16_t.h>
 
 void appl::Windows::onCallbackStart() {
 	APPL_INFO("start ");
 	int32_t iii = 10;
 	std::vector<audio::channel> map;
 	map.push_back(audio::channel_frontCenter);
-	//drain::IOFormatInterface format(map, audio::format_int16, m_sampleRate);
-	drain::IOFormatInterface format(map, audio::format_float, m_sampleRate);
+	// audio::drain::IOFormatInterface format(map, audio::format_int16, m_sampleRate);
+	// audio::drain::IOFormatInterface format(map, audio::format_float, m_sampleRate);
 	// create biquad
-	drain::BiQuadFloat bq;
+	audio::algo::drain::BiQuad<audio::float_t> bq;
 	// configure parameter
 	bq.setBiquad(m_type, m_cutFrequency, m_quality, m_gain, m_sampleRate);
 	std::vector<std::pair<float,float> > theory = bq.calculateTheory(m_sampleRate);
@@ -223,7 +227,7 @@ void appl::Windows::onCallbackStart() {
 void appl::Windows::onCallbackStart16() {
 	APPL_INFO("start ");
 	// create biquad
-	drain::BiQuadFloat bq;
+	audio::algo::drain::BiQuad<audio::int16_16_t> bq;
 	// configure parameter
 	bq.setBiquad(m_type, m_cutFrequency, m_quality, m_gain, m_sampleRate);
 	std::vector<std::pair<float,float> > pratic;
@@ -235,7 +239,7 @@ void appl::Windows::onCallbackStart16() {
 		double m_phase = 0;
 		double baseCycle = 2.0*M_PI/double(m_sampleRate) * double(freq);
 		float gain = 0;
-		std::vector<int16_t> data;
+		std::vector<audio::int16_16_t> data;
 		// create sinus
 		data.resize(16000, 0);
 		for (int32_t iii=0; iii<data.size(); iii++) {
@@ -249,15 +253,14 @@ void appl::Windows::onCallbackStart16() {
 		int16_t* output = nullptr;
 		void* outputVoid = nullptr;
 		size_t outputNbChunk = 0;
-		std11::chrono::system_clock::time_point time;
 		RIVER_SAVE_FILE_MACRO(int16_t,"aaa_test_INPUT_16.raw",&data[0],data.size());
-		bq.processInt16(&data[0], &data[0], data.size(), 1, 1);
+		bq.process(&data[0], &data[0], data.size(), 1, 1);
 		RIVER_SAVE_FILE_MACRO(int16_t,"aaa_test_OUTPUT_16.raw",&data[0],data.size());
-		int16_t value = 0;
+		audio::int16_16_t value = 0;
 		for (size_t iii=800; iii<data.size()-200; ++iii) {
 			value = std::max(value, data[iii]);
 		}
-		gain = 20.0 * std::log10(double(value)/32000.0);
+		gain = 20.0 * std::log10(value.getDouble()/32000.0);
 		APPL_VERBOSE("LEVEL " << iii << " out = " << value << " % : " << gain);
 		pratic.push_back(std::make_pair<float, float>(float(freq),float(gain)));
 	}
@@ -267,7 +270,7 @@ void appl::Windows::onCallbackStart16() {
 void appl::Windows::onCallbackStartFloat() {
 	APPL_INFO("start ");
 	// create biquad
-	drain::BiQuadFloat bq;
+	audio::algo::drain::BiQuad<audio::float_t> bq;
 	// configure parameter
 	bq.setBiquad(m_type, m_cutFrequency, m_quality, m_gain, m_sampleRate);
 	std::vector<std::pair<float,float> > pratic;
@@ -279,7 +282,7 @@ void appl::Windows::onCallbackStartFloat() {
 		double m_phase = 0;
 		double baseCycle = 2.0*M_PI/double(m_sampleRate) * double(freq);
 		float gain = 0;
-		std::vector<float> data;
+		std::vector<audio::float_t> data;
 		// create sinus
 		data.resize(16000, 0);
 		for (int32_t iii=0; iii<data.size(); iii++) {
@@ -290,13 +293,13 @@ void appl::Windows::onCallbackStartFloat() {
 			}
 		}
 		RIVER_SAVE_FILE_MACRO(float,"aaa_test_INPUT_F.raw",&data[0],data.size());
-		bq.processFloat(&data[0], &data[0], data.size(), 1, 1);
+		bq.process(&data[0], &data[0], data.size(), 1, 1);
 		RIVER_SAVE_FILE_MACRO(float,"aaa_test_OUTPUT_F.raw",&data[0],data.size());
-		float value = 0.0f;
+		audio::float_t value = 0.0f;
 		for (size_t iii=800; iii<data.size()-200; ++iii) {
 			value = std::max(value, data[iii]);
 		}
-		gain = 20.0 * std::log10(double(value)/1.0);
+		gain = 20.0 * std::log10(value.getDouble()/1.0);
 		APPL_VERBOSE("LEVEL " << iii << " out = " << value << " % : " << gain);
 		pratic.push_back(std::make_pair<float, float>(float(freq),float(gain)));
 	}

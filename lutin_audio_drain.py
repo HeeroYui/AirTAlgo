@@ -1,7 +1,7 @@
 #!/usr/bin/python
-import lutinModule as module
-import lutinTools as tools
-import lutinDebug as debug
+import lutin.module as module
+import lutin.tools as tools
+import lutin.debug as debug
 
 def get_desc():
 	return "audio_drain : Basic audio algo interface single pipe to provess data"
@@ -30,7 +30,7 @@ def create(target):
 		])
 	
 	# TODO: myModule.add_optional_module_depend('speexdsp', "HAVE_SPEEX_DSP_RESAMPLE")
-	myModule.compile_flags_CC("-DHAVE_SPEEX_DSP_RESAMPLE")
+	myModule.compile_flags('c++', "-DHAVE_SPEEX_DSP_RESAMPLE")
 	myModule.add_module_depend(['etk', 'audio', 'ejson', 'speexdsp', 'audio_algo_drain'])
 	myModule.add_export_path(tools.get_current_path(__file__))
 	

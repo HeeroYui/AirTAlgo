@@ -12,7 +12,7 @@
 #include <ewol/widget/Windows.h>
 #include <ewol/widget/Layer.h>
 #include <ewol/widget/Composer.h>
-#include <drain/Equalizer.h>
+#include <audio/drain/Equalizer.h>
 #include <appl/widget/DisplayFrequency.h>
 
 namespace appl {
@@ -66,7 +66,7 @@ namespace appl {
 			std::vector<int32_t> m_listSampleRate;
 			
 			std::vector<float> m_listGain;
-			std11::shared_ptr<drain::Equalizer> createEqualizer(enum audio::format _format = audio::format_float);
+			std11::shared_ptr<audio::drain::Equalizer> createEqualizer(enum audio::format _format = audio::format_float);
 	};
 };
 

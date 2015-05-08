@@ -1,6 +1,6 @@
 #!/usr/bin/python
-import lutinModule as module
-import lutinTools as tools
+import lutin.module as module
+import lutin.tools as tools
 
 
 # optionnal : Describe in the "lutin.py --help"
@@ -17,9 +17,9 @@ def create(target):
 		'appl/widget/DisplayFrequency.cpp',
 		])
 	# add Library dependency name
-	myModule.add_module_depend(['ewol', 'drain', 'river'])
+	myModule.add_module_depend(['ewol', 'audio_drain', 'audio_river'])
 	# add application C flags
-	myModule.compile_flags_CC([
+	myModule.compile_flags('c++', [
 		"-DPROJECT_NAME=\"\\\""+myModule.name+"\\\"\""])
 	# Add current include Path
 	myModule.add_path(tools.get_current_path(__file__))
