@@ -4,11 +4,11 @@ import lutin.tools as tools
 import lutin.debug as debug
 
 def get_desc():
-	return "drain_test : single audio flow test"
+	return "single audio flow test"
 
 
 def create(target):
-	myModule = module.Module(__file__, 'audio_drain_test', 'BINARY')
+	myModule = module.Module(__file__, 'audio-drain-test', 'BINARY')
 	
 	myModule.add_src_file([
 		'test/main.cpp',
@@ -20,7 +20,7 @@ def create(target):
 		'test/equalizer.cpp'
 		])
 	
-	myModule.add_module_depend(['audio_drain', 'gtest', 'etk'])
+	myModule.add_module_depend(['audio-drain', 'gtest', 'etk'])
 	
 	return myModule
 

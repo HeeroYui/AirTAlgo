@@ -10,13 +10,13 @@ os:
 
 before_script: 
   - cd ..
-  - git clone https://github.com/HeeroYui/gtest.git
-  - git clone https://github.com/HeeroYui/etk.git
+  - git clone https://github.com/generic-library/gtest.git --recurse-submodules
+  - git clone https://github.com/generic-library/speex-dsp.git --recurse-submodules
+  - git clone https://github.com/generic-library/z.git --recurse-submodules
+  - git clone https://github.com/atria-soft/etk.git
+  - git clone https://github.com/atria-soft/ejson.git
   - git clone https://github.com/musicdsp/audio.git
   - git clone https://github.com/musicdsp/audio-algo-drain.git
-  - git clone https://github.com/HeeroYui/ejson.git
-  - git clone https://github.com/musicdsp/speexdsp.git
-  - git clone https://github.com/musicdsp/z.git --recurse-submodules
   - pwd
   - ls -l
   - if [ "$CXX" == "clang++" ]; then BUILDER=clang; else BUILDER=gcc; fi
@@ -32,8 +32,8 @@ install:
   - sudo pip install lutin
 
 script: 
-  - lutin -C -P -c$BUILDER -mdebug -p audio_drain_test
-  - ./out/Linux_x86_64/debug/staging/$BUILDER/audio_drain_test/usr/bin/audio_drain_test -l6
+  - lutin -C -P -c$BUILDER -mdebug -p audio-drain-test
+  - ./out/Linux_x86_64/debug/staging/$BUILDER/audio-drain-test/usr/bin/audio-drain-test -l6
 
 notifications:
   email:
