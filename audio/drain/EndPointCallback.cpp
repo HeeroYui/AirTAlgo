@@ -66,6 +66,8 @@ bool audio::drain::EndPointCallback::process(audio::Time& _time,
 	if (m_outputFunction != nullptr) {
 		// update buffer size ...
 		m_outputData.resize(_inputNbChunk*m_output.getMap().size()*m_formatSize);
+		// clean output to prevent errors ...
+		memset(&m_outputData[0], 0, m_outputData.size());
 		// call user
 		DRAIN_VERBOSE("call user get " << _inputNbChunk << "*" << m_output.getMap().size() << " map=" << m_output.getMap() << " datasize=" << int32_t(m_formatSize));
 		m_outputFunction(&m_outputData[0],
