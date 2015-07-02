@@ -20,7 +20,8 @@ namespace audio {
 			public:
 				VolumeElement(const std::string& _name="ERROR-VOLUME-NAME", float _volumedB=0.0f) :
 				  m_name(_name),
-				  m_volumedB(_volumedB) {
+				  m_volumedB(_volumedB),
+				  m_mute(false) {
 					
 				}
 			private:
@@ -37,6 +38,15 @@ namespace audio {
 				}
 				void setVolume(float _volumedB) {
 					m_volumedB = _volumedB;
+				}
+			private:
+				bool m_mute;
+			public:
+				bool getMute() const {
+					return m_mute;
+				}
+				void setMute(bool _mute) {
+					m_mute = _mute;
 				}
 		};
 		// TODO: Optimisation

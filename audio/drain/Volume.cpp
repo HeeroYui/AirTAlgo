@@ -155,14 +155,24 @@ void audio::drain::Volume::configurationChange() {
 void audio::drain::Volume::volumeChange() {
 	//m_volumeAppli = 20 * log(m_volumedB);
 	float volumedB = 0.0f;
+	bool mute = false;
 	for (size_t iii=0; iii<m_volumeList.size(); ++iii) {
 		if (m_volumeList[iii] == nullptr) {
 			continue;
+		}
+		if (m_volumeList[iii]->getMute() == true) {
+			mute = true;
 		}
 		volumedB += m_volumeList[iii]->getVolume();
 		DRAIN_VERBOSE("append volume : '" << m_volumeList[iii]->getName() << " vol=" << m_volumeList[iii]->getVolume() << "dB");
 	}
 	DRAIN_DEBUG(" Total volume : " << volumedB << "dB nbVolume=" << m_volumeList.size());
+	if (mute == true) {
+		m_volumeAppli = 0.0f;
+		m_volumeCoef = 0;
+		m_volumeDecalage = 0;
+		return;
+	}
 	#if (defined(__TARGET_OS__MacOs) || defined(__TARGET_OS__IOs) || __cplusplus < 201103L)
 		m_volumeAppli = pow(10.0f, volumedB/20.0f);
 	#else
