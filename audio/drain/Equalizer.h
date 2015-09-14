@@ -8,7 +8,7 @@
 #define __AUDIO_DRAIN_ALGO_EQUALIZER_H__
 
 #include <audio/drain/Algo.h>
-#include <etk/memory.h>
+#include <memory>
 #include <ejson/Object.h>
 #include <audio/algo/drain/Equalizer.h>
 

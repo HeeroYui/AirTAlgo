@@ -10,7 +10,7 @@
 
 #include <etk/types.h>
 #include <vector>
-#include <etk/chrono.h>
+#include <chrono>
 #include <audio/Time.h>
 #include <audio/Duration.h>
 

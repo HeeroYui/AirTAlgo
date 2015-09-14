@@ -29,10 +29,30 @@ def create(target):
 		'audio/drain/Equalizer.cpp'
 		])
 	
+	myModule.add_header_file([
+		'audio/drain/debug.h',
+		'audio/drain/debugRemove.h',
+		'audio/drain/airtalgo.h',
+		'audio/drain/Algo.h',
+		'audio/drain/ChannelReorder.h',
+		'audio/drain/CircularBuffer.h',
+		'audio/drain/EndPointCallback.h',
+		'audio/drain/EndPoint.h',
+		'audio/drain/EndPointRead.h',
+		'audio/drain/EndPointWrite.h',
+		'audio/drain/FormatUpdate.h',
+		'audio/drain/Process.h',
+		'audio/drain/Resampler.h',
+		'audio/drain/Volume.h',
+		'audio/drain/IOFormatInterface.h',
+		'audio/drain/AutoLogInOut.h',
+		'audio/drain/Equalizer.h'
+		])
+	
 	# TODO: myModule.add_optional_module_depend('speexdsp', "HAVE_SPEEX_DSP_RESAMPLE")
 	myModule.compile_flags('c++', "-DHAVE_SPEEX_DSP_RESAMPLE")
 	myModule.add_module_depend(['etk', 'audio', 'ejson', 'speex-dsp', 'audio-algo-drain'])
-	myModule.add_export_path(tools.get_current_path(__file__))
+	myModule.add_path(tools.get_current_path(__file__))
 	
 	# add the currrent module at the 
 	return myModule

@@ -8,7 +8,7 @@
 #define __AUDIO_DRAIN_ALGO_END_POINT_CALLBACK_H__
 
 #include <audio/drain/EndPoint.h>
-#include <etk/functional.h>
+#include <functional>
 
 namespace audio {
 	namespace drain {

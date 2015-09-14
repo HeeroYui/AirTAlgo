@@ -8,8 +8,8 @@
 #define __AUDIO_DRAIN_ALGO_ALGO_END_POINT_WRITE_H__
 
 #include <audio/drain/EndPoint.h>
-#include <etk/functional.h>
-#include <etk/mutex.h>
+#include <functional>
+#include <mutex>
 #include <audio/drain/CircularBuffer.h>
 
 namespace audio {

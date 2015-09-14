@@ -11,7 +11,7 @@
 #ifdef HAVE_SPEEX_DSP_RESAMPLE
 	#include <speex/speex_resampler.h>
 #endif
-#include <etk/memory.h>
+#include <memory>
 
 namespace audio {
 	namespace drain {

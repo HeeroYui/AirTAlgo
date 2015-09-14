@@ -13,9 +13,9 @@
 #include <stdint.h>
 #include <audio/format.h>
 #include <audio/channel.h>
-#include <etk/chrono.h>
-#include <etk/functional.h>
-#include <etk/memory.h>
+#include <chrono>
+#include <functional>
+#include <memory>
 #include "AutoLogInOut.h"
 #include "debug.h"
 

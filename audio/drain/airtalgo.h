@@ -10,7 +10,7 @@
 #include <string>
 #include <audio/format.h>
 #include <audio/drain/channel.h>
-#include <etk/chrono.h>
+#include <chrono>
 
 namespace audio {
 	namespace drain {
