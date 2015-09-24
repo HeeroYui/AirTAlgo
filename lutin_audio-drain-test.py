@@ -8,9 +8,9 @@ def get_desc():
 
 
 def create(target):
-	myModule = module.Module(__file__, 'audio-drain-test', 'BINARY')
+	my_module = module.Module(__file__, 'audio-drain-test', 'BINARY')
 	
-	myModule.add_src_file([
+	my_module.add_src_file([
 		'test/main.cpp',
 		'test/debug.cpp',
 		'test/updateFlow.cpp',
@@ -20,9 +20,9 @@ def create(target):
 		'test/equalizer.cpp'
 		])
 	
-	myModule.add_module_depend(['audio-drain', 'gtest', 'etk'])
+	my_module.add_module_depend(['audio-drain', 'gtest', 'etk'])
 	
-	return myModule
+	return my_module
 
 
 

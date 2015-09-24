@@ -8,9 +8,9 @@ def get_desc():
 
 
 def create(target):
-	myModule = module.Module(__file__, 'audio-drain', 'LIBRARY')
+	my_module = module.Module(__file__, 'audio-drain', 'LIBRARY')
 	
-	myModule.add_src_file([
+	my_module.add_src_file([
 		'audio/drain/debug.cpp',
 		'audio/drain/airtalgo.cpp',
 		'audio/drain/Algo.cpp',
@@ -29,7 +29,7 @@ def create(target):
 		'audio/drain/Equalizer.cpp'
 		])
 	
-	myModule.add_header_file([
+	my_module.add_header_file([
 		'audio/drain/debug.h',
 		'audio/drain/debugRemove.h',
 		'audio/drain/airtalgo.h',
@@ -49,13 +49,13 @@ def create(target):
 		'audio/drain/Equalizer.h'
 		])
 	
-	# TODO: myModule.add_optional_module_depend('speexdsp', "HAVE_SPEEX_DSP_RESAMPLE")
-	myModule.compile_flags('c++', "-DHAVE_SPEEX_DSP_RESAMPLE")
-	myModule.add_module_depend(['etk', 'audio', 'ejson', 'speex-dsp', 'audio-algo-drain'])
-	myModule.add_path(tools.get_current_path(__file__))
+	# TODO: my_module.add_optional_module_depend('speexdsp', "HAVE_SPEEX_DSP_RESAMPLE")
+	my_module.compile_flags('c++', "-DHAVE_SPEEX_DSP_RESAMPLE")
+	my_module.add_module_depend(['etk', 'audio', 'ejson', 'speex-dsp', 'audio-algo-drain'])
+	my_module.add_path(tools.get_current_path(__file__))
 	
 	# add the currrent module at the 
-	return myModule
+	return my_module
 
 
 

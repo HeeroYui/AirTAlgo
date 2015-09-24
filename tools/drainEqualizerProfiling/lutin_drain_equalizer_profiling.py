@@ -8,26 +8,26 @@ def get_desc():
 	return "drain_equalizer_profiling : basic test and profiling of equalizer work or not"
 
 def create(target):
-	myModule = module.Module(__file__, 'drain_equalizer_profiling', 'BINARY')
+	my_module = module.Module(__file__, 'drain_equalizer_profiling', 'BINARY')
 	# add the file to compile:
-	myModule.add_src_file([
+	my_module.add_src_file([
 		'appl/main.cpp',
 		'appl/debug.cpp',
 		'appl/Windows.cpp',
 		'appl/widget/DisplayFrequency.cpp',
 		])
 	# add Library dependency name
-	myModule.add_module_depend(['ewol', 'audio-drain', 'audio-river'])
+	my_module.add_module_depend(['ewol', 'audio-drain', 'audio-river'])
 	# add application C flags
-	myModule.compile_flags('c++', [
-		"-DPROJECT_NAME=\"\\\""+myModule.name+"\\\"\""])
+	my_module.compile_flags('c++', [
+		"-DPROJECT_NAME=\"\\\""+my_module.name+"\\\"\""])
 	# Add current include Path
-	myModule.add_path(tools.get_current_path(__file__))
+	my_module.add_path(tools.get_current_path(__file__))
 	# copy internal datas
-	myModule.copy_folder("data/*")
+	my_module.copy_folder("data/*")
 	
 	# return the created module
-	return myModule
+	return my_module
 
 
 
