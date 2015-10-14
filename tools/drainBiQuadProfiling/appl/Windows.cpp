@@ -6,6 +6,7 @@
  * @license APACHE-2 (see license file)
  */
 
+#include <etk/types.h>
 #include <ewol/ewol.h>
 #include <appl/debug.h>
 #include <appl/Windows.h>
@@ -17,6 +18,25 @@
 
 #undef __class__
 #define __class__ "Windows"
+
+#define APPL_SAVE_FILE_MACRO(type,fileName,dataPointer,nbElement) \
+	do { \
+		static FILE *pointerOnFile = nullptr; \
+		static bool errorOpen = false; \
+		if (pointerOnFile == nullptr) { \
+			APPL_WARNING("open file '" << fileName << "' type=" << #type); \
+			pointerOnFile = fopen(fileName,"w"); \
+			if (    errorOpen == false \
+			     && pointerOnFile == nullptr) { \
+				APPL_ERROR("ERROR OPEN file ... '" << fileName << "' type=" << #type); \
+				errorOpen=true; \
+			} \
+		} \
+		if (pointerOnFile != nullptr) { \
+			fwrite((dataPointer), sizeof(type), (nbElement), pointerOnFile); \
+			/* fflush(pointerOnFile);*/ \
+		} \
+	}while(0)
 
 appl::Windows::Windows() :
   m_sampleRate(48000),
@@ -202,7 +222,7 @@ void appl::Windows::onCallbackFrequencySlider(const float& _value) {
 	onCallbackStart();
 }
 
-#include <audio/river/debug.h>
+#include <appl/debug.h>
 #include <audio/algo/drain/BiQuad.h>
 #include <audio/float_t.h>
 #include <audio/int16_16_t.h>
@@ -253,9 +273,9 @@ void appl::Windows::onCallbackStart16() {
 		int16_t* output = nullptr;
 		void* outputVoid = nullptr;
 		size_t outputNbChunk = 0;
-		RIVER_SAVE_FILE_MACRO(int16_t,"aaa_test_INPUT_16.raw",&data[0],data.size());
+		APPL_SAVE_FILE_MACRO(int16_t,"aaa_test_INPUT_16.raw",&data[0],data.size());
 		bq.process(&data[0], &data[0], data.size(), 1, 1);
-		RIVER_SAVE_FILE_MACRO(int16_t,"aaa_test_OUTPUT_16.raw",&data[0],data.size());
+		APPL_SAVE_FILE_MACRO(int16_t,"aaa_test_OUTPUT_16.raw",&data[0],data.size());
 		audio::int16_16_t value = 0;
 		for (size_t iii=800; iii<data.size()-200; ++iii) {
 			value = std::max(value, data[iii]);
@@ -292,9 +312,9 @@ void appl::Windows::onCallbackStartFloat() {
 				m_phase -= 2*M_PI;
 			}
 		}
-		RIVER_SAVE_FILE_MACRO(float,"aaa_test_INPUT_F.raw",&data[0],data.size());
+		APPL_SAVE_FILE_MACRO(float,"aaa_test_INPUT_F.raw",&data[0],data.size());
 		bq.process(&data[0], &data[0], data.size(), 1, 1);
-		RIVER_SAVE_FILE_MACRO(float,"aaa_test_OUTPUT_F.raw",&data[0],data.size());
+		APPL_SAVE_FILE_MACRO(float,"aaa_test_OUTPUT_F.raw",&data[0],data.size());
 		audio::float_t value = 0.0f;
 		for (size_t iii=800; iii<data.size()-200; ++iii) {
 			value = std::max(value, data[iii]);

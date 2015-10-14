@@ -5,7 +5,7 @@
  */
 
 #include <etk/etk.h>
-#include <test/debug.h>
+#include <test-debug/debug.h>
 #include <gtest/gtest.h>
 
 
@@ -21,8 +21,8 @@ int main(int _argc, const char** _argv) {
 		std::string data = _argv[iii];
 		if (    data == "-h"
 		     || data == "--help") {
-			APPL_INFO("Help : ");
-			APPL_INFO("    ./xxx ---");
+			TEST_INFO("Help : ");
+			TEST_INFO("    ./xxx ---");
 			exit(0);
 		}
 	}

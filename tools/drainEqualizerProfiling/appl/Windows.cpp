@@ -17,6 +17,25 @@
 #undef __class__
 #define __class__ "Windows"
 
+#define APPL_SAVE_FILE_MACRO(type,fileName,dataPointer,nbElement) \
+	do { \
+		static FILE *pointerOnFile = nullptr; \
+		static bool errorOpen = false; \
+		if (pointerOnFile == nullptr) { \
+			APPL_WARNING("open file '" << fileName << "' type=" << #type); \
+			pointerOnFile = fopen(fileName,"w"); \
+			if (    errorOpen == false \
+			     && pointerOnFile == nullptr) { \
+				APPL_ERROR("ERROR OPEN file ... '" << fileName << "' type=" << #type); \
+				errorOpen=true; \
+			} \
+		} \
+		if (pointerOnFile != nullptr) { \
+			fwrite((dataPointer), sizeof(type), (nbElement), pointerOnFile); \
+			/* fflush(pointerOnFile);*/ \
+		} \
+	}while(0)
+
 appl::Windows::Windows() :
   m_sampleRate(48000) {
 	addObjectType("appl::Windows");
@@ -107,9 +126,6 @@ void appl::Windows::onCallbackGain(const float& _value, int32_t _id) {
 	onCallbackStart();
 }
 
-
-#include <audio/river/debug.h>
-
 std11::shared_ptr<audio::drain::Equalizer> appl::Windows::createEqualizer(enum audio::format _format) {
 	std::vector<audio::channel> map;
 	map.push_back(audio::channel_frontCenter);
@@ -193,10 +209,10 @@ void appl::Windows::onCallbackStart16() {
 		void* outputVoid = nullptr;
 		size_t outputNbChunk = 0;
 		audio::Time time;
-		RIVER_SAVE_FILE_MACRO(int16_t, "aaa_test_INPUT.raw", &data[0], data.size());
+		APPL_SAVE_FILE_MACRO(int16_t, "aaa_test_INPUT.raw", &data[0], data.size());
 		eq->process(time, &data[0], data.size(), outputVoid, outputNbChunk);
 		output = static_cast<int16_t*>(outputVoid);
-		RIVER_SAVE_FILE_MACRO(int16_t, "aaa_test_OUTPUT.raw", output, outputNbChunk);
+		APPL_SAVE_FILE_MACRO(int16_t, "aaa_test_OUTPUT.raw", output, outputNbChunk);
 		int16_t value = 0;
 		for (size_t iii=800; iii<outputNbChunk-200; ++iii) {
 			value = std::max(value, output[iii]);
@@ -234,10 +250,10 @@ void appl::Windows::onCallbackStartFloat() {
 		void* outputVoid = nullptr;
 		size_t outputNbChunk = 0;
 		audio::Time time;
-		RIVER_SAVE_FILE_MACRO(int16_t,"aaa_test_INPUT_F.raw",&data[0],data.size());
+		APPL_SAVE_FILE_MACRO(int16_t,"aaa_test_INPUT_F.raw",&data[0],data.size());
 		eq->process(time, &data[0], data.size(), outputVoid, outputNbChunk);
 		output = static_cast<float*>(outputVoid);
-		RIVER_SAVE_FILE_MACRO(int16_t,"aaa_test_OUTPUT_F.raw",output, outputNbChunk);
+		APPL_SAVE_FILE_MACRO(int16_t,"aaa_test_OUTPUT_F.raw",output, outputNbChunk);
 		float value = 0;
 		for (size_t iii=800; iii<outputNbChunk-200; ++iii) {
 			value = std::max(value, output[iii]);
