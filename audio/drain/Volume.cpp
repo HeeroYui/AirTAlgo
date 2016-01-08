@@ -173,7 +173,7 @@ void audio::drain::Volume::volumeChange() {
 		m_volumeDecalage = 0;
 		return;
 	}
-	#if (defined(__TARGET_OS__MacOs) || defined(__TARGET_OS__IOs) || defined(__TARGET_OS__Android) || __cplusplus < 201103L)
+	#if (defined(__STDCPP_LLVM__) || __cplusplus < 201103L)
 		m_volumeAppli = pow(10.0f, volumedB/20.0f);
 	#else
 		m_volumeAppli = std::pow(10.0f, volumedB/20.0f);
