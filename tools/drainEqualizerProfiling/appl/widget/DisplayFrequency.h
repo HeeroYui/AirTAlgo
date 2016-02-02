@@ -5,10 +5,7 @@
  * 
  * @license APACHE-2 (see license file)
  */
-
-
-#ifndef __APPL_WIDGET_DISPLAY_FREQUENCY_H__
-#define __APPL_WIDGET_DISPLAY_FREQUENCY_H__
+#pragma once
 
 #include <ewol/widget/Widget.h>
 #include <ewol/compositing/Drawing.h>
@@ -55,4 +52,3 @@ namespace appl {
 	}
 }
 
-#endif

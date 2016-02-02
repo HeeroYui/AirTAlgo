@@ -3,9 +3,7 @@
  * @copyright 2011, Edouard DUPIN, all right reserved
  * @license APACHE v2.0 (see license file)
  */
-
-#ifndef __AUDIO_DRAIN_ALGO_END_POINT_READ_H__
-#define __AUDIO_DRAIN_ALGO_END_POINT_READ_H__
+#pragma once
 
 #include <audio/drain/EndPoint.h>
 
@@ -64,4 +62,3 @@ namespace audio {
 	}
 }
 
-#endif

@@ -5,9 +5,7 @@
  * 
  * @license APACHE-2 (see license file)
  */
-
-#ifndef __APPL_WINDOWS_H__
-#define __APPL_WINDOWS_H__
+#pragma once
 
 #include <ewol/widget/Windows.h>
 #include <ewol/widget/Layer.h>
@@ -68,7 +66,5 @@ namespace appl {
 			std::vector<float> m_listGain;
 			std11::shared_ptr<audio::drain::Equalizer> createEqualizer(enum audio::format _format = audio::format_float);
 	};
-};
+}
 
-
-#endif
