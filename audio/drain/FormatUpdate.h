@@ -17,7 +17,7 @@ namespace audio {
 				FormatUpdate();
 				void init();
 			public:
-				static std11::shared_ptr<audio::drain::FormatUpdate> create();
+				static std::shared_ptr<audio::drain::FormatUpdate> create();
 				/**
 				 * @brief Destructor
 				 */

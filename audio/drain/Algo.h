@@ -21,8 +21,8 @@
 
 namespace audio {
 	namespace drain{
-		typedef std11::function<void (const std::string& _origin, const std::string& _status)> algoStatusFunction;
-		class Algo : public std11::enable_shared_from_this<Algo> {
+		typedef std::function<void (const std::string& _origin, const std::string& _status)> algoStatusFunction;
+		class Algo : public std::enable_shared_from_this<Algo> {
 			private:
 				std::string m_name;
 			public:

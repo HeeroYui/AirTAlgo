@@ -64,7 +64,7 @@ namespace appl {
 			std::vector<int32_t> m_listSampleRate;
 			
 			std::vector<float> m_listGain;
-			std11::shared_ptr<audio::drain::Equalizer> createEqualizer(enum audio::format _format = audio::format_float);
+			std::shared_ptr<audio::drain::Equalizer> createEqualizer(enum audio::format _format = audio::format_float);
 	};
 }
 

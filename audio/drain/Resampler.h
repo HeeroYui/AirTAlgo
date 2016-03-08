@@ -29,7 +29,7 @@ namespace audio {
 				Resampler();
 				void init();
 			public:
-				static std11::shared_ptr<audio::drain::Resampler> create();
+				static std::shared_ptr<audio::drain::Resampler> create();
 				/**
 				 * @brief Destructor
 				 */

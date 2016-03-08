@@ -136,8 +136,8 @@ void audio::drain::FormatUpdate::init() {
 	m_type = "FormatUpdate";
 }
 
-std11::shared_ptr<audio::drain::FormatUpdate> audio::drain::FormatUpdate::create() {
-	std11::shared_ptr<audio::drain::FormatUpdate> tmp(new audio::drain::FormatUpdate());
+std::shared_ptr<audio::drain::FormatUpdate> audio::drain::FormatUpdate::create() {
+	std::shared_ptr<audio::drain::FormatUpdate> tmp(new audio::drain::FormatUpdate());
 	tmp->init();
 	return tmp;
 }

@@ -17,7 +17,7 @@
 
 namespace audio {
 	namespace drain{
-		typedef std11::function<void (const std::string& _origin, const std::string& _status)> statusFunction;
+		typedef std::function<void (const std::string& _origin, const std::string& _status)> statusFunction;
 		class Process {
 			protected:
 				std::vector<int8_t> m_data; //!< temporary overlap output buffer (change size of the output data)
@@ -94,10 +94,10 @@ namespace audio {
 					m_outputConfig = _interface;
 				}
 			protected:
-				std::vector<std11::shared_ptr<drain::Algo> > m_listAlgo;
+				std::vector<std::shared_ptr<drain::Algo> > m_listAlgo;
 			public:
-				void pushBack(const std11::shared_ptr<drain::Algo>& _algo);
-				void pushFront(const std11::shared_ptr<drain::Algo>& _algo);
+				void pushBack(const std::shared_ptr<drain::Algo>& _algo);
+				void pushFront(const std::shared_ptr<drain::Algo>& _algo);
 				void clear() {
 					m_isConfigured = false;
 					m_listAlgo.clear();
@@ -105,44 +105,44 @@ namespace audio {
 				size_t size() {
 					return m_listAlgo.size();
 				}
-				std::vector<std11::shared_ptr<drain::Algo> >::iterator begin() {
+				std::vector<std::shared_ptr<drain::Algo> >::iterator begin() {
 					return m_listAlgo.begin();
 				}
-				std::vector<std11::shared_ptr<drain::Algo> >::iterator end() {
+				std::vector<std::shared_ptr<drain::Algo> >::iterator end() {
 					return m_listAlgo.end();
 				}
-				std11::shared_ptr<drain::Algo> operator[](int32_t _id) {
+				std::shared_ptr<drain::Algo> operator[](int32_t _id) {
 					return m_listAlgo[_id];
 				}
 				
-				template<typename T> std11::shared_ptr<T> get(const std::string& _name) {
+				template<typename T> std::shared_ptr<T> get(const std::string& _name) {
 					for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
 						if (m_listAlgo[iii] == nullptr) {
 							continue;
 						}
 						if (m_listAlgo[iii]->getName() == _name) {
-							return std11::dynamic_pointer_cast<T>(m_listAlgo[iii]);
+							return std::dynamic_pointer_cast<T>(m_listAlgo[iii]);
 						}
 					}
-					return std11::shared_ptr<T>();
+					return std::shared_ptr<T>();
 				}
-				template<typename T> std11::shared_ptr<const T> get(const std::string& _name) const {
+				template<typename T> std::shared_ptr<const T> get(const std::string& _name) const {
 					for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
 						if (m_listAlgo[iii] == nullptr) {
 							continue;
 						}
 						if (m_listAlgo[iii]->getName() == _name) {
-							return std11::dynamic_pointer_cast<T>(m_listAlgo[iii]);
+							return std::dynamic_pointer_cast<T>(m_listAlgo[iii]);
 						}
 					}
-					return std11::shared_ptr<const T>();
+					return std::shared_ptr<const T>();
 				}
-				template<typename T> std11::shared_ptr<T> get(int32_t _id) {
-					return std11::dynamic_pointer_cast<T>(m_listAlgo[_id]);
+				template<typename T> std::shared_ptr<T> get(int32_t _id) {
+					return std::dynamic_pointer_cast<T>(m_listAlgo[_id]);
 				}
 				template<typename T> void removeIfFirst() {
 					if (m_listAlgo.size() > 0) {
-						std11::shared_ptr<T> algoEP = get<T>(0);
+						std::shared_ptr<T> algoEP = get<T>(0);
 						if (algoEP != nullptr) {
 							m_listAlgo.erase(m_listAlgo.begin());
 						}
@@ -150,7 +150,7 @@ namespace audio {
 				}
 				template<typename T> void removeIfLast() {
 					if (m_listAlgo.size() > 0) {
-						std11::shared_ptr<T> algoEP = get<T>(m_listAlgo.size()-1);
+						std::shared_ptr<T> algoEP = get<T>(m_listAlgo.size()-1);
 						if (algoEP != nullptr) {
 							m_listAlgo.erase(m_listAlgo.begin()+m_listAlgo.size()-1);
 						}
@@ -158,7 +158,7 @@ namespace audio {
 				}
 				template<typename T> bool hasType() {
 					for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
-						std11::shared_ptr<T> tmp = std11::dynamic_pointer_cast<T>(m_listAlgo[iii]);
+						std::shared_ptr<T> tmp = std::dynamic_pointer_cast<T>(m_listAlgo[iii]);
 						if (tmp != nullptr) {
 							return true;
 						}

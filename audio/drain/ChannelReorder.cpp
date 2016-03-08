@@ -23,8 +23,8 @@ void audio::drain::ChannelReorder::init() {
 	m_type = "ChannelReorder";
 }
 
-std11::shared_ptr<audio::drain::ChannelReorder> audio::drain::ChannelReorder::create() {
-	std11::shared_ptr<audio::drain::ChannelReorder> tmp(new audio::drain::ChannelReorder());
+std::shared_ptr<audio::drain::ChannelReorder> audio::drain::ChannelReorder::create() {
+	std::shared_ptr<audio::drain::ChannelReorder> tmp(new audio::drain::ChannelReorder());
 	tmp->init();
 	return tmp;
 }

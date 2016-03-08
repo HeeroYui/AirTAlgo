@@ -7,14 +7,14 @@
 #ifndef __AUDIO_DRAIN_DEBUG_H__
 #define __AUDIO_DRAIN_DEBUG_H__
 
-#include <etk/log.h>
+#include <elog/log.h>
 
 namespace audio {
 	namespace drain {
 		int32_t getLogId();
 	}
 }
-#define DRAIN_BASE(info,data) TK_LOG_BASE(audio::drain::getLogId(),info,data)
+#define DRAIN_BASE(info,data) ELOG_BASE(audio::drain::getLogId(),info,data)
 
 #define DRAIN_CRITICAL(data)      DRAIN_BASE(1, data)
 #define DRAIN_ERROR(data)         DRAIN_BASE(2, data)

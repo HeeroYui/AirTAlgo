@@ -27,8 +27,8 @@ void audio::drain::EndPointWrite::init() {
 	}
 }
 
-std11::shared_ptr<audio::drain::EndPointWrite> audio::drain::EndPointWrite::create() {
-	std11::shared_ptr<audio::drain::EndPointWrite> tmp(new audio::drain::EndPointWrite());
+std::shared_ptr<audio::drain::EndPointWrite> audio::drain::EndPointWrite::create() {
+	std::shared_ptr<audio::drain::EndPointWrite> tmp(new audio::drain::EndPointWrite());
 	tmp->init();
 	return tmp;
 }
@@ -38,7 +38,7 @@ void audio::drain::EndPointWrite::configurationChange() {
 	// update the buffer size ...
 	if (    audio::getFormatBytes(m_output.getFormat())*m_output.getMap().size() != 0
 	     && m_output.getFrequency() != 0) {
-		if (std11::chrono::microseconds(0) != m_bufferSizeMicroseconds) {
+		if (std::chrono::microseconds(0) != m_bufferSizeMicroseconds) {
 			m_buffer.setCapacity(m_bufferSizeMicroseconds,
 			                     audio::getFormatBytes(m_output.getFormat())*m_output.getMap().size(),
 			                     m_output.getFrequency());
@@ -71,7 +71,7 @@ bool audio::drain::EndPointWrite::process(audio::Time& _time,
 	// set output pointer:
 	_outputNbChunk = m_outputData.size()/(m_formatSize*m_output.getMap().size());
 	_output = &m_outputData[0];
-	std11::unique_lock<std11::mutex> lock(m_mutex);
+	std::unique_lock<std::mutex> lock(m_mutex);
 	// check if data in the tmpBuffer
 	if (m_buffer.getSize() == 0) {
 		DRAIN_WARNING("No data in the user buffer (write null data ... " << _outputNbChunk << " chunks)");
@@ -100,7 +100,7 @@ bool audio::drain::EndPointWrite::process(audio::Time& _time,
 }
 
 void audio::drain::EndPointWrite::write(const void* _value, size_t _nbChunk) {
-	std11::unique_lock<std11::mutex> lock(m_mutex);
+	std::unique_lock<std::mutex> lock(m_mutex);
 	DRAIN_VERBOSE("[ASYNC] Write data : " << _nbChunk << " chunks" << " ==> " << m_output);
 	int32_t nbOverflow = m_buffer.write(_value, _nbChunk);
 	if (nbOverflow > 0) {
@@ -109,7 +109,7 @@ void audio::drain::EndPointWrite::write(const void* _value, size_t _nbChunk) {
 }
 
 void audio::drain::EndPointWrite::setBufferSize(size_t _nbChunk) {
-	m_bufferSizeMicroseconds = std11::chrono::microseconds(0);
+	m_bufferSizeMicroseconds = std::chrono::microseconds(0);
 	m_bufferSizeChunk = _nbChunk;
 	if (    audio::getFormatBytes(m_output.getFormat())*m_output.getMap().size() != 0
 	     && m_output.getFrequency() != 0) {
@@ -119,7 +119,7 @@ void audio::drain::EndPointWrite::setBufferSize(size_t _nbChunk) {
 	}
 }
 
-void audio::drain::EndPointWrite::setBufferSize(const std11::chrono::microseconds& _time) {
+void audio::drain::EndPointWrite::setBufferSize(const std::chrono::microseconds& _time) {
 	m_bufferSizeMicroseconds = _time;
 	m_bufferSizeChunk = 0;
 	m_buffer.setCapacity(_time,
@@ -134,17 +134,17 @@ size_t audio::drain::EndPointWrite::getBufferSize() {
 	return (int64_t(m_output.getFrequency())*m_bufferSizeMicroseconds.count())/1000000LL;
 }
 
-std11::chrono::microseconds audio::drain::EndPointWrite::getBufferSizeMicrosecond() {
-	if (m_bufferSizeMicroseconds != std11::chrono::microseconds(0) ) {
+std::chrono::microseconds audio::drain::EndPointWrite::getBufferSizeMicrosecond() {
+	if (m_bufferSizeMicroseconds != std::chrono::microseconds(0) ) {
 		return m_bufferSizeMicroseconds;
 	}
-	return std11::chrono::microseconds(m_bufferSizeChunk*1000000LL/int64_t(m_output.getFrequency()));
+	return std::chrono::microseconds(m_bufferSizeChunk*1000000LL/int64_t(m_output.getFrequency()));
 }
 
 size_t audio::drain::EndPointWrite::getBufferFillSize() {
 	return m_buffer.getSize()/(audio::getFormatBytes(m_output.getFormat())*m_output.getMap().size());
 }
 
-std11::chrono::microseconds audio::drain::EndPointWrite::getBufferFillSizeMicrosecond() {
-	return std11::chrono::microseconds(getBufferFillSize()*1000000LL/int64_t(m_output.getFrequency()));
+std::chrono::microseconds audio::drain::EndPointWrite::getBufferFillSizeMicrosecond() {
+	return std::chrono::microseconds(getBufferFillSize()*1000000LL/int64_t(m_output.getFrequency()));
 }

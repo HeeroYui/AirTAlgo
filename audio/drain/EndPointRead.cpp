@@ -20,8 +20,8 @@ void audio::drain::EndPointRead::init() {
 	m_type = "EndPointRead";
 }
 
-std11::shared_ptr<audio::drain::EndPointRead> audio::drain::EndPointRead::create() {
-	std11::shared_ptr<audio::drain::EndPointRead> tmp(new audio::drain::EndPointRead());
+std::shared_ptr<audio::drain::EndPointRead> audio::drain::EndPointRead::create() {
+	std::shared_ptr<audio::drain::EndPointRead> tmp(new audio::drain::EndPointRead());
 	tmp->init();
 	return tmp;
 }
@@ -45,7 +45,7 @@ void audio::drain::EndPointRead::setBufferSize(size_t _nbChunk) {
 	DRAIN_TODO("...");
 }
 
-void audio::drain::EndPointRead::setBufferSize(const std11::chrono::microseconds& _time) {
+void audio::drain::EndPointRead::setBufferSize(const std::chrono::microseconds& _time) {
 	DRAIN_TODO("...");
 }
 
@@ -54,9 +54,9 @@ size_t audio::drain::EndPointRead::getBufferSize() {
 	return 0;
 }
 
-std11::chrono::microseconds audio::drain::EndPointRead::getBufferSizeMicrosecond() {
+std::chrono::microseconds audio::drain::EndPointRead::getBufferSizeMicrosecond() {
 	DRAIN_TODO("...");
-	return std11::chrono::microseconds(0);
+	return std::chrono::microseconds(0);
 }
 
 size_t audio::drain::EndPointRead::getBufferFillSize() {
@@ -64,8 +64,8 @@ size_t audio::drain::EndPointRead::getBufferFillSize() {
 	return 0;
 }
 
-std11::chrono::microseconds audio::drain::EndPointRead::getBufferFillSizeMicrosecond() {
+std::chrono::microseconds audio::drain::EndPointRead::getBufferFillSizeMicrosecond() {
 	DRAIN_TODO("...");
-	return std11::chrono::microseconds(0);
+	return std::chrono::microseconds(0);
 }
 

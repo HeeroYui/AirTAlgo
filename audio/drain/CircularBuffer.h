@@ -75,9 +75,9 @@ namespace audio {
 				 * @param[in] _chunkSize Size of one chunk.
 				 * @param[in] _frequency Frequency of the buffer
 				 */
-				void setCapacity(std11::chrono::milliseconds _capacity, size_t _chunkSize, uint32_t _frequency);
-				void setCapacity(std11::chrono::microseconds _capacity, size_t _chunkSize, uint32_t _frequency) {
-					setCapacity(std11::chrono::milliseconds(_capacity.count()/1000), _chunkSize, _frequency);
+				void setCapacity(std::chrono::milliseconds _capacity, size_t _chunkSize, uint32_t _frequency);
+				void setCapacity(std::chrono::microseconds _capacity, size_t _chunkSize, uint32_t _frequency) {
+					setCapacity(std::chrono::milliseconds(_capacity.count()/1000), _chunkSize, _frequency);
 				}
 				/**
 				 * @brief get free size of the buffer.

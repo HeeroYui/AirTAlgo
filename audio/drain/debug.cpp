@@ -8,6 +8,6 @@
 
 
 int32_t audio::drain::getLogId() {
-	static int32_t g_val = etk::log::registerInstance("audio-drain");
+	static int32_t g_val = elog::registerInstance("audio-drain");
 	return g_val;
 }

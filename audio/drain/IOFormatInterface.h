@@ -74,14 +74,14 @@ namespace audio {
 				 */
 				int32_t getChunkSize() const;
 			protected:
-				std11::function<void()> m_ioChangeFunctor; //!< function pointer on the upper class
+				std::function<void()> m_ioChangeFunctor; //!< function pointer on the upper class
 				void configurationChange();
 			public:
 				/**
 				 * @brief Set the callback function to be notify when the arameter change.
 				 * @param[in] _functor Function to call.
 				 */
-				void setCallback(const std11::function<void()>& _functor);
+				void setCallback(const std::function<void()>& _functor);
 		};
 		std::ostream& operator <<(std::ostream& _os, const audio::drain::IOFormatInterface& _obj);
 	}

@@ -10,6 +10,6 @@
 #include <appl/debug.h>
 
 int32_t appl::getLogId() {
-	static int32_t g_val = etk::log::registerInstance("drain-equalizer");
+	static int32_t g_val = elog::registerInstance("drain-equalizer");
 	return g_val;
 }

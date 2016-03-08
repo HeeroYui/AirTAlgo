@@ -12,7 +12,7 @@
 
 namespace audio {
 	namespace drain{
-		typedef std11::function<void (const audio::Time& _time,
+		typedef std::function<void (const audio::Time& _time,
 		                              size_t _nbChunk,
 		                              enum audio::format _format,
 		                              uint32_t _frequency,
@@ -21,7 +21,7 @@ namespace audio {
 			private:
 				audio::drain::CircularBuffer m_buffer;
 				playbackFunctionWrite m_function;
-				std11::mutex m_mutex;
+				std::mutex m_mutex;
 			protected:
 				/**
 				 * @brief Constructor
@@ -29,7 +29,7 @@ namespace audio {
 				EndPointWrite();
 				void init();
 			public:
-				static std11::shared_ptr<audio::drain::EndPointWrite> create();
+				static std::shared_ptr<audio::drain::EndPointWrite> create();
 				/**
 				 * @brief Destructor
 				 */
@@ -45,7 +45,7 @@ namespace audio {
 					m_function = _function;
 				}
 			protected:
-				std11::chrono::microseconds m_bufferSizeMicroseconds; // 0 if m_bufferSizeChunk != 0
+				std::chrono::microseconds m_bufferSizeMicroseconds; // 0 if m_bufferSizeChunk != 0
 				size_t m_bufferSizeChunk; // 0 if m_bufferSizeMicroseconds != 0
 			public:
 				/**
@@ -57,7 +57,7 @@ namespace audio {
 				 * @brief Set buffer size size of the buffer with the stored time in µs
 				 * @param[in] _time Time in microsecond of the buffer
 				 */
-				virtual void setBufferSize(const std11::chrono::microseconds& _time);
+				virtual void setBufferSize(const std::chrono::microseconds& _time);
 				/**
 				 * @brief get buffer size in chunk number
 				 * @return Number of chunk that can be written in the buffer
@@ -67,7 +67,7 @@ namespace audio {
 				 * @brief Set buffer size size of the buffer with the stored time in µs
 				 * @return Time in microsecond that can be written in the buffer
 				 */
-				virtual std11::chrono::microseconds getBufferSizeMicrosecond();
+				virtual std::chrono::microseconds getBufferSizeMicrosecond();
 				/**
 				 * @brief Get buffer size filled in chunk number
 				 * @return Number of chunk in the buffer (that might be read/write)
@@ -77,7 +77,7 @@ namespace audio {
 				 * @brief Set buffer size size of the buffer with the stored time in µs
 				 * @return Time in microsecond of the buffer (that might be read/write)
 				 */
-				virtual std11::chrono::microseconds getBufferFillSizeMicrosecond();
+				virtual std::chrono::microseconds getBufferFillSizeMicrosecond();
 		};
 	}
 }

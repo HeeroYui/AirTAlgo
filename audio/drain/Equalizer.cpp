@@ -23,8 +23,8 @@ void audio::drain::Equalizer::init() {
 	configureBiQuad();
 }
 
-std11::shared_ptr<audio::drain::Equalizer> audio::drain::Equalizer::create() {
-	std11::shared_ptr<audio::drain::Equalizer> tmp(new audio::drain::Equalizer());
+std::shared_ptr<audio::drain::Equalizer> audio::drain::Equalizer::create() {
+	std::shared_ptr<audio::drain::Equalizer> tmp(new audio::drain::Equalizer());
 	tmp->init();
 	return tmp;
 }
@@ -72,7 +72,7 @@ std::string audio::drain::Equalizer::getParameterProperty(const std::string& _pa
 	return "error";
 }
 
-void audio::drain::Equalizer::addBiquad(int32_t _idBiquad, const std11::shared_ptr<const ejson::Object>& _object) {
+void audio::drain::Equalizer::addBiquad(int32_t _idBiquad, const std::shared_ptr<const ejson::Object>& _object) {
 	// get type:
 	std::string typeString = _object->getStringValue("type", "none");
 	if (typeString == "direct-value") {
@@ -110,11 +110,11 @@ void audio::drain::Equalizer::configureBiQuad() {
 		return;
 	}
 	// check for a global config:
-	const std11::shared_ptr<const ejson::Array> global = m_config->getArray("global");
+	const std::shared_ptr<const ejson::Array> global = m_config->getArray("global");
 	if (global != nullptr) {
 		// only global configuration get all elements:
 		for (size_t kkk=0; kkk<global->size(); ++kkk) {
-			const std11::shared_ptr<const ejson::Object> tmpObject = global->getObject(kkk);
+			const std::shared_ptr<const ejson::Object> tmpObject = global->getObject(kkk);
 			if (tmpObject == nullptr) {
 				DRAIN_ERROR("Parse the configuration error : not a correct parameter:" << kkk);
 				continue;
@@ -126,14 +126,14 @@ void audio::drain::Equalizer::configureBiQuad() {
 	}
 	for (size_t iii=0; iii<getOutputFormat().getMap().size(); ++iii) {
 		std::string channelName = etk::to_string(getOutputFormat().getMap()[iii]);
-		const std11::shared_ptr<const ejson::Array> channelConfig = m_config->getArray(channelName);
+		const std::shared_ptr<const ejson::Array> channelConfig = m_config->getArray(channelName);
 		if (channelConfig == nullptr) {
 			// no config ... not a problem ...
 			continue;
 		}
 		// only global configuration get all elements:
 		for (size_t kkk=0; kkk<channelConfig->size(); ++kkk) {
-			const std11::shared_ptr<const ejson::Object> tmpObject = channelConfig->getObject(kkk);
+			const std::shared_ptr<const ejson::Object> tmpObject = channelConfig->getObject(kkk);
 			if (tmpObject == nullptr) {
 				DRAIN_ERROR("Parse the configuration error : not a correct parameter:" << kkk);
 				continue;

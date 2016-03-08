@@ -25,8 +25,8 @@ void audio::drain::Volume::init() {
 	m_supportedFormat.push_back(audio::format_int16_on_int32);
 }
 
-std11::shared_ptr<audio::drain::Volume> audio::drain::Volume::create() {
-	std11::shared_ptr<audio::drain::Volume> tmp(new audio::drain::Volume());
+std::shared_ptr<audio::drain::Volume> audio::drain::Volume::create() {
+	std::shared_ptr<audio::drain::Volume> tmp(new audio::drain::Volume());
 	tmp->init();
 	return tmp;
 }
@@ -344,7 +344,7 @@ bool audio::drain::Volume::process(audio::Time& _time,
 	return true;
 }
 
-void audio::drain::Volume::addVolumeStage(const std11::shared_ptr<audio::drain::VolumeElement>& _volume) {
+void audio::drain::Volume::addVolumeStage(const std::shared_ptr<audio::drain::VolumeElement>& _volume) {
 	if (_volume == nullptr) {
 		return;
 	}

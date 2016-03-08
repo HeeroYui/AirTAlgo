@@ -91,7 +91,7 @@ void appl::Windows::init() {
 	
 	subBind(ewol::widget::Button, "display16", signalPressed, shared_from_this(), &appl::Windows::onCallbackStart16);
 	subBind(ewol::widget::Button, "displayFloat", signalPressed, shared_from_this(), &appl::Windows::onCallbackStartFloat);
-	m_displayer = std11::dynamic_pointer_cast<appl::widget::DisplayFrequency>(getSubObjectNamed("displayer"));
+	m_displayer = std::dynamic_pointer_cast<appl::widget::DisplayFrequency>(getSubObjectNamed("displayer"));
 	onCallbackStart();
 }
 

@@ -75,7 +75,7 @@ void audio::drain::CircularBuffer::setCapacity(size_t _capacity, size_t _chunkSi
 	m_write = &m_data[0];
 }
 
-void audio::drain::CircularBuffer::setCapacity(std11::chrono::milliseconds _capacity, size_t _chunkSize, uint32_t _frequency) {
+void audio::drain::CircularBuffer::setCapacity(std::chrono::milliseconds _capacity, size_t _chunkSize, uint32_t _frequency) {
 	uint32_t nbSampleNeeded = _frequency*_capacity.count()/1000;
 	DRAIN_DEBUG("buffer setCapacity(" << _capacity.count() << "ms ," << _chunkSize << ")");
 	setCapacity(nbSampleNeeded, _chunkSize, _frequency);
@@ -212,7 +212,7 @@ size_t audio::drain::CircularBuffer::read(void* _data, size_t _nbChunk, const au
 			DRAIN_VERBOSE("crop nb sample : m_size=" << m_size << " _nbChunk=" << _nbChunk);
 			_nbChunk = m_size;
 		}
-		m_timeRead += std11::chrono::microseconds(_nbChunk*1000000/m_frequency);
+		m_timeRead += std::chrono::microseconds(_nbChunk*1000000/m_frequency);
 		if (usedSizeBeforeEnd >= _nbChunk) {
 			// all Data will be copy
 			memcpy(_data, m_read, _nbChunk * m_sizeChunk);

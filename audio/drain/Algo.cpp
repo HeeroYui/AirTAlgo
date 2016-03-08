@@ -21,8 +21,8 @@ audio::drain::Algo::Algo() :
 
 void audio::drain::Algo::init() {
 	// set notification callback :
-	m_input.setCallback(std11::bind(&audio::drain::Algo::configurationChangeLocal, this));
-	m_output.setCallback(std11::bind(&audio::drain::Algo::configurationChangeLocal, this));
+	m_input.setCallback(std::bind(&audio::drain::Algo::configurationChangeLocal, this));
+	m_output.setCallback(std::bind(&audio::drain::Algo::configurationChangeLocal, this));
 	// first configure ==> update the internal parameters
 	configurationChange();
 }

@@ -17,7 +17,7 @@ namespace audio {
 				EndPointRead();
 				void init();
 			public:
-				static std11::shared_ptr<EndPointRead> create();
+				static std::shared_ptr<EndPointRead> create();
 				/**
 				 * @brief Destructor
 				 */
@@ -37,7 +37,7 @@ namespace audio {
 				 * @brief Set buffer size size of the buffer with the stored time in µs
 				 * @param[in] _time Time in microsecond of the buffer
 				 */
-				virtual void setBufferSize(const std11::chrono::microseconds& _time);
+				virtual void setBufferSize(const std::chrono::microseconds& _time);
 				/**
 				 * @brief get buffer size in chunk number
 				 * @return Number of chunk that can be written in the buffer
@@ -47,7 +47,7 @@ namespace audio {
 				 * @brief Set buffer size size of the buffer with the stored time in µs
 				 * @return Time in microsecond that can be written in the buffer
 				 */
-				virtual std11::chrono::microseconds getBufferSizeMicrosecond();
+				virtual std::chrono::microseconds getBufferSizeMicrosecond();
 				/**
 				 * @brief Get buffer size filled in chunk number
 				 * @return Number of chunk in the buffer (that might be read/write)
@@ -57,7 +57,7 @@ namespace audio {
 				 * @brief Set buffer size size of the buffer with the stored time in µs
 				 * @return Time in microsecond of the buffer (that might be read/write)
 				 */
-				virtual std11::chrono::microseconds getBufferFillSizeMicrosecond();
+				virtual std::chrono::microseconds getBufferFillSizeMicrosecond();
 		};
 	}
 }

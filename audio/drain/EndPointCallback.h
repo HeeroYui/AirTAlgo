@@ -10,13 +10,13 @@
 
 namespace audio {
 	namespace drain {
-		typedef std11::function<void (void* _data,
+		typedef std::function<void (void* _data,
 		                              const audio::Time& _playTime,
 		                              size_t _nbChunk,
 		                              enum audio::format _format,
 		                              uint32_t _frequency,
 		                              const std::vector<audio::channel>& _map)> playbackFunction;
-		typedef std11::function<void (const void* _data,
+		typedef std::function<void (const void* _data,
 		                              const audio::Time& _readTime,
 		                              size_t _nbChunk,
 		                              enum audio::format _format,
@@ -34,8 +34,8 @@ namespace audio {
 				void init(playbackFunction _callback);
 				void init(recordFunction _callback);
 			public:
-				static std11::shared_ptr<EndPointCallback> create(playbackFunction _callback);
-				static std11::shared_ptr<EndPointCallback> create(recordFunction _callback);
+				static std::shared_ptr<EndPointCallback> create(playbackFunction _callback);
+				static std::shared_ptr<EndPointCallback> create(recordFunction _callback);
 				/**
 				 * @brief Destructor
 				 */
