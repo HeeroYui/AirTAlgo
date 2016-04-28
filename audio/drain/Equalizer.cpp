@@ -55,7 +55,7 @@ bool audio::drain::Equalizer::process(audio::Time& _time,
 bool audio::drain::Equalizer::setParameter(const std::string& _parameter, const std::string& _value) {
 	//DRAIN_WARNING("set : " << _parameter << " " << _value);
 	if (_parameter == "config") {
-		m_config = ejson::Object::create(_value);
+		m_config = ejson::Object(_value);
 		configureBiQuad();
 	} else if (_parameter == "reset") {
 		// TODO : m_algo.reset();
@@ -72,15 +72,15 @@ std::string audio::drain::Equalizer::getParameterProperty(const std::string& _pa
 	return "error";
 }
 
-void audio::drain::Equalizer::addBiquad(int32_t _idBiquad, const std::shared_ptr<const ejson::Object>& _object) {
+void audio::drain::Equalizer::addBiquad(int32_t _idBiquad, const ejson::Object& _object) {
 	// get type:
-	std::string typeString = _object->getStringValue("type", "none");
+	std::string typeString = _object["type"].toString().get("none");
 	if (typeString == "direct-value") {
-		double a0 = _object->getNumberValue("a0", 0.0);
-		double a1 = _object->getNumberValue("a1", 0.0);
-		double a2 = _object->getNumberValue("a2", 0.0);
-		double b0 = _object->getNumberValue("b0", 0.0);
-		double b1 = _object->getNumberValue("b1", 0.0);
+		double a0 = _object["a0"].toNumber().get(0.0);
+		double a1 = _object["a1"].toNumber().get(0.0);
+		double a2 = _object["a2"].toNumber().get(0.0);
+		double b0 = _object["b0"].toNumber().get(0.0);
+		double b1 = _object["b1"].toNumber().get(0.0);
 		if (_idBiquad < 0) {
 			m_algo.addBiquad(a0, a1, a2, b0, b1);
 		} else {
@@ -91,9 +91,9 @@ void audio::drain::Equalizer::addBiquad(int32_t _idBiquad, const std::shared_ptr
 		if (etk::from_string(type, typeString) == false) {
 			DRAIN_ERROR("Can not parse equalizer type:'" << typeString << "'");
 		}
-		double gain = _object->getNumberValue("gain", 0.0);
-		double frequency = _object->getNumberValue("cut-frequency", 0.0);
-		double quality = _object->getNumberValue("quality", 0.0);
+		double gain = _object["gain"].toNumber().get(0.0);
+		double frequency = _object["cut-frequency"].toNumber().get(0.0);
+		double quality = _object["quality"].toNumber().get(0.0);
 		if (_idBiquad < 0) {
 			m_algo.addBiquad(type, frequency, quality, gain);
 		} else {
@@ -106,16 +106,16 @@ void audio::drain::Equalizer::configureBiQuad() {
 	m_algo.init(getOutputFormat().getFrequency(),
 	            getOutputFormat().getMap().size(),
 	            getOutputFormat().getFormat());
-	if (m_config == nullptr) {
+	if (m_config.exist() == false) {
 		return;
 	}
 	// check for a global config:
-	const std::shared_ptr<const ejson::Array> global = m_config->getArray("global");
-	if (global != nullptr) {
+	const ejson::Array global = m_config["global"].toArray();
+	if (global.exist() == true) {
 		// only global configuration get all elements:
-		for (size_t kkk=0; kkk<global->size(); ++kkk) {
-			const std::shared_ptr<const ejson::Object> tmpObject = global->getObject(kkk);
-			if (tmpObject == nullptr) {
+		for (size_t kkk=0; kkk<global.size(); ++kkk) {
+			const ejson::Object tmpObject = global[kkk].toObject();
+			if (tmpObject.exist() == false) {
 				DRAIN_ERROR("Parse the configuration error : not a correct parameter:" << kkk);
 				continue;
 			}
@@ -126,15 +126,15 @@ void audio::drain::Equalizer::configureBiQuad() {
 	}
 	for (size_t iii=0; iii<getOutputFormat().getMap().size(); ++iii) {
 		std::string channelName = etk::to_string(getOutputFormat().getMap()[iii]);
-		const std::shared_ptr<const ejson::Array> channelConfig = m_config->getArray(channelName);
-		if (channelConfig == nullptr) {
+		const ejson::Array channelConfig = m_config[channelName].toArray();
+		if (channelConfig.exist() == false) {
 			// no config ... not a problem ...
 			continue;
 		}
 		// only global configuration get all elements:
-		for (size_t kkk=0; kkk<channelConfig->size(); ++kkk) {
-			const std::shared_ptr<const ejson::Object> tmpObject = channelConfig->getObject(kkk);
-			if (tmpObject == nullptr) {
+		for (size_t kkk=0; kkk<channelConfig.size(); ++kkk) {
+			const ejson::Object tmpObject = channelConfig[kkk].toObject();
+			if (tmpObject.exist() == false) {
 				DRAIN_ERROR("Parse the configuration error : not a correct parameter:" << kkk);
 				continue;
 			}

@@ -34,13 +34,13 @@ namespace audio {
 				                     void*& _output,
 				                     size_t& _outputNbChunk);
 			protected:
-				std::shared_ptr<ejson::Object> m_config; // configuration of the equalizer.
+				ejson::Object m_config; // configuration of the equalizer.
 			public:
 				virtual bool setParameter(const std::string& _parameter, const std::string& _value);
 				virtual std::string getParameter(const std::string& _parameter) const;
 				virtual std::string getParameterProperty(const std::string& _parameter) const;
 			protected:
-				void addBiquad(int32_t _idBiquad, const std::shared_ptr<const ejson::Object>& _object);
+				void addBiquad(int32_t _idBiquad, const ejson::Object& _object);
 				audio::algo::drain::Equalizer m_algo;
 				/**
 				 * @brief Configure biquad with the  user spec.
