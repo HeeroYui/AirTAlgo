@@ -7,10 +7,6 @@
 #include "IOFormatInterface.h"
 #include "debug.h"
 
-#undef __class__
-#define __class__ "IOFormatInterface"
-
-
 std::ostream& audio::drain::operator <<(std::ostream& _os, const IOFormatInterface& _obj) {
 	_os << "{";
 	if (_obj.getConfigured() == false) {

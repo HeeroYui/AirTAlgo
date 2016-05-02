@@ -10,9 +10,6 @@
 #include "debug.h"
 
 
-#undef __class__
-#define __class__ "ChannelReorder"
-
 audio::drain::ChannelReorder::ChannelReorder() {
 	
 }

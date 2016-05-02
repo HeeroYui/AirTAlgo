@@ -1,9 +1,7 @@
-/**
- * @author Edouard DUPIN
- * 
+/** @file
+ * @author Edouard DUPIN 
  * @copyright 2011, Edouard DUPIN, all right reserved
- * 
- * @license BSD 3 clauses (see license file)
+ * @license APACHE v2.0 (see license file)
  */
 
 #ifdef __AUDIO_DRAIN_DEBUG_H__

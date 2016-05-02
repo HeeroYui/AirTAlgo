@@ -15,9 +15,6 @@
 #include <audio/drain/Resampler.h>
 #include <audio/drain/debug.h>
 
-#undef __class__
-#define __class__ "Process"
-
 audio::drain::Process::Process() :
   m_isConfigured(false) {
 	m_data.clear();

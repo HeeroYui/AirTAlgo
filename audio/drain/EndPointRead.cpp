@@ -7,8 +7,6 @@
 #include <audio/drain/EndPointRead.h>
 #include <audio/drain/debug.h>
 
-#undef __class__
-#define __class__ "EndPointRead"
 
 audio::drain::EndPointRead::EndPointRead() {
 	

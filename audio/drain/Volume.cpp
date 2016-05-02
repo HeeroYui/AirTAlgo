@@ -9,9 +9,6 @@
 #include <math.h>
 #include <audio/drain/debug.h>
 
-#undef __class__
-#define __class__ "Volume"
-
 audio::drain::Volume::Volume() :
   m_volumeAppli(1.0f),
   m_functionConvert(nullptr) {

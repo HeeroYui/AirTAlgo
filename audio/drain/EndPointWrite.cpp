@@ -7,9 +7,6 @@
 #include <audio/drain/debug.h>
 
 
-#undef __class__
-#define __class__ "EndPointWrite"
-
 audio::drain::EndPointWrite::EndPointWrite() :
   m_function(nullptr),
   m_bufferSizeMicroseconds(1000000) {

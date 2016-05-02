@@ -8,9 +8,6 @@
 #include <iostream>
 #include <audio/drain/debug.h>
 
-#undef __class__
-#define __class__ "FormatUpdate"
-
 #ifndef INT16_MAX
 	#define INT16_MAX 0x7fff
 #endif

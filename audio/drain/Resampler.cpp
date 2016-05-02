@@ -8,9 +8,6 @@
 #include <iostream>
 #include <audio/drain/debug.h>
 
-#undef __class__
-#define __class__ "Resampler"
-
 audio::drain::Resampler::Resampler() :
   #ifdef HAVE_SPEEX_DSP_RESAMPLE
     m_speexResampler(nullptr),

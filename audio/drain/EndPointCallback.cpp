@@ -7,8 +7,6 @@
 #include <audio/drain/EndPointCallback.h>
 #include <audio/drain/debug.h>
 
-#undef __class__
-#define __class__ "EndPointCallback"
 
 audio::drain::EndPointCallback::EndPointCallback() :
   m_outputFunction(nullptr),

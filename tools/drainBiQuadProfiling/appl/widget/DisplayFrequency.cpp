@@ -1,18 +1,12 @@
-/**
- * @author Edouard DUPIN
- * 
- * @copyright 2010, Edouard DUPIN, all right reserved
- * 
- * @license APACHE-2 (see license file)
+/** @file
+ * @author Edouard DUPIN 
+ * @copyright 2011, Edouard DUPIN, all right reserved
+ * @license APACHE v2.0 (see license file)
  */
 
 #include <appl/widget/DisplayFrequency.h>
 #include <appl/debug.h>
 #include <etk/tool.h>
-
-#undef __class__
-#define __class__ "DisplayFrequency"
-
 
 appl::widget::DisplayFrequency::DisplayFrequency() :
   m_gainMin(0.0f),

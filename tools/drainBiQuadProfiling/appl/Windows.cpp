@@ -1,9 +1,7 @@
-/**
- * @author Edouard DUPIN
- * 
- * @copyright 2010, Edouard DUPIN, all right reserved
- * 
- * @license APACHE-2 (see license file)
+/** @file
+ * @author Edouard DUPIN 
+ * @copyright 2011, Edouard DUPIN, all right reserved
+ * @license APACHE v2.0 (see license file)
  */
 
 #include <etk/types.h>
@@ -16,10 +14,7 @@
 #include <ewol/widget/Slider.h>
 #include <audio/drain/Equalizer.h>
 
-#undef __class__
-#define __class__ "Windows"
-
-#define APPL_SAVE_FILE_MACRO(type,fileName,dataPointer,nbElement) \
+define APPL_SAVE_FILE_MACRO(type,fileName,dataPointer,nbElement) \
 	do { \
 		static FILE *pointerOnFile = nullptr; \
 		static bool errorOpen = false; \

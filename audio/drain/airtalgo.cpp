@@ -7,6 +7,3 @@
 #include "debug.h"
 
 
-#undef __class__
-#define __class__ ""
-

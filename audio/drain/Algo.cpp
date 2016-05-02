@@ -7,10 +7,6 @@
 #include <functional>
 #include "debug.h"
 
-
-#undef __class__
-#define __class__ "Algo"
-
 audio::drain::Algo::Algo() :
   m_temporary(false),
   m_outputData(),
