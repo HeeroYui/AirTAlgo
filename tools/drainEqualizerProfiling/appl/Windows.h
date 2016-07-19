@@ -19,8 +19,8 @@ namespace appl {
 		public:
 			DECLARE_FACTORY(Windows);
 		protected:
-			std::shared_ptr<ewol::widget::Composer> m_gui;
-			std::shared_ptr<appl::widget::DisplayFrequency> m_displayer;
+			ememory::SharedPtr<ewol::widget::Composer> m_gui;
+			ememory::SharedPtr<appl::widget::DisplayFrequency> m_displayer;
 			void onCallbackSampleRateLow();
 			void onCallbackSampleRateUp();
 			void onCallbackGain0(const float& _value) {
@@ -62,7 +62,7 @@ namespace appl {
 			std::vector<int32_t> m_listSampleRate;
 			
 			std::vector<float> m_listGain;
-			std::shared_ptr<audio::drain::Equalizer> createEqualizer(enum audio::format _format = audio::format_float);
+			ememory::SharedPtr<audio::drain::Equalizer> createEqualizer(enum audio::format _format = audio::format_float);
 	};
 }
 

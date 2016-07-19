@@ -12,7 +12,7 @@
 #include <audio/channel.h>
 #include <chrono>
 #include <functional>
-#include <memory>
+#include <ememory/memory.h>
 #include "AutoLogInOut.h"
 #include "IOFormatInterface.h"
 #include <audio/Time.h>
@@ -22,7 +22,7 @@
 namespace audio {
 	namespace drain{
 		typedef std::function<void (const std::string& _origin, const std::string& _status)> algoStatusFunction;
-		class Algo : public std::enable_shared_from_this<Algo> {
+		class Algo : public ememory::EnableSharedFromThis<Algo> {
 			private:
 				std::string m_name;
 			public:

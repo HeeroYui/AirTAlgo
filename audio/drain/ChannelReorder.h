@@ -17,7 +17,7 @@ namespace audio {
 				ChannelReorder();
 				void init();
 			public:
-				static std::shared_ptr<audio::drain::ChannelReorder> create();
+				static ememory::SharedPtr<audio::drain::ChannelReorder> create();
 				/**
 				 * @brief Destructor
 				 */

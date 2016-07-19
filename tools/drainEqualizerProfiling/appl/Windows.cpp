@@ -57,23 +57,23 @@ void appl::Windows::init() {
 	if (m_gui != nullptr) {
 		setSubWidget(m_gui);
 	}
-	subBind(ewol::widget::Button, "sample-rate-low", signalPressed, shared_from_this(), &appl::Windows::onCallbackSampleRateLow);
-	subBind(ewol::widget::Button, "sample-rate-up", signalPressed, shared_from_this(), &appl::Windows::onCallbackSampleRateUp);
+	subBind(ewol::widget::Button, "sample-rate-low", signalPressed, sharedFromThis(), &appl::Windows::onCallbackSampleRateLow);
+	subBind(ewol::widget::Button, "sample-rate-up", signalPressed, sharedFromThis(), &appl::Windows::onCallbackSampleRateUp);
 	
-	subBind(ewol::widget::Slider, "gain-0", signalChange, shared_from_this(), &appl::Windows::onCallbackGain0);
-	subBind(ewol::widget::Slider, "gain-1", signalChange, shared_from_this(), &appl::Windows::onCallbackGain1);
-	subBind(ewol::widget::Slider, "gain-2", signalChange, shared_from_this(), &appl::Windows::onCallbackGain2);
-	subBind(ewol::widget::Slider, "gain-3", signalChange, shared_from_this(), &appl::Windows::onCallbackGain3);
-	subBind(ewol::widget::Slider, "gain-4", signalChange, shared_from_this(), &appl::Windows::onCallbackGain4);
-	subBind(ewol::widget::Slider, "gain-5", signalChange, shared_from_this(), &appl::Windows::onCallbackGain5);
-	subBind(ewol::widget::Slider, "gain-6", signalChange, shared_from_this(), &appl::Windows::onCallbackGain6);
-	subBind(ewol::widget::Slider, "gain-7", signalChange, shared_from_this(), &appl::Windows::onCallbackGain7);
-	subBind(ewol::widget::Slider, "gain-8", signalChange, shared_from_this(), &appl::Windows::onCallbackGain8);
-	subBind(ewol::widget::Slider, "gain-9", signalChange, shared_from_this(), &appl::Windows::onCallbackGain9);
+	subBind(ewol::widget::Slider, "gain-0", signalChange, sharedFromThis(), &appl::Windows::onCallbackGain0);
+	subBind(ewol::widget::Slider, "gain-1", signalChange, sharedFromThis(), &appl::Windows::onCallbackGain1);
+	subBind(ewol::widget::Slider, "gain-2", signalChange, sharedFromThis(), &appl::Windows::onCallbackGain2);
+	subBind(ewol::widget::Slider, "gain-3", signalChange, sharedFromThis(), &appl::Windows::onCallbackGain3);
+	subBind(ewol::widget::Slider, "gain-4", signalChange, sharedFromThis(), &appl::Windows::onCallbackGain4);
+	subBind(ewol::widget::Slider, "gain-5", signalChange, sharedFromThis(), &appl::Windows::onCallbackGain5);
+	subBind(ewol::widget::Slider, "gain-6", signalChange, sharedFromThis(), &appl::Windows::onCallbackGain6);
+	subBind(ewol::widget::Slider, "gain-7", signalChange, sharedFromThis(), &appl::Windows::onCallbackGain7);
+	subBind(ewol::widget::Slider, "gain-8", signalChange, sharedFromThis(), &appl::Windows::onCallbackGain8);
+	subBind(ewol::widget::Slider, "gain-9", signalChange, sharedFromThis(), &appl::Windows::onCallbackGain9);
 	
-	subBind(ewol::widget::Button, "display16", signalPressed, shared_from_this(), &appl::Windows::onCallbackStart16);
-	subBind(ewol::widget::Button, "displayFloat", signalPressed, shared_from_this(), &appl::Windows::onCallbackStartFloat);
-	m_displayer = std::dynamic_pointer_cast<appl::widget::DisplayFrequency>(getSubObjectNamed("displayer"));
+	subBind(ewol::widget::Button, "display16", signalPressed, sharedFromThis(), &appl::Windows::onCallbackStart16);
+	subBind(ewol::widget::Button, "displayFloat", signalPressed, sharedFromThis(), &appl::Windows::onCallbackStartFloat);
+	m_displayer = ememory::dynamicPointerCast<appl::widget::DisplayFrequency>(getSubObjectNamed("displayer"));
 	onCallbackStart();
 }
 
@@ -121,12 +121,12 @@ void appl::Windows::onCallbackGain(const float& _value, int32_t _id) {
 	onCallbackStart();
 }
 
-std::shared_ptr<audio::drain::Equalizer> appl::Windows::createEqualizer(enum audio::format _format) {
+ememory::SharedPtr<audio::drain::Equalizer> appl::Windows::createEqualizer(enum audio::format _format) {
 	std::vector<audio::channel> map;
 	map.push_back(audio::channel_frontCenter);
 	audio::drain::IOFormatInterface format(map, _format, m_sampleRate);
 	// create equalizer
-	std::shared_ptr<audio::drain::Equalizer> out = audio::drain::Equalizer::create();
+	ememory::SharedPtr<audio::drain::Equalizer> out = audio::drain::Equalizer::create();
 	// configure input
 	out->setInputFormat(format);
 	// configure output
@@ -171,7 +171,7 @@ std::shared_ptr<audio::drain::Equalizer> appl::Windows::createEqualizer(enum aud
 
 void appl::Windows::onCallbackStart() {
 	APPL_INFO("start ");
-	std::shared_ptr<audio::drain::Equalizer> eq = appl::Windows::createEqualizer();
+	ememory::SharedPtr<audio::drain::Equalizer> eq = appl::Windows::createEqualizer();
 	std::vector<std::pair<float,float> > theory = eq->calculateTheory();
 	m_displayer->clear();
 	m_displayer->setValue(theory);
@@ -180,7 +180,7 @@ void appl::Windows::onCallbackStart() {
 
 void appl::Windows::onCallbackStart16() {
 	APPL_INFO("start ");
-	std::shared_ptr<audio::drain::Equalizer> eq = appl::Windows::createEqualizer(audio::format_int16);
+	ememory::SharedPtr<audio::drain::Equalizer> eq = appl::Windows::createEqualizer(audio::format_int16);
 	std::vector<std::pair<float,float> > pratic;
 	size_t len = 512;
 	std::vector<int16_t> data;
@@ -221,7 +221,7 @@ void appl::Windows::onCallbackStart16() {
 
 void appl::Windows::onCallbackStartFloat() {
 	APPL_INFO("start ");
-	std::shared_ptr<audio::drain::Equalizer> eq = appl::Windows::createEqualizer(audio::format_float);
+	ememory::SharedPtr<audio::drain::Equalizer> eq = appl::Windows::createEqualizer(audio::format_float);
 	std::vector<std::pair<float,float> > pratic;
 	size_t len = 512;
 	std::vector<float> data;

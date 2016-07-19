@@ -133,8 +133,8 @@ void audio::drain::FormatUpdate::init() {
 	m_type = "FormatUpdate";
 }
 
-std::shared_ptr<audio::drain::FormatUpdate> audio::drain::FormatUpdate::create() {
-	std::shared_ptr<audio::drain::FormatUpdate> tmp(new audio::drain::FormatUpdate());
+ememory::SharedPtr<audio::drain::FormatUpdate> audio::drain::FormatUpdate::create() {
+	ememory::SharedPtr<audio::drain::FormatUpdate> tmp(new audio::drain::FormatUpdate());
 	tmp->init();
 	return tmp;
 }

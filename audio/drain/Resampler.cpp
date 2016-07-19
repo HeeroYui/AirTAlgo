@@ -24,8 +24,8 @@ void audio::drain::Resampler::init() {
 	m_residualTimeInResampler = audio::Duration(0);
 }
 
-std::shared_ptr<audio::drain::Resampler> audio::drain::Resampler::create() {
-	std::shared_ptr<audio::drain::Resampler> tmp(new audio::drain::Resampler());
+ememory::SharedPtr<audio::drain::Resampler> audio::drain::Resampler::create() {
+	ememory::SharedPtr<audio::drain::Resampler> tmp(new audio::drain::Resampler());
 	tmp->init();
 	return tmp;
 }

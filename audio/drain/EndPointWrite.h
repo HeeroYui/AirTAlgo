@@ -29,7 +29,7 @@ namespace audio {
 				EndPointWrite();
 				void init();
 			public:
-				static std::shared_ptr<audio::drain::EndPointWrite> create();
+				static ememory::SharedPtr<audio::drain::EndPointWrite> create();
 				/**
 				 * @brief Destructor
 				 */

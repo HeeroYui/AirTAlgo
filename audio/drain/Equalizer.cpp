@@ -23,8 +23,8 @@ void audio::drain::Equalizer::init() {
 	configureBiQuad();
 }
 
-std::shared_ptr<audio::drain::Equalizer> audio::drain::Equalizer::create() {
-	std::shared_ptr<audio::drain::Equalizer> tmp(new audio::drain::Equalizer());
+ememory::SharedPtr<audio::drain::Equalizer> audio::drain::Equalizer::create() {
+	ememory::SharedPtr<audio::drain::Equalizer> tmp(new audio::drain::Equalizer());
 	tmp->init();
 	return tmp;
 }

@@ -17,7 +17,7 @@ namespace audio {
 				EndPointRead();
 				void init();
 			public:
-				static std::shared_ptr<EndPointRead> create();
+				static ememory::SharedPtr<EndPointRead> create();
 				/**
 				 * @brief Destructor
 				 */

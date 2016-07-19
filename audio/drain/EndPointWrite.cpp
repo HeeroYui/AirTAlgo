@@ -24,8 +24,8 @@ void audio::drain::EndPointWrite::init() {
 	}
 }
 
-std::shared_ptr<audio::drain::EndPointWrite> audio::drain::EndPointWrite::create() {
-	std::shared_ptr<audio::drain::EndPointWrite> tmp(new audio::drain::EndPointWrite());
+ememory::SharedPtr<audio::drain::EndPointWrite> audio::drain::EndPointWrite::create() {
+	ememory::SharedPtr<audio::drain::EndPointWrite> tmp(new audio::drain::EndPointWrite());
 	tmp->init();
 	return tmp;
 }

@@ -12,7 +12,7 @@
 #include <audio/channel.h>
 #include <chrono>
 #include <functional>
-#include <memory>
+#include <ememory/memory.h>
 #include "AutoLogInOut.h"
 #include "debug.h"
 

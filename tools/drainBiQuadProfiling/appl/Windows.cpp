@@ -70,23 +70,23 @@ void appl::Windows::init() {
 	if (m_gui != nullptr) {
 		setSubWidget(m_gui);
 	}
-	subBind(ewol::widget::Button, "sample-rate-low", signalPressed, shared_from_this(), &appl::Windows::onCallbackSampleRateLow);
-	subBind(ewol::widget::Button, "sample-rate-up", signalPressed, shared_from_this(), &appl::Windows::onCallbackSampleRateUp);
-	subBind(ewol::widget::Button, "type-low", signalPressed, shared_from_this(), &appl::Windows::onCallbackTypeLow);
-	subBind(ewol::widget::Button, "type-up", signalPressed, shared_from_this(), &appl::Windows::onCallbackTypeUp);
+	subBind(ewol::widget::Button, "sample-rate-low", signalPressed, sharedFromThis(), &appl::Windows::onCallbackSampleRateLow);
+	subBind(ewol::widget::Button, "sample-rate-up", signalPressed, sharedFromThis(), &appl::Windows::onCallbackSampleRateUp);
+	subBind(ewol::widget::Button, "type-low", signalPressed, sharedFromThis(), &appl::Windows::onCallbackTypeLow);
+	subBind(ewol::widget::Button, "type-up", signalPressed, sharedFromThis(), &appl::Windows::onCallbackTypeUp);
 	
-	subBind(ewol::widget::Entry, "gain", signalModify, shared_from_this(), &appl::Windows::onCallbackGain);
-	subBind(ewol::widget::Slider, "gain-slider", signalChange, shared_from_this(), &appl::Windows::onCallbackGainSlider);
+	subBind(ewol::widget::Entry, "gain", signalModify, sharedFromThis(), &appl::Windows::onCallbackGain);
+	subBind(ewol::widget::Slider, "gain-slider", signalChange, sharedFromThis(), &appl::Windows::onCallbackGainSlider);
 	
-	subBind(ewol::widget::Entry, "frequency", signalModify, shared_from_this(), &appl::Windows::onCallbackFrequency);
-	subBind(ewol::widget::Slider, "frequency-slider", signalChange, shared_from_this(), &appl::Windows::onCallbackFrequencySlider);
+	subBind(ewol::widget::Entry, "frequency", signalModify, sharedFromThis(), &appl::Windows::onCallbackFrequency);
+	subBind(ewol::widget::Slider, "frequency-slider", signalChange, sharedFromThis(), &appl::Windows::onCallbackFrequencySlider);
 	
-	subBind(ewol::widget::Entry, "quality", signalModify, shared_from_this(), &appl::Windows::onCallbackQuality);
-	subBind(ewol::widget::Slider, "quality-slider", signalChange, shared_from_this(), &appl::Windows::onCallbackQualitySlider);
+	subBind(ewol::widget::Entry, "quality", signalModify, sharedFromThis(), &appl::Windows::onCallbackQuality);
+	subBind(ewol::widget::Slider, "quality-slider", signalChange, sharedFromThis(), &appl::Windows::onCallbackQualitySlider);
 	
-	subBind(ewol::widget::Button, "display16", signalPressed, shared_from_this(), &appl::Windows::onCallbackStart16);
-	subBind(ewol::widget::Button, "displayFloat", signalPressed, shared_from_this(), &appl::Windows::onCallbackStartFloat);
-	m_displayer = std::dynamic_pointer_cast<appl::widget::DisplayFrequency>(getSubObjectNamed("displayer"));
+	subBind(ewol::widget::Button, "display16", signalPressed, sharedFromThis(), &appl::Windows::onCallbackStart16);
+	subBind(ewol::widget::Button, "displayFloat", signalPressed, sharedFromThis(), &appl::Windows::onCallbackStartFloat);
+	m_displayer = ememory::dynamicPointerCast<appl::widget::DisplayFrequency>(getSubObjectNamed("displayer"));
 	onCallbackStart();
 }
 

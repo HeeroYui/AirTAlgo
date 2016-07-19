@@ -18,8 +18,8 @@ void audio::drain::EndPointRead::init() {
 	m_type = "EndPointRead";
 }
 
-std::shared_ptr<audio::drain::EndPointRead> audio::drain::EndPointRead::create() {
-	std::shared_ptr<audio::drain::EndPointRead> tmp(new audio::drain::EndPointRead());
+ememory::SharedPtr<audio::drain::EndPointRead> audio::drain::EndPointRead::create() {
+	ememory::SharedPtr<audio::drain::EndPointRead> tmp(new audio::drain::EndPointRead());
 	tmp->init();
 	return tmp;
 }

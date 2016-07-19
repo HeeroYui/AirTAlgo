@@ -19,8 +19,8 @@ namespace appl {
 		public:
 			DECLARE_FACTORY(Windows);
 		protected:
-			std::shared_ptr<ewol::widget::Composer> m_gui;
-			std::shared_ptr<appl::widget::DisplayFrequency> m_displayer;
+			ememory::SharedPtr<ewol::widget::Composer> m_gui;
+			ememory::SharedPtr<appl::widget::DisplayFrequency> m_displayer;
 			void onCallbackSampleRateLow();
 			void onCallbackSampleRateUp();
 			void onCallbackTypeUp();

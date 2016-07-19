@@ -9,7 +9,7 @@
 #ifdef HAVE_SPEEX_DSP_RESAMPLE
 	#include <speex/speex_resampler.h>
 #endif
-#include <memory>
+#include <ememory/memory.h>
 
 namespace audio {
 	namespace drain {
@@ -29,7 +29,7 @@ namespace audio {
 				Resampler();
 				void init();
 			public:
-				static std::shared_ptr<audio::drain::Resampler> create();
+				static ememory::SharedPtr<audio::drain::Resampler> create();
 				/**
 				 * @brief Destructor
 				 */

@@ -34,8 +34,8 @@ namespace audio {
 				void init(playbackFunction _callback);
 				void init(recordFunction _callback);
 			public:
-				static std::shared_ptr<EndPointCallback> create(playbackFunction _callback);
-				static std::shared_ptr<EndPointCallback> create(recordFunction _callback);
+				static ememory::SharedPtr<EndPointCallback> create(playbackFunction _callback);
+				static ememory::SharedPtr<EndPointCallback> create(recordFunction _callback);
 				/**
 				 * @brief Destructor
 				 */

@@ -25,14 +25,14 @@ void audio::drain::EndPointCallback::init(recordFunction _callback) {
 	m_type = "EndPointCallback";
 }
 
-std::shared_ptr<audio::drain::EndPointCallback> audio::drain::EndPointCallback::create(playbackFunction _callback) {
-	std::shared_ptr<audio::drain::EndPointCallback> tmp(new audio::drain::EndPointCallback());
+ememory::SharedPtr<audio::drain::EndPointCallback> audio::drain::EndPointCallback::create(playbackFunction _callback) {
+	ememory::SharedPtr<audio::drain::EndPointCallback> tmp(new audio::drain::EndPointCallback());
 	tmp->init(_callback);
 	return tmp;
 }
 
-std::shared_ptr<audio::drain::EndPointCallback> audio::drain::EndPointCallback::create(recordFunction _callback) {
-	std::shared_ptr<audio::drain::EndPointCallback> tmp(new audio::drain::EndPointCallback());
+ememory::SharedPtr<audio::drain::EndPointCallback> audio::drain::EndPointCallback::create(recordFunction _callback) {
+	ememory::SharedPtr<audio::drain::EndPointCallback> tmp(new audio::drain::EndPointCallback());
 	tmp->init(_callback);
 	return tmp;
 }

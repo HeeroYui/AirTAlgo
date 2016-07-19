@@ -101,13 +101,13 @@ bool audio::drain::Process::process(audio::Time& _time,
 	return true;
 }
 
-void audio::drain::Process::pushBack(const std::shared_ptr<audio::drain::Algo>& _algo) {
+void audio::drain::Process::pushBack(ememory::SharedPtr<audio::drain::Algo> _algo) {
 	removeAlgoDynamic();
 	_algo->setStatusFunction(std::bind(&audio::drain::Process::generateStatus, this, std::placeholders::_1, std::placeholders::_2));
 	m_listAlgo.push_back(_algo);
 }
 
-void audio::drain::Process::pushFront(const std::shared_ptr<audio::drain::Algo>& _algo) {
+void audio::drain::Process::pushFront(ememory::SharedPtr<audio::drain::Algo> _algo) {
 	removeAlgoDynamic();
 	_algo->setStatusFunction(std::bind(&audio::drain::Process::generateStatus, this, std::placeholders::_1, std::placeholders::_2));
 	m_listAlgo.insert(m_listAlgo.begin(), _algo);
@@ -334,7 +334,7 @@ void audio::drain::Process::updateAlgo(size_t _position) {
 			if (    out.getFormat() != audio::format_int16
 			     /* && out.getFormat() != format_float */) {
 				// need add a format Updater
-				std::shared_ptr<audio::drain::FormatUpdate> algo = audio::drain::FormatUpdate::create();
+				ememory::SharedPtr<audio::drain::FormatUpdate> algo = audio::drain::FormatUpdate::create();
 				algo->setTemporary();
 				algo->setInputFormat(out);
 				out.setFormat(audio::format_int16);
@@ -345,7 +345,7 @@ void audio::drain::Process::updateAlgo(size_t _position) {
 				_position++;
 			}
 			// need add a resampler
-			std::shared_ptr<audio::drain::Resampler> algo = audio::drain::Resampler::create();
+			ememory::SharedPtr<audio::drain::Resampler> algo = audio::drain::Resampler::create();
 			algo->setTemporary();
 			algo->setInputFormat(out);
 			out.setFrequency(in.getFrequency());
@@ -358,7 +358,7 @@ void audio::drain::Process::updateAlgo(size_t _position) {
 		}
 		if (out.getMap() != in.getMap()) {
 			// need add a channel Reorder
-			std::shared_ptr<audio::drain::ChannelReorder> algo = audio::drain::ChannelReorder::create();
+			ememory::SharedPtr<audio::drain::ChannelReorder> algo = audio::drain::ChannelReorder::create();
 			algo->setTemporary();
 			algo->setInputFormat(out);
 			out.setMap(in.getMap());
@@ -370,7 +370,7 @@ void audio::drain::Process::updateAlgo(size_t _position) {
 		}
 		if (out.getFormat() != in.getFormat()) {
 			// need add a format Updater
-			std::shared_ptr<audio::drain::FormatUpdate> algo = audio::drain::FormatUpdate::create();
+			ememory::SharedPtr<audio::drain::FormatUpdate> algo = audio::drain::FormatUpdate::create();
 			algo->setTemporary();
 			algo->setInputFormat(out);
 			out.setFormat(in.getFormat());

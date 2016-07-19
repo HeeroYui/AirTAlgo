@@ -6,7 +6,7 @@
 #pragma once
 
 #include <audio/drain/Algo.h>
-#include <memory>
+#include <ememory/memory.h>
 #include <ejson/Object.h>
 #include <audio/algo/drain/Equalizer.h>
 
@@ -20,7 +20,7 @@ namespace audio {
 				Equalizer();
 				void init();
 			public:
-				static std::shared_ptr<audio::drain::Equalizer> create();
+				static ememory::SharedPtr<audio::drain::Equalizer> create();
 				/**
 				 * @brief Destructor
 				 */

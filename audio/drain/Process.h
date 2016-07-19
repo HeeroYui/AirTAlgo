@@ -12,7 +12,7 @@
 #include <audio/channel.h>
 #include <audio/drain/Algo.h>
 #include <chrono>
-#include <memory>
+#include <ememory/memory.h>
 #include <etk/os/FSNode.h>
 
 namespace audio {
@@ -94,10 +94,10 @@ namespace audio {
 					m_outputConfig = _interface;
 				}
 			protected:
-				std::vector<std::shared_ptr<drain::Algo> > m_listAlgo;
+				std::vector<ememory::SharedPtr<drain::Algo> > m_listAlgo;
 			public:
-				void pushBack(const std::shared_ptr<drain::Algo>& _algo);
-				void pushFront(const std::shared_ptr<drain::Algo>& _algo);
+				void pushBack(ememory::SharedPtr<drain::Algo> _algo);
+				void pushFront(ememory::SharedPtr<drain::Algo> _algo);
 				void clear() {
 					m_isConfigured = false;
 					m_listAlgo.clear();
@@ -105,44 +105,44 @@ namespace audio {
 				size_t size() {
 					return m_listAlgo.size();
 				}
-				std::vector<std::shared_ptr<drain::Algo> >::iterator begin() {
+				std::vector<ememory::SharedPtr<drain::Algo> >::iterator begin() {
 					return m_listAlgo.begin();
 				}
-				std::vector<std::shared_ptr<drain::Algo> >::iterator end() {
+				std::vector<ememory::SharedPtr<drain::Algo> >::iterator end() {
 					return m_listAlgo.end();
 				}
-				std::shared_ptr<drain::Algo> operator[](int32_t _id) {
+				ememory::SharedPtr<drain::Algo> operator[](int32_t _id) {
 					return m_listAlgo[_id];
 				}
 				
-				template<typename T> std::shared_ptr<T> get(const std::string& _name) {
+				template<typename T> ememory::SharedPtr<T> get(const std::string& _name) {
 					for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
 						if (m_listAlgo[iii] == nullptr) {
 							continue;
 						}
 						if (m_listAlgo[iii]->getName() == _name) {
-							return std::dynamic_pointer_cast<T>(m_listAlgo[iii]);
+							return ememory::dynamicPointerCast<T>(m_listAlgo[iii]);
 						}
 					}
-					return std::shared_ptr<T>();
+					return ememory::SharedPtr<T>();
 				}
-				template<typename T> std::shared_ptr<const T> get(const std::string& _name) const {
+				template<typename T> ememory::SharedPtr<const T> get(const std::string& _name) const {
 					for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
 						if (m_listAlgo[iii] == nullptr) {
 							continue;
 						}
 						if (m_listAlgo[iii]->getName() == _name) {
-							return std::dynamic_pointer_cast<T>(m_listAlgo[iii]);
+							return ememory::dynamicPointerCast<T>(m_listAlgo[iii]);
 						}
 					}
-					return std::shared_ptr<const T>();
+					return ememory::SharedPtr<const T>();
 				}
-				template<typename T> std::shared_ptr<T> get(int32_t _id) {
-					return std::dynamic_pointer_cast<T>(m_listAlgo[_id]);
+				template<typename T> ememory::SharedPtr<T> get(int32_t _id) {
+					return ememory::dynamicPointerCast<T>(m_listAlgo[_id]);
 				}
 				template<typename T> void removeIfFirst() {
 					if (m_listAlgo.size() > 0) {
-						std::shared_ptr<T> algoEP = get<T>(0);
+						ememory::SharedPtr<T> algoEP = get<T>(0);
 						if (algoEP != nullptr) {
 							m_listAlgo.erase(m_listAlgo.begin());
 						}
@@ -150,7 +150,7 @@ namespace audio {
 				}
 				template<typename T> void removeIfLast() {
 					if (m_listAlgo.size() > 0) {
-						std::shared_ptr<T> algoEP = get<T>(m_listAlgo.size()-1);
+						ememory::SharedPtr<T> algoEP = get<T>(m_listAlgo.size()-1);
 						if (algoEP != nullptr) {
 							m_listAlgo.erase(m_listAlgo.begin()+m_listAlgo.size()-1);
 						}
@@ -158,7 +158,7 @@ namespace audio {
 				}
 				template<typename T> bool hasType() {
 					for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
-						std::shared_ptr<T> tmp = std::dynamic_pointer_cast<T>(m_listAlgo[iii]);
+						ememory::SharedPtr<T> tmp = ememory::dynamicPointerCast<T>(m_listAlgo[iii]);
 						if (tmp != nullptr) {
 							return true;
 						}
