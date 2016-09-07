@@ -35,7 +35,7 @@ def create(target, module_name):
 		'test/channelOrder.cpp',
 		'test/equalizer.cpp'
 		])
-	my_module.add_module_depend(['audio-drain', 'gtest', 'etk', 'test-debug'])
+	my_module.add_depend(['audio-drain', 'gtest', 'etk', 'test-debug'])
 	return my_module
 
 

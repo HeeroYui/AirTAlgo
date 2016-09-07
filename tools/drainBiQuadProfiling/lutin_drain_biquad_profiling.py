@@ -32,8 +32,8 @@ def create(target, module_name):
 		'appl/Windows.cpp',
 		'appl/widget/DisplayFrequency.cpp',
 		])
-	my_module.add_module_depend(['ewol', 'audio-drain', 'audio-river'])
-	my_module.compile_flags('c++', [
+	my_module.add_depend(['ewol', 'audio-drain', 'audio-river'])
+	my_module.add_flag('c++', [
 		"-DPROJECT_NAME=\"\\\""+my_module.name+"\\\"\""
 		])
 	my_module.add_path(tools.get_current_path(__file__))

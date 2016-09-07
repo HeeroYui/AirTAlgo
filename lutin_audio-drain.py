@@ -68,8 +68,8 @@ def create(target, module_name):
 		])
 	
 	# TODO: my_module.add_optional_module_depend('speexdsp', "HAVE_SPEEX_DSP_RESAMPLE")
-	my_module.compile_flags('c++', "-DHAVE_SPEEX_DSP_RESAMPLE")
-	my_module.add_module_depend(['etk', 'audio', 'ejson', 'speex-dsp', 'audio-algo-drain'])
+	my_module.add_flag('c++', "-DHAVE_SPEEX_DSP_RESAMPLE")
+	my_module.add_depend(['etk', 'audio', 'ejson', 'speex-dsp', 'audio-algo-drain'])
 	my_module.add_path(tools.get_current_path(__file__))
 	return my_module
 
