@@ -19,7 +19,13 @@
 #include <audio/Duration.h>
 #include "debug.h"
 
+/**
+ * @brief Audio library namespace
+ */
 namespace audio {
+	/**
+	 * @brief audio-algo library namespace
+	 */
 	namespace drain{
 		typedef std::function<void (const std::string& _origin, const std::string& _status)> algoStatusFunction;
 		class Algo : public ememory::EnableSharedFromThis<Algo> {
