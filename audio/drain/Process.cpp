@@ -6,7 +6,7 @@
 
 #include <string>
 #include <vector>
-#include <stdint.h>
+#include <cstdint>
 #include <audio/format.hpp>
 #include <audio/channel.hpp>
 #include <audio/drain/Process.hpp>

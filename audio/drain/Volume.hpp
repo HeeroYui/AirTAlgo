@@ -7,7 +7,7 @@
 
 #include <audio/drain/Algo.hpp>
 #ifdef HAVE_SPEEX_DSP_RESAMPLE
-	#include <speex/speex_resampler.hpp>
+	#include <speex/speex_resampler.h>
 #endif
 #include <ememory/memory.hpp>
 
