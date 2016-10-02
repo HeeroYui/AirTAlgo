@@ -5,11 +5,11 @@
  */
 #pragma once
 
-#include <etk/types.h>
+#include <etk/types.hpp>
 #include <vector>
 #include <chrono>
-#include <audio/Time.h>
-#include <audio/Duration.h>
+#include <audio/Time.hpp>
+#include <audio/Duration.hpp>
 
 namespace audio {
 	namespace drain {

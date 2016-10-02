@@ -4,15 +4,15 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <etk/types.h>
-#include <ewol/ewol.h>
-#include <appl/debug.h>
-#include <appl/Windows.h>
-#include <ewol/widget/Label.h>
-#include <ewol/widget/Entry.h>
-#include <ewol/widget/Button.h>
-#include <ewol/widget/Slider.h>
-#include <audio/drain/Equalizer.h>
+#include <etk/types.hpp>
+#include <ewol/ewol.hpp>
+#include <appl/debug.hpp>
+#include <appl/Windows.hpp>
+#include <ewol/widget/Label.hpp>
+#include <ewol/widget/Entry.hpp>
+#include <ewol/widget/Button.hpp>
+#include <ewol/widget/Slider.hpp>
+#include <audio/drain/Equalizer.hpp>
 
 define APPL_SAVE_FILE_MACRO(type,fileName,dataPointer,nbElement) \
 	do { \
@@ -217,10 +217,10 @@ void appl::Windows::onCallbackFrequencySlider(const float& _value) {
 	onCallbackStart();
 }
 
-#include <appl/debug.h>
-#include <audio/algo/drain/BiQuad.h>
-#include <audio/float_t.h>
-#include <audio/int16_16_t.h>
+#include <appl/debug.hpp>
+#include <audio/algo/drain/BiQuad.hpp>
+#include <audio/float_t.hpp>
+#include <audio/int16_16_t.hpp>
 
 void appl::Windows::onCallbackStart() {
 	APPL_INFO("start ");

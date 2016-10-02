@@ -4,8 +4,8 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <audio/drain/EndPointRead.h>
-#include <audio/drain/debug.h>
+#include <audio/drain/EndPointRead.hpp>
+#include <audio/drain/debug.hpp>
 
 
 audio::drain::EndPointRead::EndPointRead() {

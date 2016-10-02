@@ -3,9 +3,9 @@
  * @copyright 2011, Edouard DUPIN, all right reserved
  * @license APACHE v2.0 (see license file)
  */
-#include <audio/drain/Algo.h>
+#include <audio/drain/Algo.hpp>
 #include <functional>
-#include "debug.h"
+#include "debug.hpp"
 
 audio::drain::Algo::Algo() :
   m_temporary(false),

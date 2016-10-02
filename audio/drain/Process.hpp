@@ -8,12 +8,12 @@
 #include <string>
 #include <vector>
 #include <stdint.h>
-#include <audio/format.h>
-#include <audio/channel.h>
-#include <audio/drain/Algo.h>
+#include <audio/format.hpp>
+#include <audio/channel.hpp>
+#include <audio/drain/Algo.hpp>
 #include <chrono>
-#include <ememory/memory.h>
-#include <etk/os/FSNode.h>
+#include <ememory/memory.hpp>
+#include <etk/os/FSNode.hpp>
 
 namespace audio {
 	namespace drain{

@@ -5,7 +5,7 @@
  */
 #pragma once
 
-#include <audio/drain/EndPoint.h>
+#include <audio/drain/EndPoint.hpp>
 #include <functional>
 
 namespace audio {

@@ -4,8 +4,8 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include "AutoLogInOut.h"
-#include "debug.h"
+#include "AutoLogInOut.hpp"
+#include "debug.hpp"
 
 audio::drain::AutoLogInOut::AutoLogInOut(const std::string& _value) :
   m_value(_value) {

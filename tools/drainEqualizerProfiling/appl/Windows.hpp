@@ -5,11 +5,11 @@
  */
 #pragma once
 
-#include <ewol/widget/Windows.h>
-#include <ewol/widget/Layer.h>
-#include <ewol/widget/Composer.h>
-#include <audio/drain/Equalizer.h>
-#include <appl/widget/DisplayFrequency.h>
+#include <ewol/widget/Windows.hpp>
+#include <ewol/widget/Layer.hpp>
+#include <ewol/widget/Composer.hpp>
+#include <audio/drain/Equalizer.hpp>
+#include <appl/widget/DisplayFrequency.hpp>
 
 namespace appl {
 	class Windows : public ewol::widget::Windows {

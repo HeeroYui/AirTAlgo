@@ -5,10 +5,10 @@
  */
 #pragma once
 
-#include <audio/drain/Algo.h>
-#include <ememory/memory.h>
-#include <ejson/Object.h>
-#include <audio/algo/drain/Equalizer.h>
+#include <audio/drain/Algo.hpp>
+#include <ememory/memory.hpp>
+#include <ejson/Object.hpp>
+#include <audio/algo/drain/Equalizer.hpp>
 
 namespace audio {
 	namespace drain {

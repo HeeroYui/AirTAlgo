@@ -4,13 +4,13 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <ewol/ewol.h>
-#include <appl/debug.h>
-#include <appl/Windows.h>
-#include <ewol/widget/Label.h>
-#include <ewol/widget/Entry.h>
-#include <ewol/widget/Button.h>
-#include <ewol/widget/Slider.h>
+#include <ewol/ewol.hpp>
+#include <appl/debug.hpp>
+#include <appl/Windows.hpp>
+#include <ewol/widget/Label.hpp>
+#include <ewol/widget/Entry.hpp>
+#include <ewol/widget/Button.hpp>
+#include <ewol/widget/Slider.hpp>
 
 #define APPL_SAVE_FILE_MACRO(type,fileName,dataPointer,nbElement) \
 	do { \

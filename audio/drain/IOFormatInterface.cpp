@@ -4,8 +4,8 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include "IOFormatInterface.h"
-#include "debug.h"
+#include "IOFormatInterface.hpp"
+#include "debug.hpp"
 
 std::ostream& audio::drain::operator <<(std::ostream& _os, const IOFormatInterface& _obj) {
 	_os << "{";

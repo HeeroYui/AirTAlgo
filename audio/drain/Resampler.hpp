@@ -5,11 +5,11 @@
  */
 #pragma once
 
-#include <audio/drain/Algo.h>
+#include <audio/drain/Algo.hpp>
 #ifdef HAVE_SPEEX_DSP_RESAMPLE
-	#include <speex/speex_resampler.h>
+	#include <speex/speex_resampler.hpp>
 #endif
-#include <ememory/memory.h>
+#include <ememory/memory.hpp>
 
 namespace audio {
 	namespace drain {

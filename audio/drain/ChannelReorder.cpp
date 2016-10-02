@@ -4,10 +4,9 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <audio/drain/ChannelReorder.h>
+#include <audio/drain/ChannelReorder.hpp>
 #include <iostream>
-#include "debug.h"
-#include "debug.h"
+#include "debug.hpp"
 
 
 audio::drain::ChannelReorder::ChannelReorder() {

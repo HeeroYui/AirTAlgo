@@ -4,9 +4,9 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <audio/drain/FormatUpdate.h>
+#include <audio/drain/FormatUpdate.hpp>
 #include <iostream>
-#include <audio/drain/debug.h>
+#include <audio/drain/debug.hpp>
 
 #ifndef INT16_MAX
 	#define INT16_MAX 0x7fff

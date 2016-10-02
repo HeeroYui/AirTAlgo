@@ -7,13 +7,13 @@
 #include <string>
 #include <vector>
 #include <stdint.h>
-#include <audio/format.h>
-#include <audio/channel.h>
-#include <audio/drain/Process.h>
-#include <audio/drain/ChannelReorder.h>
-#include <audio/drain/FormatUpdate.h>
-#include <audio/drain/Resampler.h>
-#include <audio/drain/debug.h>
+#include <audio/format.hpp>
+#include <audio/channel.hpp>
+#include <audio/drain/Process.hpp>
+#include <audio/drain/ChannelReorder.hpp>
+#include <audio/drain/FormatUpdate.hpp>
+#include <audio/drain/Resampler.hpp>
+#include <audio/drain/debug.hpp>
 
 audio::drain::Process::Process() :
   m_isConfigured(false) {

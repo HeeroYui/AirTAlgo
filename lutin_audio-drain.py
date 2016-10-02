@@ -48,23 +48,23 @@ def create(target, module_name):
 		])
 	
 	my_module.add_header_file([
-		'audio/drain/debug.h',
-		'audio/drain/debugRemove.h',
-		'audio/drain/airtalgo.h',
-		'audio/drain/Algo.h',
-		'audio/drain/ChannelReorder.h',
-		'audio/drain/CircularBuffer.h',
-		'audio/drain/EndPointCallback.h',
-		'audio/drain/EndPoint.h',
-		'audio/drain/EndPointRead.h',
-		'audio/drain/EndPointWrite.h',
-		'audio/drain/FormatUpdate.h',
-		'audio/drain/Process.h',
-		'audio/drain/Resampler.h',
-		'audio/drain/Volume.h',
-		'audio/drain/IOFormatInterface.h',
-		'audio/drain/AutoLogInOut.h',
-		'audio/drain/Equalizer.h'
+		'audio/drain/debug.hpp',
+		'audio/drain/debugRemove.hpp',
+		'audio/drain/airtalgo.hpp',
+		'audio/drain/Algo.hpp',
+		'audio/drain/ChannelReorder.hpp',
+		'audio/drain/CircularBuffer.hpp',
+		'audio/drain/EndPointCallback.hpp',
+		'audio/drain/EndPoint.hpp',
+		'audio/drain/EndPointRead.hpp',
+		'audio/drain/EndPointWrite.hpp',
+		'audio/drain/FormatUpdate.hpp',
+		'audio/drain/Process.hpp',
+		'audio/drain/Resampler.hpp',
+		'audio/drain/Volume.hpp',
+		'audio/drain/IOFormatInterface.hpp',
+		'audio/drain/AutoLogInOut.hpp',
+		'audio/drain/Equalizer.hpp'
 		])
 	
 	# TODO: my_module.add_optional_module_depend('speexdsp', "HAVE_SPEEX_DSP_RESAMPLE")

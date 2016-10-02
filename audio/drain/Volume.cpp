@@ -4,10 +4,10 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <audio/drain/Volume.h>
+#include <audio/drain/Volume.hpp>
 #include <iostream>
-#include <math.h>
-#include <audio/drain/debug.h>
+#include <cmath>
+#include <audio/drain/debug.hpp>
 
 audio::drain::Volume::Volume() :
   m_volumeAppli(1.0f),

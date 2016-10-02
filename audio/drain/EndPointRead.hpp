@@ -5,49 +5,29 @@
  */
 #pragma once
 
-#include <audio/drain/EndPoint.h>
-#include <functional>
-#include <mutex>
-#include <audio/drain/CircularBuffer.h>
+#include <audio/drain/EndPoint.hpp>
 
 namespace audio {
 	namespace drain{
-		typedef std::function<void (const audio::Time& _time,
-		                              size_t _nbChunk,
-		                              enum audio::format _format,
-		                              uint32_t _frequency,
-		                              const std::vector<audio::channel>& _map)> playbackFunctionWrite;
-		class EndPointWrite : public EndPoint {
-			private:
-				audio::drain::CircularBuffer m_buffer;
-				playbackFunctionWrite m_function;
-				std::mutex m_mutex;
+		class EndPointRead : public EndPoint {
 			protected:
 				/**
 				 * @brief Constructor
 				 */
-				EndPointWrite();
+				EndPointRead();
 				void init();
 			public:
-				static ememory::SharedPtr<audio::drain::EndPointWrite> create();
+				static ememory::SharedPtr<EndPointRead> create();
 				/**
 				 * @brief Destructor
 				 */
-				virtual ~EndPointWrite() {};
+				virtual ~EndPointRead() {};
 				virtual void configurationChange();
 				virtual bool process(audio::Time& _time,
 				                     void* _input,
 				                     size_t _inputNbChunk,
 				                     void*& _output,
 				                     size_t& _outputNbChunk);
-				virtual void write(const void* _value, size_t _nbChunk);
-				virtual void setCallback(playbackFunctionWrite _function) {
-					m_function = _function;
-				}
-			protected:
-				std::chrono::microseconds m_bufferSizeMicroseconds; // 0 if m_bufferSizeChunk != 0
-				size_t m_bufferSizeChunk; // 0 if m_bufferSizeMicroseconds != 0
-			public:
 				/**
 				 * @brief Set buffer size in chunk number
 				 * @param[in] _nbChunk Number of chunk in the buffer

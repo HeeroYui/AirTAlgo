@@ -3,8 +3,8 @@
  * @copyright 2011, Edouard DUPIN, all right reserved
  * @license APACHE v2.0 (see license file)
  */
-#include <audio/drain/EndPointWrite.h>
-#include <audio/drain/debug.h>
+#include <audio/drain/EndPointWrite.hpp>
+#include <audio/drain/debug.hpp>
 
 
 audio::drain::EndPointWrite::EndPointWrite() :

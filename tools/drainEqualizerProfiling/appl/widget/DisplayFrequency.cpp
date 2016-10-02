@@ -4,9 +4,9 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <appl/widget/DisplayFrequency.h>
-#include <appl/debug.h>
-#include <etk/tool.h>
+#include <appl/widget/DisplayFrequency.hpp>
+#include <appl/debug.hpp>
+#include <etk/tool.hpp>
 
 appl::widget::DisplayFrequency::DisplayFrequency() :
   m_gainMin(0.0f),

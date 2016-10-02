@@ -4,9 +4,9 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <audio/drain/Equalizer.h>
-#include <audio/drain/Algo.h>
-#include <audio/drain/debug.h>
+#include <audio/drain/Equalizer.hpp>
+#include <audio/drain/Algo.hpp>
+#include <audio/drain/debug.hpp>
 
 // see http://www.musicdsp.org/files/Audio-EQ-Cookbook.txt
 // see http://www.earlevel.com/main/2013/10/13/biquad-calculator-v2/

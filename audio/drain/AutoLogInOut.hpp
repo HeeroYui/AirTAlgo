@@ -6,7 +6,7 @@
 #pragma once
 
 #include <string>
-#include "debug.h"
+#include "debug.hpp"
 
 namespace audio {
 	namespace drain{
@@ -20,5 +20,5 @@ namespace audio {
 	}
 }
 
-#include "debugRemove.h"
+#include "debugRemove.hpp"
 

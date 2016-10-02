@@ -4,9 +4,9 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <audio/drain/Resampler.h>
+#include <audio/drain/Resampler.hpp>
 #include <iostream>
-#include <audio/drain/debug.h>
+#include <audio/drain/debug.hpp>
 
 audio::drain::Resampler::Resampler() :
   #ifdef HAVE_SPEEX_DSP_RESAMPLE

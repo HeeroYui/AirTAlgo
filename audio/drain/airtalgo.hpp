@@ -6,8 +6,8 @@
 #pragma once
 
 #include <string>
-#include <audio/format.h>
-#include <audio/drain/channel.h>
+#include <audio/format.hpp>
+#include <audio/drain/channel.hpp>
 #include <chrono>
 
 namespace audio {

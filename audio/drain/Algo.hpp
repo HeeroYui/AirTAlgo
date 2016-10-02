@@ -8,16 +8,16 @@
 #include <string>
 #include <vector>
 #include <stdint.h>
-#include <audio/format.h>
-#include <audio/channel.h>
+#include <audio/format.hpp>
+#include <audio/channel.hpp>
 #include <chrono>
 #include <functional>
-#include <ememory/memory.h>
-#include "AutoLogInOut.h"
-#include "IOFormatInterface.h"
-#include <audio/Time.h>
-#include <audio/Duration.h>
-#include "debug.h"
+#include <ememory/memory.hpp>
+#include "AutoLogInOut.hpp"
+#include "IOFormatInterface.hpp"
+#include <audio/Time.hpp>
+#include <audio/Duration.hpp>
+#include "debug.hpp"
 
 /**
  * @brief Audio library namespace

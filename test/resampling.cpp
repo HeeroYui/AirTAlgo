@@ -4,7 +4,7 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <test-debug/debug.h>
+#include <test-debug/debug.hpp>
 #include <gtest/gtest.h>
-#include <audio/drain/Process.h>
+#include <audio/drain/Process.hpp>
 

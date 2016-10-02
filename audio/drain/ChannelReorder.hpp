@@ -5,7 +5,7 @@
  */
 #pragma once
 
-#include <audio/drain/Algo.h>
+#include <audio/drain/Algo.hpp>
 
 namespace audio {
 	namespace drain{

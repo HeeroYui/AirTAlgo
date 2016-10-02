@@ -7,7 +7,7 @@
 #ifndef __AUDIO_DRAIN_DEBUG_H__
 #define __AUDIO_DRAIN_DEBUG_H__
 
-#include <elog/log.h>
+#include <elog/log.hpp>
 
 namespace audio {
 	namespace drain {

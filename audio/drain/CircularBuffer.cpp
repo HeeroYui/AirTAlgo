@@ -4,8 +4,8 @@
  * @license APACHE v2.0 (see license file)
  */
 
-#include <audio/drain/CircularBuffer.h>
-#include <audio/drain/debug.h>
+#include <audio/drain/CircularBuffer.hpp>
+#include <audio/drain/debug.hpp>
 
 audio::drain::CircularBuffer::CircularBuffer(const audio::drain::CircularBuffer& _obj) :
   m_data(),
