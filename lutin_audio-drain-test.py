@@ -1,7 +1,6 @@
 #!/usr/bin/python
-import lutin.module as module
-import lutin.tools as tools
 import lutin.debug as debug
+import lutin.tools as tools
 
 
 def get_type():
@@ -25,8 +24,7 @@ def get_compagny_name():
 def get_maintainer():
 	return "authors.txt"
 
-def create(target, module_name):
-	my_module = module.Module(__file__, module_name, get_type())
+def configure(target, my_module):
 	my_module.add_src_file([
 		'test/main.cpp',
 		'test/updateFlow.cpp',
@@ -35,8 +33,13 @@ def create(target, module_name):
 		'test/channelOrder.cpp',
 		'test/equalizer.cpp'
 		])
-	my_module.add_depend(['audio-drain', 'gtest', 'etk', 'test-debug'])
-	return my_module
+	my_module.add_depend([
+	    'audio-drain',
+	    'gtest',
+	    'etk',
+	    'test-debug'
+	    ])
+	return True
 
 
 

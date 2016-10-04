@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import lutin.module as module
+import lutin.debug as debug
 import lutin.tools as tools
 
 
@@ -24,21 +24,24 @@ def get_compagny_name():
 def get_maintainer():
 	return ["Mr DUPIN Edouard <yui.heero@gmail.com>"]
 
-def create(target, module_name):
-	my_module = module.Module(__file__, module_name, get_type())
+def configure(target, my_module):
 	my_module.add_src_file([
-		'appl/main.cpp',
-		'appl/debug.cpp',
-		'appl/Windows.cpp',
-		'appl/widget/DisplayFrequency.cpp',
-		])
-	my_module.add_depend(['ewol', 'audio-drain', 'audio-river'])
+	    'appl/main.cpp',
+	    'appl/debug.cpp',
+	    'appl/Windows.cpp',
+	    'appl/widget/DisplayFrequency.cpp',
+	    ])
+	my_module.add_depend([
+	    'ewol',
+	    'audio-drain',
+	    'audio-river'
+	    ])
 	my_module.add_flag('c++', [
-		"-DPROJECT_NAME=\"\\\""+my_module.name+"\\\"\""
-		])
-	my_module.add_path(tools.get_current_path(__file__))
+	    "-DPROJECT_NAME=\"\\\""+my_module.get_name()+"\\\"\""
+	    ])
+	my_module.add_path(".")
 	my_module.copy_path("data/*")
-	return my_module
+	return True
 
 
 
