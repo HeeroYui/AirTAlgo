@@ -29,7 +29,7 @@ audio::drain::IOFormatInterface::IOFormatInterface() :
 	m_map.push_back(audio::channel_frontRight);
 }
 
-audio::drain::IOFormatInterface::IOFormatInterface(std::vector<audio::channel> _map, audio::format _format, float _frequency) :
+audio::drain::IOFormatInterface::IOFormatInterface(std::vector<enum audio::channel> _map, enum audio::format _format, float _frequency) :
   m_configured(true),
   m_format(_format),
   m_map(_map),
@@ -37,7 +37,7 @@ audio::drain::IOFormatInterface::IOFormatInterface(std::vector<audio::channel> _
 	
 }
 
-void audio::drain::IOFormatInterface::set(std::vector<audio::channel> _map, audio::format _format, float _frequency) {
+void audio::drain::IOFormatInterface::set(std::vector<enum audio::channel> _map, enum audio::format _format, float _frequency) {
 	bool hasChange = false;
 	if (m_map != _map) {
 		m_map = _map;
@@ -65,11 +65,11 @@ bool audio::drain::IOFormatInterface::getConfigured() const {
 	return m_configured;
 }
 
-audio::format audio::drain::IOFormatInterface::getFormat() const {
+enum audio::format audio::drain::IOFormatInterface::getFormat() const {
 	return m_format;
 }
 
-void audio::drain::IOFormatInterface::setFormat(audio::format _value) {
+void audio::drain::IOFormatInterface::setFormat(enum audio::format _value) {
 	if (m_format == _value) {
 		return;
 	}
@@ -78,11 +78,11 @@ void audio::drain::IOFormatInterface::setFormat(audio::format _value) {
 	configurationChange();
 }
 
-const std::vector<audio::channel>& audio::drain::IOFormatInterface::getMap() const{
+const std::vector<enum audio::channel>& audio::drain::IOFormatInterface::getMap() const{
 	return m_map;
 }
 
-void audio::drain::IOFormatInterface::setMap(const std::vector<audio::channel>& _value) {
+void audio::drain::IOFormatInterface::setMap(const std::vector<enum audio::channel>& _value) {
 	if (m_map == _value) {
 		return;
 	}
