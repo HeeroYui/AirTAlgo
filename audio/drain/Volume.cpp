@@ -48,6 +48,13 @@ static void convert__int16__to__int16(void* _input, void* _output, size_t _nbSam
 		out[iii] = int16_t((int32_t(in[iii]) * int32_t(_volumeCoef)) >> _volumeDecalage);
 	}
 }
+static void convert__int16__to__float(void* _input, void* _output, size_t _nbSample, int32_t _volumeCoef, int32_t _volumeDecalage, float _volumeAppli) {
+	int16_t* in = static_cast<int16_t*>(_input);
+	float* out = static_cast<float*>(_output);
+	for (size_t iii=0; iii<_nbSample; ++iii) {
+		out[iii] = double((int32_t(in[iii]) * int32_t(_volumeCoef)) >> _volumeDecalage) * 0.00003051757;
+	}
+}
 
 static void convert__int16__to__int32(void* _input, void* _output, size_t _nbSample, int32_t _volumeCoef, int32_t _volumeDecalage, float _volumeAppli) {
 	int16_t* in = static_cast<int16_t*>(_input);
@@ -101,7 +108,7 @@ void audio::drain::Volume::configurationChange() {
 					DRAIN_DEBUG("Use converter : 'convert__int16__to__int32' for " << m_input.getFormat() << " to " << m_output.getFormat());
 					break;
 				case audio::format_float:
-					DRAIN_ERROR("Impossible case 1");
+					m_functionConvert = &convert__int16__to__float;
 					break;
 			}
 			break;
@@ -205,7 +212,14 @@ void audio::drain::Volume::volumeChange() {
 					m_volumeDecalage = 0;
 					break;
 				case audio::format_float:
-					DRAIN_ERROR("Impossible case 1");
+					if (m_volumeAppli <= 1.0f) {
+						m_volumeCoef = m_volumeAppli*float(1<<16);
+						m_volumeDecalage = 16;
+					} else {
+						int32_t neareast = neareastsss(m_volumeAppli);
+						m_volumeCoef = m_volumeAppli*float(1<<(16-neareast));
+						m_volumeDecalage = 16-neareast;
+					}
 					break;
 			}
 			break;
