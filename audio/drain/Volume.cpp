@@ -310,7 +310,7 @@ std::vector<audio::format> audio::drain::Volume::getFormatSupportedInput() {
 };
 
 std::vector<audio::format> audio::drain::Volume::getFormatSupportedOutput() {
-		std::vector<audio::format> tmp;
+	std::vector<audio::format> tmp;
 	if (m_input.getFormat() == audio::format_float) {
 		tmp.push_back(audio::format_float);
 	}
@@ -378,11 +378,11 @@ void audio::drain::Volume::addVolumeStage(const ememory::SharedPtr<audio::drain:
 bool audio::drain::Volume::setParameter(const std::string& _parameter, const std::string& _value) {
 	if (_parameter == "FLOW") {
 		// set Volume ...
-		for (size_t iii=0; iii<m_volumeList.size(); ++iii) {
-			if (m_volumeList[iii] == nullptr) {
+		for (auto &it : m_volumeList) {
+			if (it == nullptr) {
 				continue;
 			}
-			if (m_volumeList[iii]->getName() == "FLOW") {
+			if (it->getName() == "FLOW") {
 				float value = 0;
 				if (sscanf(_value.c_str(), "%fdB", &value) != 1) {
 					return false;
@@ -392,7 +392,7 @@ bool audio::drain::Volume::setParameter(const std::string& _parameter, const std
 					DRAIN_ERROR("Can not set volume ... : '" << _parameter << "' out of range : [-300..300]");
 					return false;
 				}
-				m_volumeList[iii]->setVolume(value);
+				it->setVolume(value);
 				DRAIN_DEBUG("Set volume : FLOW = " << value << " dB (from:" << _value << ")");
 				volumeChange();
 				return true;
@@ -406,12 +406,12 @@ bool audio::drain::Volume::setParameter(const std::string& _parameter, const std
 std::string audio::drain::Volume::getParameter(const std::string& _parameter) const {
 	if (_parameter == "FLOW") {
 		// set Volume ...
-		for (size_t iii=0; iii<m_volumeList.size(); ++iii) {
-			if (m_volumeList[iii] == nullptr) {
+		for (auto &it : m_volumeList) {
+			if (it == nullptr) {
 				continue;
 			}
-			if (m_volumeList[iii]->getName() == "FLOW") {
-				return etk::to_string(m_volumeList[iii]->getVolume()) + "dB";
+			if (it->getName() == "FLOW") {
+				return etk::to_string(it->getVolume()) + "dB";
 			}
 		}
 	}
@@ -422,11 +422,11 @@ std::string audio::drain::Volume::getParameter(const std::string& _parameter) co
 std::string audio::drain::Volume::getParameterProperty(const std::string& _parameter) const {
 	if (_parameter == "FLOW") {
 		// set Volume ...
-		for (size_t iii=0; iii<m_volumeList.size(); ++iii) {
-			if (m_volumeList[iii] == nullptr) {
+		for (auto &it : m_volumeList) {
+			if (it == nullptr) {
 				continue;
 			}
-			if (m_volumeList[iii]->getName() == "FLOW") {
+			if (it->getName() == "FLOW") {
 				return "[-300..300]dB";
 			}
 		}
@@ -435,3 +435,16 @@ std::string audio::drain::Volume::getParameterProperty(const std::string& _param
 	return "[ERROR]";
 }
 
+std::string audio::drain::Volume::getDotDesc() {
+	std::string out = audio::drain::Algo::getDotDesc();
+	for (auto &it : m_volumeList) {
+		if (it == nullptr) {
+			continue;
+		}
+		out += "\\n" + it->getName() + "=" + etk::to_string(it->getVolume()) + "dB";
+		if (it->getMute() == true) {
+			out += " MUTE";
+		}
+	}
+	return out;
+}

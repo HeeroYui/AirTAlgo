@@ -47,6 +47,8 @@ namespace audio {
 				void setType(const std::string& _type) {
 					m_type = _type;
 				}
+			public:
+				virtual std::string getDotDesc();
 			private:
 				bool m_temporary;
 			public:

@@ -456,62 +456,115 @@ static void link(etk::FSNode& _node, const std::string& _first, const std::strin
 	}
 }
 
-void audio::drain::Process::generateDot(etk::FSNode& _node, int32_t _offset, int32_t _basicID, std::string& _nameIn, std::string& _nameOut, bool _reserseGraph) {
+void audio::drain::Process::generateDot(etk::FSNode& _node,
+                                        int32_t _offset,
+                                        int32_t _basicID,
+                                        std::string& _nameIn,
+                                        std::string& _nameOut,
+                                        bool _reserseGraph) {
 	_node << "			subgraph clusterNode_" << _basicID << "_process {\n";
 	_node << "				label=\"Drain::Process" << (_reserseGraph?"_R":"_N") << "\";\n";
 	_node << "				node [shape=ellipse];\n";
 	
 	if (_reserseGraph == false) {
+		// ----------------------
+		// --       STEP 1     --
+		// ----------------------
 		_nameIn = "INTERFACE_ALGO_" + etk::to_string(_basicID) + "_in";
 		_node << "				" << _nameIn << " [ label=\"format=" << etk::to_string(getInputConfig().getFormat())
 		                                              << "\\n freq=" << getInputConfig().getFrequency()
 		                                        << "\\n channelMap=" << etk::to_string(getInputConfig().getMap()) << "\\n in\" ];\n";
-	} else {
-		_nameIn = "INTERFACE_ALGO_" + etk::to_string(_basicID) + "_out";
-		_node << "				" << _nameIn << " [ label=\"format=" << etk::to_string(getOutputConfig().getFormat())
-		                                              << "\\n freq=" << getOutputConfig().getFrequency()
-		                                        << "\\n channelMap=" << etk::to_string(getOutputConfig().getMap()) << "\\n out\" ];\n";
-	}
-	std::string connectString = _nameIn;
-	_node << "				node [shape=box];\n";
-	if (_reserseGraph == false) {
+		// ----------------------
+		// --       STEP 2     --
+		// ----------------------
+		std::string connectString = _nameIn;
+		_node << "				node [shape=box];\n";
+		// ----------------------
+		// --       STEP 3     --
+		// ----------------------
 		for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
 			if (m_listAlgo[iii] == nullptr) {
 				continue;
 			}
 			std::string connectStringSecond = "ALGO_" + etk::to_string(_basicID) + "__" + etk::to_string(iii);
-			_node << "				" << connectStringSecond << " [label=\"ALGO\\ntype='" << m_listAlgo[iii]->getType() << "'\\nname='" << m_listAlgo[iii]->getName() << "'\" ];\n";
+			_node << "				" << connectStringSecond << " [label=\"ALGO\\ntype='" << m_listAlgo[iii]->getType() << "'";
+			if (m_listAlgo[iii]->getName() != "") {
+				_node << "\\nname='" << m_listAlgo[iii]->getName() << "'";
+			}
+			std::string tmpDesc = m_listAlgo[iii]->getDotDesc();
+			if (tmpDesc.size() != 0) {
+				_node << tmpDesc;
+			}
+			_node << "\" ];\n";
 			link(_node, connectString, "->", connectStringSecond);
 			connectString = connectStringSecond;
 		}
-	} else {
-		//for (int32_t iii=m_listAlgo.size()-1; iii>=0; --iii) {
-		for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
-			if (m_listAlgo[iii] == nullptr) {
-				continue;
-			}
-			std::string connectStringSecond = "ALGO_" + etk::to_string(_basicID) + "__" + etk::to_string(iii);
-			_node << "				" << connectStringSecond << " [label=\"ALGO\\ntype='" << m_listAlgo[iii]->getType() << "'\\nname='" << m_listAlgo[iii]->getName() << "'\" ];\n";
-			link(_node, connectStringSecond, "<-", connectString);
-			connectString = connectStringSecond;
-		}
-	}
-	_node << "				node [shape=ellipse];\n";
-	if (_reserseGraph == false) {
+		// ----------------------
+		// --       STEP 4     --
+		// ----------------------
+		_node << "				node [shape=ellipse];\n";
+		// ----------------------
+		// --       STEP 5     --
+		// ----------------------
 		_nameOut = "INTERFACE_ALGO_" + etk::to_string(_basicID) + "_out";
 		_node << "				" << _nameOut << " [ label=\"format=" << etk::to_string(getOutputConfig().getFormat())
 		                                               << "\\n freq=" << getOutputConfig().getFrequency()
 		                                         << "\\n channelMap=" << etk::to_string(getOutputConfig().getMap()) << "\\n out\" ];\n";
+		// ----------------------
+		// --       STEP 6     --
+		// ----------------------
+		link(_node, connectString,                                      "->", _nameOut);
 	} else {
+		// ----------------------
+		// --       STEP 1     --
+		// ----------------------
+		_nameIn = "INTERFACE_ALGO_" + etk::to_string(_basicID) + "_out";
+		_node << "				" << _nameIn << " [ label=\"format=" << etk::to_string(getOutputConfig().getFormat())
+		                                              << "\\n freq=" << getOutputConfig().getFrequency()
+		                                        << "\\n channelMap=" << etk::to_string(getOutputConfig().getMap()) << "\\n out\" ];\n";
+		// ----------------------
+		// --       STEP 2     --
+		// ----------------------
+		std::string connectString = _nameIn;
+		_node << "				node [shape=box];\n";
+		// ----------------------
+		// --       STEP 3     --
+		// ----------------------
+		for (int32_t iii=m_listAlgo.size()-1; iii>=0; --iii) {
+		//for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
+			if (m_listAlgo[iii] == nullptr) {
+				continue;
+			}
+			std::string connectStringSecond = "ALGO_" + etk::to_string(_basicID) + "__" + etk::to_string(iii);
+			_node << "				" << connectStringSecond << " [label=\"ALGO\\ntype='" << m_listAlgo[iii]->getType() << "'";
+			if (m_listAlgo[iii]->getName() != "") {
+				_node << "\\nname='" << m_listAlgo[iii]->getName() << "'";
+			}
+			std::string tmpDesc = m_listAlgo[iii]->getDotDesc();
+			if (tmpDesc.size() != 0) {
+				_node << tmpDesc;
+			}
+			_node << "\" ];\n";
+			//link(_node, connectStringSecond, "<-", connectString);
+			link(_node, connectString, "<-", connectStringSecond);
+			//link(_node, connectStringSecond, "->", connectString);
+			connectString = connectStringSecond;
+		}
+		// ----------------------
+		// --       STEP 4     --
+		// ----------------------
+		_node << "				node [shape=ellipse];\n";
+		// ----------------------
+		// --       STEP 5     --
+		// ----------------------
 		_nameOut = "INTERFACE_ALGO_" + etk::to_string(_basicID) + "_in";
 		_node << "				" << _nameOut << " [ label=\"format=" << etk::to_string(getInputConfig().getFormat())
 		                                               << "\\n freq=" << getInputConfig().getFrequency()
 		                                         << "\\n channelMap=" << etk::to_string(getInputConfig().getMap()) << "\\n in\" ];\n";
-	}
-	if (_reserseGraph == false) {
-		link(_node, connectString,                                      "->", _nameOut);
-	} else {
-		link(_node, _nameOut, "<-", connectString);
+		// ----------------------
+		// --       STEP 6     --
+		// ----------------------
+		link(_node, connectString, "<-", _nameOut);
 	}
 	_node << "			}\n";
 }
@@ -540,7 +593,15 @@ void audio::drain::Process::generateDotProcess(etk::FSNode& _node, int32_t _offs
 				continue;
 			}
 			std::string connectStringSecond = "ALGO_" + etk::to_string(_basicID) + "__" + etk::to_string(iii);
-			_node << "				" << connectStringSecond << " [label=\"ALGO\\ntype='" << m_listAlgo[iii]->getType() << "'\\nname='" << m_listAlgo[iii]->getName() << "'\" ];\n";
+			_node << "				" << connectStringSecond << " [label=\"ALGO\\ntype='" << m_listAlgo[iii]->getType() << "'";
+			if (m_listAlgo[iii]->getName() != "") {
+				_node << "\\nname='" << m_listAlgo[iii]->getName() << "'";
+			}
+			std::string tmpDesc = m_listAlgo[iii]->getDotDesc();
+			if (tmpDesc.size() != 0) {
+				_node << tmpDesc;
+			}
+			_node << "\" ];\n";
 			link(_node, connectString, "->", connectStringSecond);
 			connectString = connectStringSecond;
 		}
@@ -551,7 +612,15 @@ void audio::drain::Process::generateDotProcess(etk::FSNode& _node, int32_t _offs
 				continue;
 			}
 			std::string connectStringSecond = "ALGO_" + etk::to_string(_basicID) + "__" + etk::to_string(iii);
-			_node << "				" << connectStringSecond << " [label=\"ALGO\\ntype='" << m_listAlgo[iii]->getType() << "'\\nname='" << m_listAlgo[iii]->getName() << "'\" ];\n";
+			_node << "				" << connectStringSecond << " [label=\"ALGO\\ntype='" << m_listAlgo[iii]->getType() << "'";
+			if (m_listAlgo[iii]->getName() != "") {
+				_node << "\\nname='" << m_listAlgo[iii]->getName() << "'";
+			}
+			std::string tmpDesc = m_listAlgo[iii]->getDotDesc();
+			if (tmpDesc.size() != 0) {
+				_node << tmpDesc;
+			}
+			_node << "\" ];\n";
 			link(_node, connectStringSecond, "<-", connectString);
 			connectString = connectStringSecond;
 		}

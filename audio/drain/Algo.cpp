@@ -59,6 +59,20 @@ void audio::drain::Algo::configurationChange() {
 	}
 }
 
+std::string audio::drain::Algo::getDotDesc() {
+	std::string out;
+	if (m_input.getFormat() != m_output.getFormat()) {
+		out += "\\nformat: " + etk::to_string(m_input.getFormat()) + "->" + etk::to_string(m_output.getFormat());
+	}
+	if (m_input.getMap() != m_output.getMap()) {
+		out += "\\nmap: " + etk::to_string(m_input.getMap()) + "->" + etk::to_string(m_output.getMap());
+	}
+	if (m_input.getFrequency() != m_output.getFrequency()) {
+		out += "\\nsamplerate: " + etk::to_string(m_input.getFrequency()) + "->" + etk::to_string(m_output.getFrequency());
+	}
+	return out;
+}
+
 size_t audio::drain::Algo::needInputData(size_t _output) {
 	size_t input = _output;
 	/* NOT good at all ...

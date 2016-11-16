@@ -92,6 +92,8 @@ namespace audio {
 				virtual std::string getParameterProperty(const std::string& _parameter) const;
 			public:
 				void volumeChange();
+			public:
+				virtual std::string getDotDesc();
 		};
 	}
 }
