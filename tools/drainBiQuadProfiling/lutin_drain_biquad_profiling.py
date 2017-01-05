@@ -13,7 +13,7 @@ def get_desc():
 	return "basic test and profiling of equalizer work or not"
 
 def get_licence():
-	return "APACHE-2"
+	return "MPL-2"
 
 def get_compagny_type():
 	return "com"
