@@ -9,7 +9,9 @@
 
 audio::drain::EndPointWrite::EndPointWrite() :
   m_function(nullptr),
-  m_bufferSizeMicroseconds(1000000) {
+  m_bufferSizeMicroseconds(1000000),
+  m_bufferSizeChunk(32),
+  m_bufferUnderFlowSize(0) {
 	
 }
 
@@ -71,14 +73,25 @@ bool audio::drain::EndPointWrite::process(audio::Time& _time,
 	std::unique_lock<std::mutex> lock(m_mutex);
 	// check if data in the tmpBuffer
 	if (m_buffer.getSize() == 0) {
-		DRAIN_WARNING("No data in the user buffer (write null data ... " << _outputNbChunk << " chunks)");
+		if (m_bufferUnderFlowSize == 0) {
+			DRAIN_WARNING("No data in the user buffer (write null data ... " << _outputNbChunk << " chunks)");
+			m_bufferUnderFlowSize = 1;
+		} else {
+			if (m_bufferUnderFlowSize == 1) {
+				m_bufferUnderFlowSize = 0;
+			}
+			m_bufferUnderFlowSize += _outputNbChunk;
+		}
 		// clear the buffer to force the flush on the next elements ...
 		m_outputData.clear();
 		_outputNbChunk = 0;
 		generateStatus("EPW_UNDERFLOW");
 		// just send no data ...
 		return true;
+	} else if (m_bufferUnderFlowSize > 1) {
+		DRAIN_WARNING("No data in the user buffer (write null data ... " << m_bufferUnderFlowSize << " chunks [In the past])");
 	}
+	m_bufferUnderFlowSize = 0;
 	DRAIN_VERBOSE("Write " << _outputNbChunk << " chunks");
 	// check if we have enought data:
 	int32_t nbChunkToCopy = std::min(_inputNbChunk, m_buffer.getSize());

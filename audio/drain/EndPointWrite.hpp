@@ -47,6 +47,7 @@ namespace audio {
 			protected:
 				std::chrono::microseconds m_bufferSizeMicroseconds; // 0 if m_bufferSizeChunk != 0
 				size_t m_bufferSizeChunk; // 0 if m_bufferSizeMicroseconds != 0
+				size_t m_bufferUnderFlowSize; //!< Limit display of underflow in the write callback
 			public:
 				/**
 				 * @brief Set buffer size in chunk number
