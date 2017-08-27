@@ -34,18 +34,18 @@
 appl::Windows::Windows() :
   m_sampleRate(48000) {
 	addObjectType("appl::Windows");
-	m_listSampleRate.push_back(192000);
-	m_listSampleRate.push_back(176400);
-	m_listSampleRate.push_back(96000);
-	m_listSampleRate.push_back(88200);
-	m_listSampleRate.push_back(48000);
-	m_listSampleRate.push_back(44100);
-	m_listSampleRate.push_back(32000);
-	m_listSampleRate.push_back(22050);
-	m_listSampleRate.push_back(16000);
-	m_listSampleRate.push_back(11025);
-	m_listSampleRate.push_back(8000);
-	m_listSampleRate.push_back(4000);
+	m_listSampleRate.pushBack(192000);
+	m_listSampleRate.pushBack(176400);
+	m_listSampleRate.pushBack(96000);
+	m_listSampleRate.pushBack(88200);
+	m_listSampleRate.pushBack(48000);
+	m_listSampleRate.pushBack(44100);
+	m_listSampleRate.pushBack(32000);
+	m_listSampleRate.pushBack(22050);
+	m_listSampleRate.pushBack(16000);
+	m_listSampleRate.pushBack(11025);
+	m_listSampleRate.pushBack(8000);
+	m_listSampleRate.pushBack(4000);
 	m_listGain.resize(10, 0.0f);
 }
 
@@ -87,13 +87,13 @@ void appl::Windows::onCallbackSampleRateUp() {
 			} else {
 				m_sampleRate = m_listSampleRate[0];
 			}
-			ewol::parameterSetOnObjectNamed("sample-rate", "value", etk::to_string(m_sampleRate));
+			ewol::parameterSetOnObjectNamed("sample-rate", "value", etk::toString(m_sampleRate));
 			onCallbackStart();
 			return;
 		}
 	}
 	m_sampleRate = m_listSampleRate[0];
-	ewol::parameterSetOnObjectNamed("sample-rate", "value", etk::to_string(m_sampleRate));
+	ewol::parameterSetOnObjectNamed("sample-rate", "value", etk::toString(m_sampleRate));
 	onCallbackStart();
 }
 
@@ -106,13 +106,13 @@ void appl::Windows::onCallbackSampleRateLow() {
 			} else {
 				m_sampleRate = m_listSampleRate[m_listSampleRate.size()-1];
 			}
-			ewol::parameterSetOnObjectNamed("sample-rate", "value", etk::to_string(m_sampleRate));
+			ewol::parameterSetOnObjectNamed("sample-rate", "value", etk::toString(m_sampleRate));
 			onCallbackStart();
 			return;
 		}
 	}
 	m_sampleRate = m_listSampleRate[0];
-	ewol::parameterSetOnObjectNamed("sample-rate", "value", etk::to_string(m_sampleRate));
+	ewol::parameterSetOnObjectNamed("sample-rate", "value", etk::toString(m_sampleRate));
 	onCallbackStart();
 }
 
@@ -122,8 +122,8 @@ void appl::Windows::onCallbackGain(const float& _value, int32_t _id) {
 }
 
 ememory::SharedPtr<audio::drain::Equalizer> appl::Windows::createEqualizer(enum audio::format _format) {
-	std::vector<audio::channel> map;
-	map.push_back(audio::channel_frontCenter);
+	etk::Vector<audio::channel> map;
+	map.pushBack(audio::channel_frontCenter);
 	audio::drain::IOFormatInterface format(map, _format, m_sampleRate);
 	// create equalizer
 	ememory::SharedPtr<audio::drain::Equalizer> out = audio::drain::Equalizer::create();
@@ -132,7 +132,7 @@ ememory::SharedPtr<audio::drain::Equalizer> appl::Windows::createEqualizer(enum 
 	// configure output
 	out->setOutputFormat(format);
 	// create ejson:
-	std::string conf;
+	etk::String conf;
 	conf += "{\n";
 	conf += "	global: [\n";
 	for (size_t iii=3; iii<m_listGain.size(); ++iii) {
@@ -157,8 +157,8 @@ ememory::SharedPtr<audio::drain::Equalizer> appl::Windows::createEqualizer(enum 
 		conf += "		{\n";
 		conf += "			type:'peak',\n";
 		conf += "			quality:2,\n";
-		conf += "			cut-frequency:" + etk::to_string(cutFrequency) + ",\n";
-		conf += "			gain:" + etk::to_string(m_listGain[iii]) + "\n";
+		conf += "			cut-frequency:" + etk::toString(cutFrequency) + ",\n";
+		conf += "			gain:" + etk::toString(m_listGain[iii]) + "\n";
 		conf += "		}\n";
 	}
 	conf += "	]\n";
@@ -172,7 +172,7 @@ ememory::SharedPtr<audio::drain::Equalizer> appl::Windows::createEqualizer(enum 
 void appl::Windows::onCallbackStart() {
 	APPL_INFO("start ");
 	ememory::SharedPtr<audio::drain::Equalizer> eq = appl::Windows::createEqualizer();
-	std::vector<std::pair<float,float> > theory = eq->calculateTheory();
+	etk::Vector<etk::Pair<float,float> > theory = eq->calculateTheory();
 	m_displayer->clear();
 	m_displayer->setValue(theory);
 }
@@ -181,9 +181,9 @@ void appl::Windows::onCallbackStart() {
 void appl::Windows::onCallbackStart16() {
 	APPL_INFO("start ");
 	ememory::SharedPtr<audio::drain::Equalizer> eq = appl::Windows::createEqualizer(audio::format_int16);
-	std::vector<std::pair<float,float> > pratic;
+	etk::Vector<etk::Pair<float,float> > pratic;
 	size_t len = 512;
-	std::vector<int16_t> data;
+	etk::Vector<int16_t> data;
 	data.resize(16000, 0);
 	for (size_t iii=1; iii < len; iii++) {
 		float freq = iii / (len - 1.0) * m_sampleRate / 2.0;
@@ -210,11 +210,11 @@ void appl::Windows::onCallbackStart16() {
 		APPL_SAVE_FILE_MACRO(int16_t, "aaa_test_OUTPUT.raw", output, outputNbChunk);
 		int16_t value = 0;
 		for (size_t iii=800; iii<outputNbChunk-200; ++iii) {
-			value = std::max(value, output[iii]);
+			value = etk::max(value, output[iii]);
 		}
 		gain = 20.0 * std::log10(double(value)/32000.0);
 		APPL_VERBOSE("LEVEL " << iii << " out = " << value << " % : " << gain);
-		pratic.push_back(std::make_pair<float, float>(float(freq),float(gain)));
+		pratic.pushBack(etk::makePair<float, float>(float(freq),float(gain)));
 	}
 	m_displayer->setValue(pratic);
 }
@@ -222,9 +222,9 @@ void appl::Windows::onCallbackStart16() {
 void appl::Windows::onCallbackStartFloat() {
 	APPL_INFO("start ");
 	ememory::SharedPtr<audio::drain::Equalizer> eq = appl::Windows::createEqualizer(audio::format_float);
-	std::vector<std::pair<float,float> > pratic;
+	etk::Vector<etk::Pair<float,float> > pratic;
 	size_t len = 512;
-	std::vector<float> data;
+	etk::Vector<float> data;
 	data.resize(16000, 0);
 	for (size_t iii=1; iii < len; iii++) {
 		float freq = iii / (len - 1.0) * m_sampleRate / 2.0;
@@ -251,11 +251,11 @@ void appl::Windows::onCallbackStartFloat() {
 		APPL_SAVE_FILE_MACRO(int16_t,"aaa_test_OUTPUT_F.raw",output, outputNbChunk);
 		float value = 0;
 		for (size_t iii=800; iii<outputNbChunk-200; ++iii) {
-			value = std::max(value, output[iii]);
+			value = etk::max(value, output[iii]);
 		}
 		gain = 20.0 * std::log10(double(value)/1.0);
 		APPL_VERBOSE("LEVEL " << iii << " out = " << value << " % : " << gain);
-		pratic.push_back(std::make_pair<float, float>(float(freq),float(gain)));
+		pratic.pushBack(etk::makePair<float, float>(float(freq),float(gain)));
 	}
 	m_displayer->setValue(pratic);
 }

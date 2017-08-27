@@ -28,8 +28,8 @@ appl::widget::DisplayFrequency::~DisplayFrequency() {
 }
 
 
-void appl::widget::DisplayFrequency::setValue(const std::vector<std::pair<float,float> >& _data) {
-	m_data.push_back(_data);
+void appl::widget::DisplayFrequency::setValue(const etk::Vector<etk::Pair<float,float> >& _data) {
+	m_data.pushBack(_data);
 	markToRedraw();
 }
 
@@ -84,22 +84,22 @@ void appl::widget::DisplayFrequency::onRegenerateDisplay() {
 	for (size_t kkk=0; kkk<m_data.size(); kkk++) {
 		for (size_t iii=0; iii<m_data[kkk].size(); ++iii) {
 			if (std::abs(m_data[kkk][iii].second) != std::numeric_limits<float>::infinity()) {
-				m_gainMax = std::max(m_gainMax, m_data[kkk][iii].second);
-				m_gainMin = std::min(m_gainMin, m_data[kkk][iii].second);
+				m_gainMax = etk::max(m_gainMax, m_data[kkk][iii].second);
+				m_gainMin = etk::min(m_gainMin, m_data[kkk][iii].second);
 				//APPL_INFO("plop " << m_data[kkk][iii].second);
 			}
 			if (displayLog == false) {
 				if (std::abs(m_data[kkk][iii].first) != std::numeric_limits<float>::infinity()) {
-					m_frequencyMax = std::max(m_frequencyMax, m_data[kkk][iii].first);
-					m_frequencyMin = std::min(m_frequencyMin, m_data[kkk][iii].first);
+					m_frequencyMax = etk::max(m_frequencyMax, m_data[kkk][iii].first);
+					m_frequencyMin = etk::min(m_frequencyMin, m_data[kkk][iii].first);
 				}
 			} else {
 				if (std::abs(m_data[kkk][iii].first) != std::numeric_limits<float>::infinity()) {
 					if (m_data[kkk][iii].first == 0) {
 						continue;
 					}
-					m_frequencyMax = std::max(m_frequencyMax, std::log(m_data[kkk][iii].first));
-					m_frequencyMin = std::min(m_frequencyMin, std::log(m_data[kkk][iii].first));
+					m_frequencyMax = etk::max(m_frequencyMax, std::log(m_data[kkk][iii].first));
+					m_frequencyMin = etk::min(m_frequencyMin, std::log(m_data[kkk][iii].first));
 					//APPL_INFO("plop " << m_data[kkk][iii].first << " " << std::log(m_data[kkk][iii].first));
 				}
 			}
@@ -155,22 +155,22 @@ void appl::widget::DisplayFrequency::onRegenerateDisplay() {
 		}
 	}
 	m_text.setDefaultColorFg(etk::color::green);
-	std::string textToDisplay = etk::to_string(m_frequencyMin) + " Hz";
+	etk::String textToDisplay = etk::toString(m_frequencyMin) + " Hz";
 	vec3 size = m_text.calculateSize(textToDisplay);
 	m_text.setPos(vec2(m_borderSize.x(), m_borderSize.y()-size.y()));
 	m_text.print(textToDisplay);
 	
-	textToDisplay = etk::to_string(m_frequencyMax) + " Hz";
+	textToDisplay = etk::toString(m_frequencyMax) + " Hz";
 	size = m_text.calculateSize(textToDisplay);
 	m_text.setPos(vec2(m_size.x()-m_borderSize.x()-size.x(), m_borderSize.y()-size.y()));
 	m_text.print(textToDisplay);
 	
-	textToDisplay = etk::to_string(m_gainMin) + " dB";
+	textToDisplay = etk::toString(m_gainMin) + " dB";
 	size = m_text.calculateSize(textToDisplay);
 	m_text.setPos(vec2(m_borderSize.x(), m_borderSize.y()));
 	m_text.print(textToDisplay);
 	
-	textToDisplay = etk::to_string(m_gainMax) + " dB";
+	textToDisplay = etk::toString(m_gainMax) + " dB";
 	size = m_text.calculateSize(textToDisplay);
 	m_text.setPos(vec2(m_borderSize.x(), m_size.y() - m_borderSize.y()));
 	m_text.print(textToDisplay);

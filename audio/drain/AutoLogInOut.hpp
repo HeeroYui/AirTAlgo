@@ -5,16 +5,16 @@
  */
 #pragma once
 
-#include <string>
+#include <etk/String.hpp>
 #include "debug.hpp"
 
 namespace audio {
 	namespace drain{
 		class AutoLogInOut {
 			private:
-				std::string m_value;
+				etk::String m_value;
 			public:
-				AutoLogInOut(const std::string& _value);
+				AutoLogInOut(const etk::String& _value);
 				~AutoLogInOut();
 		};
 	}

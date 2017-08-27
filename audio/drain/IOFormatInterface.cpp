@@ -7,7 +7,7 @@
 #include "IOFormatInterface.hpp"
 #include "debug.hpp"
 
-std::ostream& audio::drain::operator <<(std::ostream& _os, const IOFormatInterface& _obj) {
+etk::Stream& audio::drain::operator <<(etk::Stream& _os, const IOFormatInterface& _obj) {
 	_os << "{";
 	if (_obj.getConfigured() == false) {
 		_os << "Not configured";
@@ -25,11 +25,11 @@ audio::drain::IOFormatInterface::IOFormatInterface() :
   m_format(audio::format_unknow),
   m_map(),
   m_frequency(0) {
-	m_map.push_back(audio::channel_frontLeft);
-	m_map.push_back(audio::channel_frontRight);
+	m_map.pushBack(audio::channel_frontLeft);
+	m_map.pushBack(audio::channel_frontRight);
 }
 
-audio::drain::IOFormatInterface::IOFormatInterface(std::vector<enum audio::channel> _map, enum audio::format _format, float _frequency) :
+audio::drain::IOFormatInterface::IOFormatInterface(etk::Vector<enum audio::channel> _map, enum audio::format _format, float _frequency) :
   m_configured(true),
   m_format(_format),
   m_map(_map),
@@ -37,7 +37,7 @@ audio::drain::IOFormatInterface::IOFormatInterface(std::vector<enum audio::chann
 	
 }
 
-void audio::drain::IOFormatInterface::set(std::vector<enum audio::channel> _map, enum audio::format _format, float _frequency) {
+void audio::drain::IOFormatInterface::set(etk::Vector<enum audio::channel> _map, enum audio::format _format, float _frequency) {
 	bool hasChange = false;
 	if (m_map != _map) {
 		m_map = _map;
@@ -78,11 +78,11 @@ void audio::drain::IOFormatInterface::setFormat(enum audio::format _value) {
 	configurationChange();
 }
 
-const std::vector<enum audio::channel>& audio::drain::IOFormatInterface::getMap() const{
+const etk::Vector<enum audio::channel>& audio::drain::IOFormatInterface::getMap() const{
 	return m_map;
 }
 
-void audio::drain::IOFormatInterface::setMap(const std::vector<enum audio::channel>& _value) {
+void audio::drain::IOFormatInterface::setMap(const etk::Vector<enum audio::channel>& _value) {
 	if (m_map == _value) {
 		return;
 	}

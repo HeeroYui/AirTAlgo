@@ -25,12 +25,12 @@ namespace appl {
 				//! @brief destructor
 				virtual ~DisplayFrequency();
 			private:
-				std::vector<std::vector<std::pair<float,float> > > m_data; //!< data that might be displayed
+				etk::Vector<etk::Vector<etk::Pair<float,float> > > m_data; //!< data that might be displayed
 			public:
 				void clear() {
 					m_data.clear();
 				}
-				void setValue(const std::vector<std::pair<float,float> >& _data);
+				void setValue(const etk::Vector<etk::Pair<float,float> >& _data);
 			private:
 				float m_gainMin; //!< display minimum gain value
 				float m_gainMax; //!< display maximum gain value

@@ -36,9 +36,9 @@ namespace audio {
 			protected:
 				ejson::Object m_config; // configuration of the equalizer.
 			public:
-				virtual bool setParameter(const std::string& _parameter, const std::string& _value);
-				virtual std::string getParameter(const std::string& _parameter) const;
-				virtual std::string getParameterProperty(const std::string& _parameter) const;
+				virtual bool setParameter(const etk::String& _parameter, const etk::String& _value);
+				virtual etk::String getParameter(const etk::String& _parameter) const;
+				virtual etk::String getParameterProperty(const etk::String& _parameter) const;
 			protected:
 				void addBiquad(int32_t _idBiquad, const ejson::Object& _object);
 				audio::algo::drain::Equalizer m_algo;
@@ -48,7 +48,7 @@ namespace audio {
 				void configureBiQuad();
 			public:
 				// for debug & tools only
-				std::vector<std::pair<float,float> > calculateTheory();
+				etk::Vector<etk::Pair<float,float> > calculateTheory();
 		};
 	}
 }

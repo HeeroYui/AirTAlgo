@@ -49,14 +49,14 @@ static void convert__int16_on_int32__to__int16(void* _input, void* _output, size
 	int32_t* in = static_cast<int32_t*>(_input);
 	int16_t* out = static_cast<int16_t*>(_output);
 	for (size_t iii=0; iii<_nbSample; ++iii) {
-		out[iii] = static_cast<int16_t>(std::min(std::max(INT16_MIN, in[iii]), INT16_MAX));
+		out[iii] = static_cast<int16_t>(etk::min(etk::max(INT16_MIN, in[iii]), INT16_MAX));
 	}
 }
 static void convert__int16_on_int32__to__int32(void* _input, void* _output, size_t _nbSample) {
 	int32_t* in = static_cast<int32_t*>(_input);
 	int32_t* out = static_cast<int32_t*>(_output);
 	for (size_t iii=0; iii<_nbSample; ++iii) {
-		int32_t value = std::min(std::max(INT16_MIN, in[iii]), INT16_MAX);
+		int32_t value = etk::min(etk::max(INT16_MIN, in[iii]), INT16_MAX);
 		out[iii] = value << 16;
 	}
 }
@@ -74,7 +74,7 @@ static void convert__int32__to__int16(void* _input, void* _output, size_t _nbSam
 	int16_t* out = static_cast<int16_t*>(_output);
 	for (size_t iii=0; iii<_nbSample; ++iii) {
 		int32_t value = in[iii] >> 16;
-		out[iii] = static_cast<int16_t>(std::min(std::max(INT16_MIN, value), INT16_MAX));
+		out[iii] = static_cast<int16_t>(etk::min(etk::max(INT16_MIN, value), INT16_MAX));
 	}
 }
 static void convert__int32__to__int16_on_int32(void* _input, void* _output, size_t _nbSample) {
@@ -98,7 +98,7 @@ static void convert__float__to__int16(void* _input, void* _output, size_t _nbSam
 	int16_t* out = static_cast<int16_t*>(_output);
 	for (size_t iii=0; iii<_nbSample; ++iii) {
 		float value = in[iii] * static_cast<float>(INT16_MAX);
-		value = std::min(std::max(static_cast<float>(INT16_MIN), value), static_cast<float>(INT16_MAX));
+		value = etk::min(etk::max(static_cast<float>(INT16_MIN), value), static_cast<float>(INT16_MAX));
 		out[iii] = static_cast<int16_t>(value);
 		//DRAIN_DEBUG(iii << " in=" << in[iii] << " out=" << out[iii]);
 	}
@@ -108,7 +108,7 @@ static void convert__float__to__int16_on_int32(void* _input, void* _output, size
 	int32_t* out = static_cast<int32_t*>(_output);
 	for (size_t iii=0; iii<_nbSample; ++iii) {
 		float value = in[iii] * static_cast<float>(INT16_MAX);
-		value = std::min(std::max(static_cast<float>(INT32_MIN), value), static_cast<float>(INT32_MAX));
+		value = etk::min(etk::max(static_cast<float>(INT32_MIN), value), static_cast<float>(INT32_MAX));
 		out[iii] = static_cast<int32_t>(value);
 	}
 }
@@ -117,7 +117,7 @@ static void convert__float__to__int32(void* _input, void* _output, size_t _nbSam
 	int32_t* out = static_cast<int32_t*>(_output);
 	for (size_t iii=0; iii<_nbSample; ++iii) {
 		float value = in[iii] * static_cast<float>(INT32_MAX);
-		value = std::min(std::max(static_cast<float>(INT32_MIN), value), static_cast<float>(INT32_MAX));
+		value = etk::min(etk::max(static_cast<float>(INT32_MIN), value), static_cast<float>(INT32_MAX));
 		out[iii] = static_cast<int32_t>(value);
 	}
 }

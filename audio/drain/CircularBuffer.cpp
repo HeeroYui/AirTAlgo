@@ -196,7 +196,7 @@ size_t audio::drain::CircularBuffer::read(void* _data, size_t _nbChunk, const au
 		} else if (deltaTime.count() > 0) {
 			// Add empty sample in the output buffer ...
 			size_t nbSampleEmpty = m_frequency*deltaTime.count()/100000000;
-			nbSampleEmpty = std::min(nbSampleEmpty, _nbChunk);
+			nbSampleEmpty = etk::min(nbSampleEmpty, _nbChunk);
 			DRAIN_WARNING("add Empty sample in the output buffer " << nbSampleEmpty << " / " << _nbChunk);
 			memset(_data, 0, nbSampleEmpty * m_sizeChunk);
 			if (nbSampleEmpty == _nbChunk) {
@@ -258,7 +258,7 @@ void audio::drain::CircularBuffer::setReadPosition(const audio::Time& _time) {
 		// check the time of the read :
 		audio::Duration deltaTime = _time - m_timeRead;
 		size_t nbSampleToRemove = int64_t(m_frequency)*int64_t(deltaTime.count())/1000000000LL;
-		nbSampleToRemove = std::min(nbSampleToRemove, m_size);
+		nbSampleToRemove = etk::min(nbSampleToRemove, m_size);
 		DRAIN_VERBOSE("Remove sample in the buffer " << nbSampleToRemove << " / " << m_size);
 		audio::Duration updateTime(0,(int64_t(nbSampleToRemove)*1000000000LL)/int64_t(m_frequency));
 		DRAIN_VERBOSE(" add time : " << updateTime.count() << "ns / " << deltaTime.count() << "ns");

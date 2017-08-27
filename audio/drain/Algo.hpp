@@ -5,8 +5,8 @@
  */
 #pragma once
 
-#include <string>
-#include <vector>
+#include <etk/String.hpp>
+#include <etk/Vector.hpp>
 #include <cstdint>
 #include <audio/format.hpp>
 #include <audio/channel.hpp>
@@ -27,28 +27,28 @@ namespace audio {
 	 * @brief audio-algo library namespace
 	 */
 	namespace drain{
-		typedef std::function<void (const std::string& _origin, const std::string& _status)> algoStatusFunction;
+		typedef std::function<void (const etk::String& _origin, const etk::String& _status)> algoStatusFunction;
 		class Algo : public ememory::EnableSharedFromThis<Algo> {
 			private:
-				std::string m_name;
+				etk::String m_name;
 			public:
-				const std::string& getName() const {
+				const etk::String& getName() const {
 					return m_name;
 				}
-				void setName(const std::string& _name) {
+				void setName(const etk::String& _name) {
 					m_name = _name;
 				}
 			protected:
-				std::string m_type;
+				etk::String m_type;
 			public:
-				const std::string& getType() const {
+				const etk::String& getType() const {
 					return m_type;
 				}
-				void setType(const std::string& _type) {
+				void setType(const etk::String& _type) {
 					m_type = _type;
 				}
 			public:
-				virtual std::string getDotDesc();
+				virtual etk::String getDotDesc();
 			private:
 				bool m_temporary;
 			public:
@@ -63,9 +63,9 @@ namespace audio {
 			public:
 				void setStatusFunction(algoStatusFunction _newFunction);
 			protected:
-				void generateStatus(const std::string& _status);
+				void generateStatus(const etk::String& _status);
 			protected:
-				std::vector<int8_t> m_outputData;
+				etk::Vector<int8_t> m_outputData;
 				int8_t m_formatSize; //!< sample size
 				/**
 				 * @brief Constructor
@@ -138,58 +138,58 @@ namespace audio {
 				// TODO : Manage the change of the timestamp ...
 				virtual size_t needInputData(size_t _output);
 			protected: // note when nothing ==> support all type
-				std::vector<audio::format> m_supportedFormat;
+				etk::Vector<audio::format> m_supportedFormat;
 			public:
-				virtual std::vector<audio::format> getFormatSupportedInput() {
+				virtual etk::Vector<audio::format> getFormatSupportedInput() {
 					if (m_output.getConfigured() == true) {
-						std::vector<audio::format> out;
-						out.push_back(m_output.getFormat());
+						etk::Vector<audio::format> out;
+						out.pushBack(m_output.getFormat());
 						return out;
 					}
 					return m_supportedFormat;
 				};
-				virtual std::vector<audio::format> getFormatSupportedOutput() {
+				virtual etk::Vector<audio::format> getFormatSupportedOutput() {
 					if (m_input.getConfigured() == true) {
-						std::vector<audio::format> out;
-						out.push_back(m_input.getFormat());
+						etk::Vector<audio::format> out;
+						out.pushBack(m_input.getFormat());
 						return out;
 					}
 					return m_supportedFormat;
 				};
 			protected: // note when nothing ==> support all type
-				std::vector<std::vector<audio::channel> > m_supportedMap;
+				etk::Vector<etk::Vector<audio::channel> > m_supportedMap;
 			public:
-				virtual std::vector<std::vector<audio::channel> > getMapSupportedInput() {
+				virtual etk::Vector<etk::Vector<audio::channel> > getMapSupportedInput() {
 					if (m_output.getConfigured() == true) {
-						std::vector<std::vector<audio::channel> > out;
-						out.push_back(m_output.getMap());
+						etk::Vector<etk::Vector<audio::channel> > out;
+						out.pushBack(m_output.getMap());
 						return out;
 					}
 					return m_supportedMap;
 				};
-				virtual std::vector<std::vector<audio::channel> > getMapSupportedOutput() {
+				virtual etk::Vector<etk::Vector<audio::channel> > getMapSupportedOutput() {
 					if (m_input.getConfigured() == true) {
-						std::vector<std::vector<audio::channel> > out;
-						out.push_back(m_input.getMap());
+						etk::Vector<etk::Vector<audio::channel> > out;
+						out.pushBack(m_input.getMap());
 						return out;
 					}
 					return m_supportedMap;
 				};
 			protected: // note when nothing ==> support all type
-				std::vector<float> m_supportedFrequency;
+				etk::Vector<float> m_supportedFrequency;
 			public:
-				virtual std::vector<float> getFrequencySupportedInput() {
+				virtual etk::Vector<float> getFrequencySupportedInput() {
 					if (m_output.getConfigured() == true) {
-						std::vector<float> out;
-						out.push_back(m_output.getFrequency());
+						etk::Vector<float> out;
+						out.pushBack(m_output.getFrequency());
 						return out;
 					}
 					return m_supportedFrequency;
 				};
-				virtual std::vector<float> getFrequencySupportedOutput() {
+				virtual etk::Vector<float> getFrequencySupportedOutput() {
 					if (m_input.getConfigured() == true) {
-						std::vector<float> out;
-						out.push_back(m_input.getFrequency());
+						etk::Vector<float> out;
+						out.pushBack(m_input.getFrequency());
 						return out;
 					}
 					return m_supportedFrequency;
@@ -202,19 +202,19 @@ namespace audio {
 				 * @return true set done
 				 * @return false An error occured
 				 */
-				virtual bool setParameter(const std::string& _parameter, const std::string& _value) { return false; }
+				virtual bool setParameter(const etk::String& _parameter, const etk::String& _value) { return false; }
 				/**
 				 * @brief Get a parameter value
 				 * @param[in] _parameter Parameter name.
 				 * @return The requested value.
 				 */
-				virtual std::string getParameter(const std::string& _parameter) const { return "[ERROR]"; }
+				virtual etk::String getParameter(const etk::String& _parameter) const { return "[ERROR]"; }
 				/**
 				 * @brief Get a parameter value
 				 * @param[in] _parameter Parameter name.
 				 * @return The requested value.
 				 */
-				virtual std::string getParameterProperty(const std::string& _parameter) const { return "[ERROR]"; };
+				virtual etk::String getParameterProperty(const etk::String& _parameter) const { return "[ERROR]"; };
 		};
 	}
 }

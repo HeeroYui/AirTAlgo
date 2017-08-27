@@ -20,7 +20,7 @@ audio::drain::Resampler::Resampler() :
 void audio::drain::Resampler::init() {
 	audio::drain::Algo::init();
 	m_type = "Resampler";
-	m_supportedFormat.push_back(audio::format_int16);
+	m_supportedFormat.pushBack(audio::format_int16);
 	m_residualTimeInResampler = audio::Duration(0);
 }
 

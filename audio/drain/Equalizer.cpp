@@ -18,8 +18,8 @@ audio::drain::Equalizer::Equalizer() {
 void audio::drain::Equalizer::init() {
 	audio::drain::Algo::init();
 	audio::drain::Algo::m_type = "Equalizer";
-	m_supportedFormat.push_back(audio::format_int16);
-	m_supportedFormat.push_back(audio::format_int16);
+	m_supportedFormat.pushBack(audio::format_int16);
+	m_supportedFormat.pushBack(audio::format_int16);
 	configureBiQuad();
 }
 
@@ -52,7 +52,7 @@ bool audio::drain::Equalizer::process(audio::Time& _time,
 	return true;
 }
 
-bool audio::drain::Equalizer::setParameter(const std::string& _parameter, const std::string& _value) {
+bool audio::drain::Equalizer::setParameter(const etk::String& _parameter, const etk::String& _value) {
 	//DRAIN_WARNING("set : " << _parameter << " " << _value);
 	if (_parameter == "config") {
 		m_config = ejson::Object(_value);
@@ -64,17 +64,17 @@ bool audio::drain::Equalizer::setParameter(const std::string& _parameter, const 
 	return false;
 }
 
-std::string audio::drain::Equalizer::getParameter(const std::string& _parameter) const {
+etk::String audio::drain::Equalizer::getParameter(const etk::String& _parameter) const {
 	return "error";
 }
 
-std::string audio::drain::Equalizer::getParameterProperty(const std::string& _parameter) const {
+etk::String audio::drain::Equalizer::getParameterProperty(const etk::String& _parameter) const {
 	return "error";
 }
 
 void audio::drain::Equalizer::addBiquad(int32_t _idBiquad, const ejson::Object& _object) {
 	// get type:
-	std::string typeString = _object["type"].toString().get("none");
+	etk::String typeString = _object["type"].toString().get("none");
 	if (typeString == "direct-value") {
 		double a0 = _object["a0"].toNumber().get(0.0);
 		double a1 = _object["a1"].toNumber().get(0.0);
@@ -125,7 +125,7 @@ void audio::drain::Equalizer::configureBiQuad() {
 		return;
 	}
 	for (size_t iii=0; iii<getOutputFormat().getMap().size(); ++iii) {
-		std::string channelName = etk::to_string(getOutputFormat().getMap()[iii]);
+		etk::String channelName = etk::toString(getOutputFormat().getMap()[iii]);
 		const ejson::Array channelConfig = m_config[channelName].toArray();
 		if (channelConfig.exist() == false) {
 			// no config ... not a problem ...
@@ -145,6 +145,6 @@ void audio::drain::Equalizer::configureBiQuad() {
 	return;
 }
 
-std::vector<std::pair<float,float> > audio::drain::Equalizer::calculateTheory() {
+etk::Vector<etk::Pair<float,float> > audio::drain::Equalizer::calculateTheory() {
 	return m_algo.calculateTheory();
 }

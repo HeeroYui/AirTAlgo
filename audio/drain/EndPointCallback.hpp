@@ -15,13 +15,13 @@ namespace audio {
 		                              size_t _nbChunk,
 		                              enum audio::format _format,
 		                              uint32_t _frequency,
-		                              const std::vector<audio::channel>& _map)> playbackFunction;
+		                              const etk::Vector<audio::channel>& _map)> playbackFunction;
 		typedef std::function<void (const void* _data,
 		                              const audio::Time& _readTime,
 		                              size_t _nbChunk,
 		                              enum audio::format _format,
 		                              uint32_t _frequency,
-		                              const std::vector<audio::channel>& _map)> recordFunction;
+		                              const etk::Vector<audio::channel>& _map)> recordFunction;
 		class EndPointCallback : public EndPoint {
 			private:
 				playbackFunction m_outputFunction;

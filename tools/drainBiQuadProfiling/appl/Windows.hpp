@@ -25,20 +25,20 @@ namespace appl {
 			void onCallbackSampleRateUp();
 			void onCallbackTypeUp();
 			void onCallbackTypeLow();
-			void onCallbackGain(const std::string& _value);
+			void onCallbackGain(const etk::String& _value);
 			void onCallbackGainSlider(const float& _value);
-			void onCallbackFrequency(const std::string& _value);
+			void onCallbackFrequency(const etk::String& _value);
 			void onCallbackFrequencySlider(const float& _value);
-			void onCallbackQuality(const std::string& _value);
+			void onCallbackQuality(const etk::String& _value);
 			void onCallbackQualitySlider(const float& _value);
 			void onCallbackStart();
 			void onCallbackStart16();
 			void onCallbackStartFloat();
 		protected:
 			int32_t m_sampleRate;
-			std::vector<int32_t> m_listSampleRate;
+			etk::Vector<int32_t> m_listSampleRate;
 			enum audio::algo::drain::biQuadType m_type;
-			std::vector<enum audio::algo::drain::biQuadType> m_listType;
+			etk::Vector<enum audio::algo::drain::biQuadType> m_listType;
 			float m_cutFrequency;
 			float m_gain;
 			float m_quality;

@@ -7,7 +7,7 @@
 #include "AutoLogInOut.hpp"
 #include "debug.hpp"
 
-audio::drain::AutoLogInOut::AutoLogInOut(const std::string& _value) :
+audio::drain::AutoLogInOut::AutoLogInOut(const etk::String& _value) :
   m_value(_value) {
 	DRAIN_VERBOSE("                 '" << m_value << "' [START]");
 }

@@ -40,26 +40,26 @@ appl::Windows::Windows() :
   m_gain(0.0),
   m_quality(0.707) {
 	addObjectType("appl::Windows");
-	m_listSampleRate.push_back(192000);
-	m_listSampleRate.push_back(176400);
-	m_listSampleRate.push_back(96000);
-	m_listSampleRate.push_back(88200);
-	m_listSampleRate.push_back(48000);
-	m_listSampleRate.push_back(44100);
-	m_listSampleRate.push_back(32000);
-	m_listSampleRate.push_back(22050);
-	m_listSampleRate.push_back(16000);
-	m_listSampleRate.push_back(11025);
-	m_listSampleRate.push_back(8000);
-	m_listSampleRate.push_back(4000);
-	m_listType.push_back(audio::algo::drain::biQuadType_none);
-	m_listType.push_back(audio::algo::drain::biQuadType_lowPass);
-	m_listType.push_back(audio::algo::drain::biQuadType_highPass);
-	m_listType.push_back(audio::algo::drain::biQuadType_bandPass);
-	m_listType.push_back(audio::algo::drain::biQuadType_notch);
-	m_listType.push_back(audio::algo::drain::biQuadType_peak);
-	m_listType.push_back(audio::algo::drain::biQuadType_lowShelf);
-	m_listType.push_back(audio::algo::drain::biQuadType_highShelf);
+	m_listSampleRate.pushBack(192000);
+	m_listSampleRate.pushBack(176400);
+	m_listSampleRate.pushBack(96000);
+	m_listSampleRate.pushBack(88200);
+	m_listSampleRate.pushBack(48000);
+	m_listSampleRate.pushBack(44100);
+	m_listSampleRate.pushBack(32000);
+	m_listSampleRate.pushBack(22050);
+	m_listSampleRate.pushBack(16000);
+	m_listSampleRate.pushBack(11025);
+	m_listSampleRate.pushBack(8000);
+	m_listSampleRate.pushBack(4000);
+	m_listType.pushBack(audio::algo::drain::biQuadType_none);
+	m_listType.pushBack(audio::algo::drain::biQuadType_lowPass);
+	m_listType.pushBack(audio::algo::drain::biQuadType_highPass);
+	m_listType.pushBack(audio::algo::drain::biQuadType_bandPass);
+	m_listType.pushBack(audio::algo::drain::biQuadType_notch);
+	m_listType.pushBack(audio::algo::drain::biQuadType_peak);
+	m_listType.pushBack(audio::algo::drain::biQuadType_lowShelf);
+	m_listType.pushBack(audio::algo::drain::biQuadType_highShelf);
 }
 
 void appl::Windows::init() {
@@ -100,15 +100,15 @@ void appl::Windows::onCallbackSampleRateUp() {
 			} else {
 				m_sampleRate = m_listSampleRate[0];
 			}
-			ewol::parameterSetOnObjectNamed("sample-rate", "value", etk::to_string(m_sampleRate));
-			ewol::parameterSetOnObjectNamed("frequency-slider", "max", etk::to_string(m_sampleRate/2));
+			ewol::parameterSetOnObjectNamed("sample-rate", "value", etk::toString(m_sampleRate));
+			ewol::parameterSetOnObjectNamed("frequency-slider", "max", etk::toString(m_sampleRate/2));
 			onCallbackStart();
 			return;
 		}
 	}
 	m_sampleRate = m_listSampleRate[0];
-	ewol::parameterSetOnObjectNamed("sample-rate", "value", etk::to_string(m_sampleRate));
-	ewol::parameterSetOnObjectNamed("frequency-slider", "max", etk::to_string(m_sampleRate/2));
+	ewol::parameterSetOnObjectNamed("sample-rate", "value", etk::toString(m_sampleRate));
+	ewol::parameterSetOnObjectNamed("frequency-slider", "max", etk::toString(m_sampleRate/2));
 	onCallbackStart();
 }
 
@@ -121,15 +121,15 @@ void appl::Windows::onCallbackSampleRateLow() {
 			} else {
 				m_sampleRate = m_listSampleRate[m_listSampleRate.size()-1];
 			}
-			ewol::parameterSetOnObjectNamed("sample-rate", "value", etk::to_string(m_sampleRate));
-			ewol::parameterSetOnObjectNamed("frequency-slider", "max", etk::to_string(m_sampleRate/2));
+			ewol::parameterSetOnObjectNamed("sample-rate", "value", etk::toString(m_sampleRate));
+			ewol::parameterSetOnObjectNamed("frequency-slider", "max", etk::toString(m_sampleRate/2));
 			onCallbackStart();
 			return;
 		}
 	}
 	m_sampleRate = m_listSampleRate[0];
-	ewol::parameterSetOnObjectNamed("sample-rate", "value", etk::to_string(m_sampleRate));
-	ewol::parameterSetOnObjectNamed("frequency-slider", "max", etk::to_string(m_sampleRate/2));
+	ewol::parameterSetOnObjectNamed("sample-rate", "value", etk::toString(m_sampleRate));
+	ewol::parameterSetOnObjectNamed("frequency-slider", "max", etk::toString(m_sampleRate/2));
 	onCallbackStart();
 }
 
@@ -142,13 +142,13 @@ void appl::Windows::onCallbackTypeUp() {
 			} else {
 				m_type = m_listType[0];
 			}
-			ewol::parameterSetOnObjectNamed("type", "value", etk::to_string(m_type));
+			ewol::parameterSetOnObjectNamed("type", "value", etk::toString(m_type));
 			onCallbackStart();
 			return;
 		}
 	}
 	m_type = m_listType[0];
-	ewol::parameterSetOnObjectNamed("type", "value", etk::to_string(m_type));
+	ewol::parameterSetOnObjectNamed("type", "value", etk::toString(m_type));
 	onCallbackStart();
 }
 
@@ -161,58 +161,58 @@ void appl::Windows::onCallbackTypeLow() {
 			} else {
 				m_type = m_listType[m_listType.size()-1];
 			}
-			ewol::parameterSetOnObjectNamed("type", "value", etk::to_string(m_type));
+			ewol::parameterSetOnObjectNamed("type", "value", etk::toString(m_type));
 			onCallbackStart();
 			return;
 		}
 	}
 	m_type = m_listType[0];
-	ewol::parameterSetOnObjectNamed("type", "value", etk::to_string(m_type));
+	ewol::parameterSetOnObjectNamed("type", "value", etk::toString(m_type));
 	onCallbackStart();
 }
 
 
-void appl::Windows::onCallbackGain(const std::string& _value) {
+void appl::Windows::onCallbackGain(const etk::String& _value) {
 	m_gain = etk::string_to_float(_value);
-	ewol::parameterSetOnObjectNamed("gain-slider", "value", etk::to_string(_value));
+	ewol::parameterSetOnObjectNamed("gain-slider", "value", etk::toString(_value));
 	APPL_INFO("Gain " << m_gain);
 	onCallbackStart();
 }
 
 void appl::Windows::onCallbackGainSlider(const float& _value) {
 	m_gain = _value;
-	ewol::parameterSetOnObjectNamed("gain", "value", etk::to_string(_value));
+	ewol::parameterSetOnObjectNamed("gain", "value", etk::toString(_value));
 	APPL_INFO("Gain " << m_gain);
 	onCallbackStart();
 }
 
 
 
-void appl::Windows::onCallbackQuality(const std::string& _value) {
+void appl::Windows::onCallbackQuality(const etk::String& _value) {
 	m_quality = etk::string_to_float(_value);
-	ewol::parameterSetOnObjectNamed("quality-slider", "value", etk::to_string(_value));
+	ewol::parameterSetOnObjectNamed("quality-slider", "value", etk::toString(_value));
 	APPL_INFO("quality " << m_quality);
 	onCallbackStart();
 }
 
 void appl::Windows::onCallbackQualitySlider(const float& _value) {
 	m_quality = _value;
-	ewol::parameterSetOnObjectNamed("quality", "value", etk::to_string(_value));
+	ewol::parameterSetOnObjectNamed("quality", "value", etk::toString(_value));
 	APPL_INFO("quality " << m_quality);
 	onCallbackStart();
 }
 
 
-void appl::Windows::onCallbackFrequency(const std::string& _value) {
+void appl::Windows::onCallbackFrequency(const etk::String& _value) {
 	m_cutFrequency = etk::string_to_float(_value);
-	ewol::parameterSetOnObjectNamed("frequency-slider", "value", etk::to_string(_value));
+	ewol::parameterSetOnObjectNamed("frequency-slider", "value", etk::toString(_value));
 	APPL_INFO("cut frequency " << m_cutFrequency);
 	onCallbackStart();
 }
 
 void appl::Windows::onCallbackFrequencySlider(const float& _value) {
 	m_cutFrequency = _value;
-	ewol::parameterSetOnObjectNamed("frequency", "value", etk::to_string(_value));
+	ewol::parameterSetOnObjectNamed("frequency", "value", etk::toString(_value));
 	APPL_INFO("cut frequency " << m_cutFrequency);
 	onCallbackStart();
 }
@@ -225,15 +225,15 @@ void appl::Windows::onCallbackFrequencySlider(const float& _value) {
 void appl::Windows::onCallbackStart() {
 	APPL_INFO("start ");
 	int32_t iii = 10;
-	std::vector<audio::channel> map;
-	map.push_back(audio::channel_frontCenter);
+	etk::Vector<audio::channel> map;
+	map.pushBack(audio::channel_frontCenter);
 	// audio::drain::IOFormatInterface format(map, audio::format_int16, m_sampleRate);
 	// audio::drain::IOFormatInterface format(map, audio::format_float, m_sampleRate);
 	// create biquad
 	audio::algo::drain::BiQuad<audio::float_t> bq;
 	// configure parameter
 	bq.setBiquad(m_type, m_cutFrequency, m_quality, m_gain, m_sampleRate);
-	std::vector<std::pair<float,float> > theory = bq.calculateTheory(m_sampleRate);
+	etk::Vector<etk::Pair<float,float> > theory = bq.calculateTheory(m_sampleRate);
 	m_displayer->clear();
 	m_displayer->setValue(theory);
 }
@@ -245,7 +245,7 @@ void appl::Windows::onCallbackStart16() {
 	audio::algo::drain::BiQuad<audio::int16_16_t> bq;
 	// configure parameter
 	bq.setBiquad(m_type, m_cutFrequency, m_quality, m_gain, m_sampleRate);
-	std::vector<std::pair<float,float> > pratic;
+	etk::Vector<etk::Pair<float,float> > pratic;
 	size_t len = 512;
 	for (size_t iii=1; iii < len; iii++) {
 		float freq = iii / (len - 1.0) * m_sampleRate / 2.0;
@@ -254,7 +254,7 @@ void appl::Windows::onCallbackStart16() {
 		double m_phase = 0;
 		double baseCycle = 2.0*M_PI/double(m_sampleRate) * double(freq);
 		float gain = 0;
-		std::vector<audio::int16_16_t> data;
+		etk::Vector<audio::int16_16_t> data;
 		// create sinus
 		data.resize(16000, 0);
 		for (int32_t iii=0; iii<data.size(); iii++) {
@@ -273,11 +273,11 @@ void appl::Windows::onCallbackStart16() {
 		APPL_SAVE_FILE_MACRO(int16_t,"aaa_test_OUTPUT_16.raw",&data[0],data.size());
 		audio::int16_16_t value = 0;
 		for (size_t iii=800; iii<data.size()-200; ++iii) {
-			value = std::max(value, data[iii]);
+			value = etk::max(value, data[iii]);
 		}
 		gain = 20.0 * std::log10(value.getDouble()/32000.0);
 		APPL_VERBOSE("LEVEL " << iii << " out = " << value << " % : " << gain);
-		pratic.push_back(std::make_pair<float, float>(float(freq),float(gain)));
+		pratic.pushBack(etk::makePair<float, float>(float(freq),float(gain)));
 	}
 	m_displayer->setValue(pratic);
 }
@@ -288,7 +288,7 @@ void appl::Windows::onCallbackStartFloat() {
 	audio::algo::drain::BiQuad<audio::float_t> bq;
 	// configure parameter
 	bq.setBiquad(m_type, m_cutFrequency, m_quality, m_gain, m_sampleRate);
-	std::vector<std::pair<float,float> > pratic;
+	etk::Vector<etk::Pair<float,float> > pratic;
 	size_t len = 512;
 	for (size_t iii=1; iii < len; iii++) {
 		float freq = iii / (len - 1.0) * m_sampleRate / 2.0;
@@ -297,7 +297,7 @@ void appl::Windows::onCallbackStartFloat() {
 		double m_phase = 0;
 		double baseCycle = 2.0*M_PI/double(m_sampleRate) * double(freq);
 		float gain = 0;
-		std::vector<audio::float_t> data;
+		etk::Vector<audio::float_t> data;
 		// create sinus
 		data.resize(16000, 0);
 		for (int32_t iii=0; iii<data.size(); iii++) {
@@ -312,11 +312,11 @@ void appl::Windows::onCallbackStartFloat() {
 		APPL_SAVE_FILE_MACRO(float,"aaa_test_OUTPUT_F.raw",&data[0],data.size());
 		audio::float_t value = 0.0f;
 		for (size_t iii=800; iii<data.size()-200; ++iii) {
-			value = std::max(value, data[iii]);
+			value = etk::max(value, data[iii]);
 		}
 		gain = 20.0 * std::log10(value.getDouble()/1.0);
 		APPL_VERBOSE("LEVEL " << iii << " out = " << value << " % : " << gain);
-		pratic.push_back(std::make_pair<float, float>(float(freq),float(gain)));
+		pratic.pushBack(etk::makePair<float, float>(float(freq),float(gain)));
 	}
 	m_displayer->setValue(pratic);
 }

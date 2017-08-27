@@ -5,8 +5,8 @@
  */
 #pragma once
 
-#include <string>
-#include <vector>
+#include <etk/String.hpp>
+#include <etk/Vector.hpp>
 #include <cstdint>
 #include <audio/format.hpp>
 #include <audio/channel.hpp>
@@ -17,10 +17,10 @@
 
 namespace audio {
 	namespace drain{
-		typedef std::function<void (const std::string& _origin, const std::string& _status)> statusFunction;
+		typedef std::function<void (const etk::String& _origin, const etk::String& _status)> statusFunction;
 		class Process {
 			protected:
-				std::vector<int8_t> m_data; //!< temporary overlap output buffer (change size of the output data)
+				etk::Vector<int8_t> m_data; //!< temporary overlap output buffer (change size of the output data)
 			public:
 				Process();
 				virtual ~Process();
@@ -94,7 +94,7 @@ namespace audio {
 					m_outputConfig = _interface;
 				}
 			protected:
-				std::vector<ememory::SharedPtr<drain::Algo> > m_listAlgo;
+				etk::Vector<ememory::SharedPtr<drain::Algo> > m_listAlgo;
 			public:
 				void pushBack(ememory::SharedPtr<drain::Algo> _algo);
 				void pushFront(ememory::SharedPtr<drain::Algo> _algo);
@@ -105,17 +105,17 @@ namespace audio {
 				size_t size() {
 					return m_listAlgo.size();
 				}
-				std::vector<ememory::SharedPtr<drain::Algo> >::iterator begin() {
+				etk::Vector<ememory::SharedPtr<drain::Algo> >::iterator begin() {
 					return m_listAlgo.begin();
 				}
-				std::vector<ememory::SharedPtr<drain::Algo> >::iterator end() {
+				etk::Vector<ememory::SharedPtr<drain::Algo> >::iterator end() {
 					return m_listAlgo.end();
 				}
 				ememory::SharedPtr<drain::Algo> operator[](int32_t _id) {
 					return m_listAlgo[_id];
 				}
 				
-				template<typename T> ememory::SharedPtr<T> get(const std::string& _name) {
+				template<typename T> ememory::SharedPtr<T> get(const etk::String& _name) {
 					for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
 						if (m_listAlgo[iii] == nullptr) {
 							continue;
@@ -126,7 +126,7 @@ namespace audio {
 					}
 					return ememory::SharedPtr<T>();
 				}
-				template<typename T> ememory::SharedPtr<const T> get(const std::string& _name) const {
+				template<typename T> ememory::SharedPtr<const T> get(const etk::String& _name) const {
 					for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
 						if (m_listAlgo[iii] == nullptr) {
 							continue;
@@ -168,7 +168,7 @@ namespace audio {
 			private:
 				statusFunction m_statusFunction;
 			public:
-				void generateStatus(const std::string& _origin, const std::string& _status);
+				void generateStatus(const etk::String& _origin, const etk::String& _status);
 				void setStatusFunction(statusFunction _newFunction);
 			private:
 				bool m_isConfigured;
@@ -179,9 +179,9 @@ namespace audio {
 				void displayAlgo();
 				void updateAlgo(size_t _position);
 			public:
-				void generateDot(etk::FSNode& _node, int32_t _offset, int32_t _basicID, std::string& _nameIn, std::string& _nameOut, bool _reserseGraph);
+				void generateDot(etk::FSNode& _node, int32_t _offset, int32_t _basicID, etk::String& _nameIn, etk::String& _nameOut, bool _reserseGraph);
 				// TODO : Remove this one when we find a good way to do it ...
-				void generateDotProcess(etk::FSNode& _node, int32_t _offset, int32_t _basicID, std::string& _nameIn, std::string& _nameOut, bool _reserseGraph);
+				void generateDotProcess(etk::FSNode& _node, int32_t _offset, int32_t _basicID, etk::String& _nameIn, etk::String& _nameOut, bool _reserseGraph);
 		};
 	}
 }

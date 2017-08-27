@@ -16,16 +16,16 @@ namespace audio {
 		// data structure.
 		class VolumeElement {
 			public:
-				VolumeElement(const std::string& _name="ERROR-VOLUME-NAME", float _volumedB=0.0f) :
+				VolumeElement(const etk::String& _name="ERROR-VOLUME-NAME", float _volumedB=0.0f) :
 				  m_name(_name),
 				  m_volumedB(_volumedB),
 				  m_mute(false) {
 					
 				}
 			private:
-				std::string m_name;
+				etk::String m_name;
 			public:
-				std::string getName() const {
+				etk::String getName() const {
 					return m_name;
 				}
 			private:
@@ -54,7 +54,7 @@ namespace audio {
 		// TODO: Manage set volume
 		class Volume : public audio::drain::Algo {
 			private:
-				std::vector<ememory::SharedPtr<drain::VolumeElement> > m_volumeList;
+				etk::Vector<ememory::SharedPtr<drain::VolumeElement> > m_volumeList;
 				// for float input :
 				float m_volumeAppli;
 				// for integer input :
@@ -83,17 +83,17 @@ namespace audio {
 				                     void*& _output,
 				                     size_t& _outputNbChunk);
 			public:
-				virtual std::vector<audio::format> getFormatSupportedInput();
-				virtual std::vector<audio::format> getFormatSupportedOutput();
+				virtual etk::Vector<audio::format> getFormatSupportedInput();
+				virtual etk::Vector<audio::format> getFormatSupportedOutput();
 			public:
 				virtual void addVolumeStage(const ememory::SharedPtr<drain::VolumeElement>& _volume);
-				virtual bool setParameter(const std::string& _parameter, const std::string& _value);
-				virtual std::string getParameter(const std::string& _parameter) const;
-				virtual std::string getParameterProperty(const std::string& _parameter) const;
+				virtual bool setParameter(const etk::String& _parameter, const etk::String& _value);
+				virtual etk::String getParameter(const etk::String& _parameter) const;
+				virtual etk::String getParameterProperty(const etk::String& _parameter) const;
 			public:
 				void volumeChange();
 			public:
-				virtual std::string getDotDesc();
+				virtual etk::String getDotDesc();
 		};
 	}
 }

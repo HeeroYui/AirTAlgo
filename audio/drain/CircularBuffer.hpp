@@ -6,7 +6,7 @@
 #pragma once
 
 #include <etk/types.hpp>
-#include <vector>
+#include <etk/Vector.hpp>
 #include <chrono>
 #include <audio/Time.hpp>
 #include <audio/Duration.hpp>
@@ -40,7 +40,7 @@ namespace audio {
 		 */
 		class CircularBuffer {
 			private:
-				std::vector<uint8_t> m_data; //!< data pointer
+				etk::Vector<uint8_t> m_data; //!< data pointer
 				void* m_write; //!< write pointer
 				void* m_read; //!< read pointer
 				audio::Time m_timeRead; //!< current read time

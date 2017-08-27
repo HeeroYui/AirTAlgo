@@ -5,7 +5,7 @@
  */
 #pragma once
 
-#include <string>
+#include <etk/String.hpp>
 #include <audio/format.hpp>
 #include <audio/drain/channel.hpp>
 #include <chrono>
@@ -25,18 +25,18 @@ namespace audio {
 		 * @param[in] _name Name of the Algorithm.
 		 * @return Instanciate algorithm 
 		 */
-		drain::Algo* createAlgo(const std::string& _name);
+		drain::Algo* createAlgo(const etk::String& _name);
 		/**
 		 * @brief Add a Factory Algorithm in the internal List (static for all instance)
 		 * @param[in] _name Name of the Algorithm.
 		 * @param[in] _functor Function of the factory
 		 */
-		void addAlgoFactory(const std::string& _name, std::function<drain::Algo*(void)> _functor);
+		void addAlgoFactory(const etk::String& _name, std::function<drain::Algo*(void)> _functor);
 		/**
 		 * @brief Remove a Factory Algorithm in the internal List (static for all instance)
 		 * @param[in] _name Name of the Algorithm.
 		 */
-		void RmAlgoFactory(const std::string& _name);
+		void RmAlgoFactory(const etk::String& _name);
 	}
 }
 

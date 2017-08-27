@@ -59,16 +59,16 @@ void audio::drain::Algo::configurationChange() {
 	}
 }
 
-std::string audio::drain::Algo::getDotDesc() {
-	std::string out;
+etk::String audio::drain::Algo::getDotDesc() {
+	etk::String out;
 	if (m_input.getFormat() != m_output.getFormat()) {
-		out += "\\nformat: " + etk::to_string(m_input.getFormat()) + "->" + etk::to_string(m_output.getFormat());
+		out += "\\nformat: " + etk::toString(m_input.getFormat()) + "->" + etk::to_string(m_output.getFormat());
 	}
 	if (m_input.getMap() != m_output.getMap()) {
-		out += "\\nmap: " + etk::to_string(m_input.getMap()) + "->" + etk::to_string(m_output.getMap());
+		out += "\\nmap: " + etk::toString(m_input.getMap()) + "->" + etk::to_string(m_output.getMap());
 	}
 	if (m_input.getFrequency() != m_output.getFrequency()) {
-		out += "\\nsamplerate: " + etk::to_string(m_input.getFrequency()) + "->" + etk::to_string(m_output.getFrequency());
+		out += "\\nsamplerate: " + etk::toString(m_input.getFrequency()) + "->" + etk::to_string(m_output.getFrequency());
 	}
 	return out;
 }
@@ -116,7 +116,7 @@ void audio::drain::Algo::setStatusFunction(algoStatusFunction _newFunction) {
 	m_statusFunction = _newFunction;
 }
 
-void audio::drain::Algo::generateStatus(const std::string& _status) {
+void audio::drain::Algo::generateStatus(const etk::String& _status) {
 	if (m_statusFunction != nullptr) {
 		if (m_name.size() == 0) {
 			m_statusFunction(m_type, _status);

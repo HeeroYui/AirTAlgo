@@ -18,8 +18,8 @@ audio::drain::Volume::Volume() :
 void audio::drain::Volume::init() {
 	audio::drain::Algo::init();
 	m_type = "Volume";
-	m_supportedFormat.push_back(audio::format_int16);
-	m_supportedFormat.push_back(audio::format_int16_on_int32);
+	m_supportedFormat.pushBack(audio::format_int16);
+	m_supportedFormat.pushBack(audio::format_int16_on_int32);
 }
 
 ememory::SharedPtr<audio::drain::Volume> audio::drain::Volume::create() {
@@ -37,7 +37,7 @@ static int32_t neareastsss(float _val) {
 	while (_val > float(1<<out)) {
 		out++;
 	}
-	return std::min(16,out);
+	return etk::min(16,out);
 }
 
 
@@ -294,32 +294,32 @@ void audio::drain::Volume::volumeChange() {
 }
 
 
-std::vector<audio::format> audio::drain::Volume::getFormatSupportedInput() {
-	std::vector<audio::format> tmp;
+etk::Vector<audio::format> audio::drain::Volume::getFormatSupportedInput() {
+	etk::Vector<audio::format> tmp;
 	if (m_output.getFormat() == audio::format_float) {
-		tmp.push_back(audio::format_float);
+		tmp.pushBack(audio::format_float);
 	}
 	if (    m_output.getFormat() == audio::format_int16
 	     || m_output.getFormat() == audio::format_int16_on_int32
 	     || m_output.getFormat() == audio::format_int32) {
-		tmp.push_back(audio::format_int16);
-		tmp.push_back(audio::format_int16_on_int32);
-		tmp.push_back(audio::format_int32);
+		tmp.pushBack(audio::format_int16);
+		tmp.pushBack(audio::format_int16_on_int32);
+		tmp.pushBack(audio::format_int32);
 	}
 	return tmp;
 };
 
-std::vector<audio::format> audio::drain::Volume::getFormatSupportedOutput() {
-	std::vector<audio::format> tmp;
+etk::Vector<audio::format> audio::drain::Volume::getFormatSupportedOutput() {
+	etk::Vector<audio::format> tmp;
 	if (m_input.getFormat() == audio::format_float) {
-		tmp.push_back(audio::format_float);
+		tmp.pushBack(audio::format_float);
 	}
 	if (    m_input.getFormat() == audio::format_int16
 	     || m_input.getFormat() == audio::format_int16_on_int32
 	     || m_input.getFormat() == audio::format_int32) {
-		tmp.push_back(audio::format_int16);
-		tmp.push_back(audio::format_int16_on_int32);
-		tmp.push_back(audio::format_int32);
+		tmp.pushBack(audio::format_int16);
+		tmp.pushBack(audio::format_int16_on_int32);
+		tmp.pushBack(audio::format_int32);
 	}
 	return tmp;
 };
@@ -371,11 +371,11 @@ void audio::drain::Volume::addVolumeStage(const ememory::SharedPtr<audio::drain:
 			return;
 		}
 	}
-	m_volumeList.push_back(_volume);
+	m_volumeList.pushBack(_volume);
 	volumeChange();
 }
 
-bool audio::drain::Volume::setParameter(const std::string& _parameter, const std::string& _value) {
+bool audio::drain::Volume::setParameter(const etk::String& _parameter, const etk::String& _value) {
 	if (_parameter == "FLOW") {
 		// set Volume ...
 		for (auto &it : m_volumeList) {
@@ -403,7 +403,7 @@ bool audio::drain::Volume::setParameter(const std::string& _parameter, const std
 	return false;
 }
 
-std::string audio::drain::Volume::getParameter(const std::string& _parameter) const {
+etk::String audio::drain::Volume::getParameter(const etk::String& _parameter) const {
 	if (_parameter == "FLOW") {
 		// set Volume ...
 		for (auto &it : m_volumeList) {
@@ -411,7 +411,7 @@ std::string audio::drain::Volume::getParameter(const std::string& _parameter) co
 				continue;
 			}
 			if (it->getName() == "FLOW") {
-				return etk::to_string(it->getVolume()) + "dB";
+				return etk::toString(it->getVolume()) + "dB";
 			}
 		}
 	}
@@ -419,7 +419,7 @@ std::string audio::drain::Volume::getParameter(const std::string& _parameter) co
 	return "[ERROR]";
 }
 
-std::string audio::drain::Volume::getParameterProperty(const std::string& _parameter) const {
+etk::String audio::drain::Volume::getParameterProperty(const etk::String& _parameter) const {
 	if (_parameter == "FLOW") {
 		// set Volume ...
 		for (auto &it : m_volumeList) {
@@ -435,13 +435,13 @@ std::string audio::drain::Volume::getParameterProperty(const std::string& _param
 	return "[ERROR]";
 }
 
-std::string audio::drain::Volume::getDotDesc() {
-	std::string out = audio::drain::Algo::getDotDesc();
+etk::String audio::drain::Volume::getDotDesc() {
+	etk::String out = audio::drain::Algo::getDotDesc();
 	for (auto &it : m_volumeList) {
 		if (it == nullptr) {
 			continue;
 		}
-		out += "\\n" + it->getName() + "=" + etk::to_string(it->getVolume()) + "dB";
+		out += "\\n" + it->getName() + "=" + etk::toString(it->getVolume()) + "dB";
 		if (it->getMute() == true) {
 			out += " MUTE";
 		}

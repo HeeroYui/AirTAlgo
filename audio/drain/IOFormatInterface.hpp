@@ -5,8 +5,8 @@
  */
 #pragma once
 
-#include <string>
-#include <vector>
+#include <etk/String.hpp>
+#include <etk/Vector.hpp>
 #include <cstdint>
 #include <audio/format.hpp>
 #include <audio/channel.hpp>
@@ -21,8 +21,8 @@ namespace audio {
 		class IOFormatInterface {
 			public:
 				IOFormatInterface();
-				IOFormatInterface(std::vector<enum audio::channel> _map, enum audio::format _format=audio::format_int16, float _frequency=48000.0f);
-				void set(std::vector<enum audio::channel> _map, enum audio::format _format=audio::format_int16, float _frequency=48000.0f);
+				IOFormatInterface(etk::Vector<enum audio::channel> _map, enum audio::format _format=audio::format_int16, float _frequency=48000.0f);
+				void set(etk::Vector<enum audio::channel> _map, enum audio::format _format=audio::format_int16, float _frequency=48000.0f);
 			protected:
 				bool m_configured;
 			public:
@@ -42,18 +42,18 @@ namespace audio {
 				 */
 				void setFormat(enum audio::format _value);
 			protected:
-				std::vector<enum audio::channel> m_map; //!< input channel Map
+				etk::Vector<enum audio::channel> m_map; //!< input channel Map
 			public:
 				/**
 				 * @brief Get the algo channel Map.
 				 * @return the current channel Map.
 				 */
-				const std::vector<enum audio::channel>& getMap() const;
+				const etk::Vector<enum audio::channel>& getMap() const;
 				/**
 				 * @brief Set the algo channel Map.
 				 * @param[in] _value New channel Map.
 				 */
-				void setMap(const std::vector<enum audio::channel>& _value);
+				void setMap(const etk::Vector<enum audio::channel>& _value);
 			protected:
 				float m_frequency; //!< input Algo Format
 			public:
@@ -83,7 +83,7 @@ namespace audio {
 				 */
 				void setCallback(const std::function<void()>& _functor);
 		};
-		std::ostream& operator <<(std::ostream& _os, const audio::drain::IOFormatInterface& _obj);
+		etk::Stream& operator <<(etk::Stream& _os, const audio::drain::IOFormatInterface& _obj);
 	}
 }
 

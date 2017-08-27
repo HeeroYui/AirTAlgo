@@ -94,7 +94,7 @@ bool audio::drain::EndPointWrite::process(audio::Time& _time,
 	m_bufferUnderFlowSize = 0;
 	DRAIN_VERBOSE("Write " << _outputNbChunk << " chunks");
 	// check if we have enought data:
-	int32_t nbChunkToCopy = std::min(_inputNbChunk, m_buffer.getSize());
+	int32_t nbChunkToCopy = etk::min(_inputNbChunk, m_buffer.getSize());
 	if (nbChunkToCopy != _inputNbChunk) {
 		generateStatus("EPW_UNDERFLOW");
 	}

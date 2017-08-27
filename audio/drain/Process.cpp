@@ -4,8 +4,8 @@
  * @license MPL v2.0 (see license file)
  */
 
-#include <string>
-#include <vector>
+#include <etk/String.hpp>
+#include <etk/Vector.hpp>
 #include <cstdint>
 #include <audio/format.hpp>
 #include <audio/channel.hpp>
@@ -69,7 +69,7 @@ bool audio::drain::Process::pull(audio::Time& _time,
 		}
 	}
 	// copy only data availlable :
-	int32_t minByTeSize = std::min(m_data.size(), _nbChunk*_chunkSize);
+	int32_t minByTeSize = etk::min(m_data.size(), _nbChunk*_chunkSize);
 	if (minByTeSize >= 0) {
 		memcpy(_data, &m_data[0], minByTeSize);
 		m_data.erase(m_data.begin(), m_data.begin()+minByTeSize);
@@ -104,7 +104,7 @@ bool audio::drain::Process::process(audio::Time& _time,
 void audio::drain::Process::pushBack(ememory::SharedPtr<audio::drain::Algo> _algo) {
 	removeAlgoDynamic();
 	_algo->setStatusFunction(std::bind(&audio::drain::Process::generateStatus, this, std::placeholders::_1, std::placeholders::_2));
-	m_listAlgo.push_back(_algo);
+	m_listAlgo.pushBack(_algo);
 }
 
 void audio::drain::Process::pushFront(ememory::SharedPtr<audio::drain::Algo> _algo) {
@@ -113,8 +113,8 @@ void audio::drain::Process::pushFront(ememory::SharedPtr<audio::drain::Algo> _al
 	m_listAlgo.insert(m_listAlgo.begin(), _algo);
 }
 
-template<typename T> std::vector<T> getUnion(const std::vector<T>& _out, const std::vector<T>& _in) {
-	std::vector<T> out;
+template<typename T> etk::Vector<T> getUnion(const etk::Vector<T>& _out, const std::vector<T>& _in) {
+	etk::Vector<T> out;
 	if (_out.size() == 0) {
 		// Last is ok for all format
 		// ==> set the limit with the next element
@@ -126,7 +126,7 @@ template<typename T> std::vector<T> getUnion(const std::vector<T>& _out, const s
 		for (size_t ooo=0; ooo<_out.size(); ++ooo) {
 			for (size_t iii=0; iii<_in.size(); ++iii) {
 				if (_out[ooo] == _in[iii]) {
-					out.push_back(_out[ooo]);
+					out.pushBack(_out[ooo]);
 				}
 			}
 		}
@@ -173,54 +173,54 @@ void audio::drain::Process::updateAlgo(size_t _position) {
 	        )
 	   ) {
 		// step 1 : check frequency:
-		std::vector<float> freqOut;
-		std::vector<float> freqIn;
+		etk::Vector<float> freqOut;
+		etk::Vector<float> freqIn;
 		if (_position == 0) {
-			freqOut.push_back(m_inputConfig.getFrequency());
+			freqOut.pushBack(m_inputConfig.getFrequency());
 		} else {
 			freqOut = m_listAlgo[_position-1]->getFrequencySupportedOutput();
 		}
 		if (_position == m_listAlgo.size()) {
-			freqIn.push_back(m_outputConfig.getFrequency());
+			freqIn.pushBack(m_outputConfig.getFrequency());
 		} else {
 			freqIn = m_listAlgo[_position]->getFrequencySupportedInput();
 		}
-		std::vector<float> freq = getUnion<float>(freqOut, freqIn);
+		etk::Vector<float> freq = getUnion<float>(freqOut, freqIn);
 		DRAIN_VERBOSE("        freq out   :" << freqOut);
 		DRAIN_VERBOSE("        freq in    :" << freqIn);
 		DRAIN_VERBOSE("        freq union :" << freq);
 		
 		// step 2 : Check map:
-		std::vector<std::vector<audio::channel> > mapOut;
-		std::vector<std::vector<audio::channel> > mapIn;
+		etk::Vector<etk::Vector<audio::channel> > mapOut;
+		etk::Vector<etk::Vector<audio::channel> > mapIn;
 		if (_position == 0) {
-			mapOut.push_back(m_inputConfig.getMap());
+			mapOut.pushBack(m_inputConfig.getMap());
 		} else {
 			mapOut = m_listAlgo[_position-1]->getMapSupportedOutput();
 		}
 		if (_position == m_listAlgo.size()) {
-			mapIn.push_back(m_outputConfig.getMap());
+			mapIn.pushBack(m_outputConfig.getMap());
 		} else {
 			mapIn = m_listAlgo[_position]->getMapSupportedInput();
 		}
-		std::vector<std::vector<audio::channel> > map = getUnion<std::vector<audio::channel> >(mapOut, mapIn);
+		etk::Vector<etk::Vector<audio::channel> > map = getUnion<std::vector<audio::channel> >(mapOut, mapIn);
 		DRAIN_VERBOSE("        map out   :" << mapOut);
 		DRAIN_VERBOSE("        map in    :" << mapIn);
 		DRAIN_VERBOSE("        map union :" << map);
 		// step 3 : Check Format:
-		std::vector<audio::format> formatOut;
-		std::vector<audio::format> formatIn;
+		etk::Vector<audio::format> formatOut;
+		etk::Vector<audio::format> formatIn;
 		if (_position == 0) {
-			formatOut.push_back(m_inputConfig.getFormat());
+			formatOut.pushBack(m_inputConfig.getFormat());
 		} else {
 			formatOut = m_listAlgo[_position-1]->getFormatSupportedOutput();
 		}
 		if (_position == m_listAlgo.size()) {
-			formatIn.push_back(m_outputConfig.getFormat());
+			formatIn.pushBack(m_outputConfig.getFormat());
 		} else {
 			formatIn = m_listAlgo[_position]->getFormatSupportedInput();
 		}
-		std::vector<audio::format> format = getUnion<audio::format>(formatOut, formatIn);
+		etk::Vector<audio::format> format = getUnion<audio::format>(formatOut, formatIn);
 		DRAIN_VERBOSE("        format out   :" << formatOut);
 		DRAIN_VERBOSE("        format in    :" << formatIn);
 		DRAIN_VERBOSE("        format union :" << format);
@@ -439,7 +439,7 @@ bool audio::drain::Process::processIn(void* _inData,
 	return false;
 }
 
-static void link(etk::FSNode& _node, const std::string& _first, const std::string& _op, const std::string& _second, bool _isLink=true) {
+static void link(etk::FSNode& _node, const etk::String& _first, const etk::String& _op, const std::string& _second, bool _isLink=true) {
 	if (_op == "->") {
 		if (_isLink) {
 			_node << "			" << _first << " -> " << _second << ";\n";
@@ -459,8 +459,8 @@ static void link(etk::FSNode& _node, const std::string& _first, const std::strin
 void audio::drain::Process::generateDot(etk::FSNode& _node,
                                         int32_t _offset,
                                         int32_t _basicID,
-                                        std::string& _nameIn,
-                                        std::string& _nameOut,
+                                        etk::String& _nameIn,
+                                        etk::String& _nameOut,
                                         bool _reserseGraph) {
 	_node << "			subgraph clusterNode_" << _basicID << "_process {\n";
 	_node << "				label=\"Drain::Process" << (_reserseGraph?"_R":"_N") << "\";\n";
@@ -470,14 +470,14 @@ void audio::drain::Process::generateDot(etk::FSNode& _node,
 		// ----------------------
 		// --       STEP 1     --
 		// ----------------------
-		_nameIn = "INTERFACE_ALGO_" + etk::to_string(_basicID) + "_in";
-		_node << "				" << _nameIn << " [ label=\"format=" << etk::to_string(getInputConfig().getFormat())
+		_nameIn = "INTERFACE_ALGO_" + etk::toString(_basicID) + "_in";
+		_node << "				" << _nameIn << " [ label=\"format=" << etk::toString(getInputConfig().getFormat())
 		                                              << "\\n freq=" << getInputConfig().getFrequency()
-		                                        << "\\n channelMap=" << etk::to_string(getInputConfig().getMap()) << "\\n in\" ];\n";
+		                                        << "\\n channelMap=" << etk::toString(getInputConfig().getMap()) << "\\n in\" ];\n";
 		// ----------------------
 		// --       STEP 2     --
 		// ----------------------
-		std::string connectString = _nameIn;
+		etk::String connectString = _nameIn;
 		_node << "				node [shape=box];\n";
 		// ----------------------
 		// --       STEP 3     --
@@ -486,12 +486,12 @@ void audio::drain::Process::generateDot(etk::FSNode& _node,
 			if (m_listAlgo[iii] == nullptr) {
 				continue;
 			}
-			std::string connectStringSecond = "ALGO_" + etk::to_string(_basicID) + "__" + etk::to_string(iii);
+			etk::String connectStringSecond = "ALGO_" + etk::toString(_basicID) + "__" + etk::to_string(iii);
 			_node << "				" << connectStringSecond << " [label=\"ALGO\\ntype='" << m_listAlgo[iii]->getType() << "'";
 			if (m_listAlgo[iii]->getName() != "") {
 				_node << "\\nname='" << m_listAlgo[iii]->getName() << "'";
 			}
-			std::string tmpDesc = m_listAlgo[iii]->getDotDesc();
+			etk::String tmpDesc = m_listAlgo[iii]->getDotDesc();
 			if (tmpDesc.size() != 0) {
 				_node << tmpDesc;
 			}
@@ -506,10 +506,10 @@ void audio::drain::Process::generateDot(etk::FSNode& _node,
 		// ----------------------
 		// --       STEP 5     --
 		// ----------------------
-		_nameOut = "INTERFACE_ALGO_" + etk::to_string(_basicID) + "_out";
-		_node << "				" << _nameOut << " [ label=\"format=" << etk::to_string(getOutputConfig().getFormat())
+		_nameOut = "INTERFACE_ALGO_" + etk::toString(_basicID) + "_out";
+		_node << "				" << _nameOut << " [ label=\"format=" << etk::toString(getOutputConfig().getFormat())
 		                                               << "\\n freq=" << getOutputConfig().getFrequency()
-		                                         << "\\n channelMap=" << etk::to_string(getOutputConfig().getMap()) << "\\n out\" ];\n";
+		                                         << "\\n channelMap=" << etk::toString(getOutputConfig().getMap()) << "\\n out\" ];\n";
 		// ----------------------
 		// --       STEP 6     --
 		// ----------------------
@@ -518,14 +518,14 @@ void audio::drain::Process::generateDot(etk::FSNode& _node,
 		// ----------------------
 		// --       STEP 1     --
 		// ----------------------
-		_nameIn = "INTERFACE_ALGO_" + etk::to_string(_basicID) + "_out";
-		_node << "				" << _nameIn << " [ label=\"format=" << etk::to_string(getOutputConfig().getFormat())
+		_nameIn = "INTERFACE_ALGO_" + etk::toString(_basicID) + "_out";
+		_node << "				" << _nameIn << " [ label=\"format=" << etk::toString(getOutputConfig().getFormat())
 		                                              << "\\n freq=" << getOutputConfig().getFrequency()
-		                                        << "\\n channelMap=" << etk::to_string(getOutputConfig().getMap()) << "\\n out\" ];\n";
+		                                        << "\\n channelMap=" << etk::toString(getOutputConfig().getMap()) << "\\n out\" ];\n";
 		// ----------------------
 		// --       STEP 2     --
 		// ----------------------
-		std::string connectString = _nameIn;
+		etk::String connectString = _nameIn;
 		_node << "				node [shape=box];\n";
 		// ----------------------
 		// --       STEP 3     --
@@ -535,12 +535,12 @@ void audio::drain::Process::generateDot(etk::FSNode& _node,
 			if (m_listAlgo[iii] == nullptr) {
 				continue;
 			}
-			std::string connectStringSecond = "ALGO_" + etk::to_string(_basicID) + "__" + etk::to_string(iii);
+			etk::String connectStringSecond = "ALGO_" + etk::toString(_basicID) + "__" + etk::to_string(iii);
 			_node << "				" << connectStringSecond << " [label=\"ALGO\\ntype='" << m_listAlgo[iii]->getType() << "'";
 			if (m_listAlgo[iii]->getName() != "") {
 				_node << "\\nname='" << m_listAlgo[iii]->getName() << "'";
 			}
-			std::string tmpDesc = m_listAlgo[iii]->getDotDesc();
+			etk::String tmpDesc = m_listAlgo[iii]->getDotDesc();
 			if (tmpDesc.size() != 0) {
 				_node << tmpDesc;
 			}
@@ -557,10 +557,10 @@ void audio::drain::Process::generateDot(etk::FSNode& _node,
 		// ----------------------
 		// --       STEP 5     --
 		// ----------------------
-		_nameOut = "INTERFACE_ALGO_" + etk::to_string(_basicID) + "_in";
-		_node << "				" << _nameOut << " [ label=\"format=" << etk::to_string(getInputConfig().getFormat())
+		_nameOut = "INTERFACE_ALGO_" + etk::toString(_basicID) + "_in";
+		_node << "				" << _nameOut << " [ label=\"format=" << etk::toString(getInputConfig().getFormat())
 		                                               << "\\n freq=" << getInputConfig().getFrequency()
-		                                         << "\\n channelMap=" << etk::to_string(getInputConfig().getMap()) << "\\n in\" ];\n";
+		                                         << "\\n channelMap=" << etk::toString(getInputConfig().getMap()) << "\\n in\" ];\n";
 		// ----------------------
 		// --       STEP 6     --
 		// ----------------------
@@ -569,35 +569,35 @@ void audio::drain::Process::generateDot(etk::FSNode& _node,
 	_node << "			}\n";
 }
 
-void audio::drain::Process::generateDotProcess(etk::FSNode& _node, int32_t _offset, int32_t _basicID, std::string& _nameIn, std::string& _nameOut, bool _reserseGraph) {
+void audio::drain::Process::generateDotProcess(etk::FSNode& _node, int32_t _offset, int32_t _basicID, etk::String& _nameIn, etk::String& _nameOut, bool _reserseGraph) {
 	_node << "			subgraph clusterNode_" << _basicID << "_process {\n";
 	_node << "				label=\"Drain::Process" << (_reserseGraph?"_R":"_N") << "\";\n";
 	_node << "				node [shape=ellipse];\n";
 	
 	if (_reserseGraph == true) {
-		_nameIn = "INTERFACE_ALGO_" + etk::to_string(_basicID) + "_in";
-		_node << "				" << _nameIn << " [ label=\"format=" << etk::to_string(getInputConfig().getFormat())
+		_nameIn = "INTERFACE_ALGO_" + etk::toString(_basicID) + "_in";
+		_node << "				" << _nameIn << " [ label=\"format=" << etk::toString(getInputConfig().getFormat())
 		                                              << "\\n freq=" << getInputConfig().getFrequency()
-		                                        << "\\n channelMap=" << etk::to_string(getInputConfig().getMap()) << "\\n in\" ];\n";
+		                                        << "\\n channelMap=" << etk::toString(getInputConfig().getMap()) << "\\n in\" ];\n";
 	} else {
-		_nameIn = "INTERFACE_ALGO_" + etk::to_string(_basicID) + "_out";
-		_node << "				" << _nameIn << " [ label=\"format=" << etk::to_string(getOutputConfig().getFormat())
+		_nameIn = "INTERFACE_ALGO_" + etk::toString(_basicID) + "_out";
+		_node << "				" << _nameIn << " [ label=\"format=" << etk::toString(getOutputConfig().getFormat())
 		                                              << "\\n freq=" << getOutputConfig().getFrequency()
-		                                        << "\\n channelMap=" << etk::to_string(getOutputConfig().getMap()) << "\\n out\" ];\n";
+		                                        << "\\n channelMap=" << etk::toString(getOutputConfig().getMap()) << "\\n out\" ];\n";
 	}
-	std::string connectString = _nameIn;
+	etk::String connectString = _nameIn;
 	_node << "				node [shape=box];\n";
 	if (_reserseGraph == false) {
 		for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
 			if (m_listAlgo[iii] == nullptr) {
 				continue;
 			}
-			std::string connectStringSecond = "ALGO_" + etk::to_string(_basicID) + "__" + etk::to_string(iii);
+			etk::String connectStringSecond = "ALGO_" + etk::toString(_basicID) + "__" + etk::to_string(iii);
 			_node << "				" << connectStringSecond << " [label=\"ALGO\\ntype='" << m_listAlgo[iii]->getType() << "'";
 			if (m_listAlgo[iii]->getName() != "") {
 				_node << "\\nname='" << m_listAlgo[iii]->getName() << "'";
 			}
-			std::string tmpDesc = m_listAlgo[iii]->getDotDesc();
+			etk::String tmpDesc = m_listAlgo[iii]->getDotDesc();
 			if (tmpDesc.size() != 0) {
 				_node << tmpDesc;
 			}
@@ -611,12 +611,12 @@ void audio::drain::Process::generateDotProcess(etk::FSNode& _node, int32_t _offs
 			if (m_listAlgo[iii] == nullptr) {
 				continue;
 			}
-			std::string connectStringSecond = "ALGO_" + etk::to_string(_basicID) + "__" + etk::to_string(iii);
+			etk::String connectStringSecond = "ALGO_" + etk::toString(_basicID) + "__" + etk::to_string(iii);
 			_node << "				" << connectStringSecond << " [label=\"ALGO\\ntype='" << m_listAlgo[iii]->getType() << "'";
 			if (m_listAlgo[iii]->getName() != "") {
 				_node << "\\nname='" << m_listAlgo[iii]->getName() << "'";
 			}
-			std::string tmpDesc = m_listAlgo[iii]->getDotDesc();
+			etk::String tmpDesc = m_listAlgo[iii]->getDotDesc();
 			if (tmpDesc.size() != 0) {
 				_node << tmpDesc;
 			}
@@ -627,15 +627,15 @@ void audio::drain::Process::generateDotProcess(etk::FSNode& _node, int32_t _offs
 	}
 	_node << "				node [shape=ellipse];\n";
 	if (_reserseGraph == true) {
-		_nameOut = "INTERFACE_ALGO_" + etk::to_string(_basicID) + "_out";
-		_node << "				" << _nameOut << " [ label=\"format=" << etk::to_string(getOutputConfig().getFormat())
+		_nameOut = "INTERFACE_ALGO_" + etk::toString(_basicID) + "_out";
+		_node << "				" << _nameOut << " [ label=\"format=" << etk::toString(getOutputConfig().getFormat())
 		                                               << "\\n freq=" << getOutputConfig().getFrequency()
-		                                         << "\\n channelMap=" << etk::to_string(getOutputConfig().getMap()) << "\\n out\" ];\n";
+		                                         << "\\n channelMap=" << etk::toString(getOutputConfig().getMap()) << "\\n out\" ];\n";
 	} else {
-		_nameOut = "INTERFACE_ALGO_" + etk::to_string(_basicID) + "_in";
-		_node << "				" << _nameOut << " [ label=\"format=" << etk::to_string(getInputConfig().getFormat())
+		_nameOut = "INTERFACE_ALGO_" + etk::toString(_basicID) + "_in";
+		_node << "				" << _nameOut << " [ label=\"format=" << etk::toString(getInputConfig().getFormat())
 		                                               << "\\n freq=" << getInputConfig().getFrequency()
-		                                         << "\\n channelMap=" << etk::to_string(getInputConfig().getMap()) << "\\n in\" ];\n";
+		                                         << "\\n channelMap=" << etk::toString(getInputConfig().getMap()) << "\\n in\" ];\n";
 	}
 	if (_reserseGraph == false) {
 		link(_node, connectString,                                      "->", _nameOut);
@@ -646,7 +646,7 @@ void audio::drain::Process::generateDotProcess(etk::FSNode& _node, int32_t _offs
 }
 
 
-void audio::drain::Process::generateStatus(const std::string& _origin, const std::string& _status) {
+void audio::drain::Process::generateStatus(const etk::String& _origin, const etk::String& _status) {
 	if (m_statusFunction != nullptr) {
 		m_statusFunction(_origin, _status);
 	}

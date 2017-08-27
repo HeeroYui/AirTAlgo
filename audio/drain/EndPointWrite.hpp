@@ -16,7 +16,7 @@ namespace audio {
 		                              size_t _nbChunk,
 		                              enum audio::format _format,
 		                              uint32_t _frequency,
-		                              const std::vector<audio::channel>& _map)> playbackFunctionWrite;
+		                              const etk::Vector<audio::channel>& _map)> playbackFunctionWrite;
 		class EndPointWrite : public EndPoint {
 			private:
 				audio::drain::CircularBuffer m_buffer;

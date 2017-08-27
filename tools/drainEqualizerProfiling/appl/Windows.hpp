@@ -59,9 +59,9 @@ namespace appl {
 			void onCallbackStartFloat();
 		protected:
 			int32_t m_sampleRate;
-			std::vector<int32_t> m_listSampleRate;
+			etk::Vector<int32_t> m_listSampleRate;
 			
-			std::vector<float> m_listGain;
+			etk::Vector<float> m_listGain;
 			ememory::SharedPtr<audio::drain::Equalizer> createEqualizer(enum audio::format _format = audio::format_float);
 	};
 }
