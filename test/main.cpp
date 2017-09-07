@@ -6,7 +6,7 @@
 
 #include <etk/etk.hpp>
 #include <test-debug/debug.hpp>
-#include <gtest/gtest.h>
+#include <etest/etest.hpp>
 
 int main(int _argc, const char** _argv) {
 	// init Google test :

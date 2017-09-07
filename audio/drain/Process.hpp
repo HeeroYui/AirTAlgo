@@ -17,7 +17,7 @@
 
 namespace audio {
 	namespace drain{
-		typedef std::function<void (const etk::String& _origin, const etk::String& _status)> statusFunction;
+		typedef etk::Function<void (const etk::String& _origin, const etk::String& _status)> statusFunction;
 		class Process {
 			protected:
 				etk::Vector<int8_t> m_data; //!< temporary overlap output buffer (change size of the output data)

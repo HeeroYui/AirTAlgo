@@ -31,7 +31,7 @@ namespace audio {
 		 * @param[in] _name Name of the Algorithm.
 		 * @param[in] _functor Function of the factory
 		 */
-		void addAlgoFactory(const etk::String& _name, std::function<drain::Algo*(void)> _functor);
+		void addAlgoFactory(const etk::String& _name, etk::Function<drain::Algo*(void)> _functor);
 		/**
 		 * @brief Remove a Factory Algorithm in the internal List (static for all instance)
 		 * @param[in] _name Name of the Algorithm.

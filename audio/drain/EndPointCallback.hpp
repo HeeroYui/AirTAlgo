@@ -10,13 +10,13 @@
 
 namespace audio {
 	namespace drain {
-		typedef std::function<void (void* _data,
+		typedef etk::Function<void (void* _data,
 		                              const audio::Time& _playTime,
 		                              size_t _nbChunk,
 		                              enum audio::format _format,
 		                              uint32_t _frequency,
 		                              const etk::Vector<audio::channel>& _map)> playbackFunction;
-		typedef std::function<void (const void* _data,
+		typedef etk::Function<void (const void* _data,
 		                              const audio::Time& _readTime,
 		                              size_t _nbChunk,
 		                              enum audio::format _format,

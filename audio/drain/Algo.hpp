@@ -27,7 +27,7 @@ namespace audio {
 	 * @brief audio-algo library namespace
 	 */
 	namespace drain{
-		typedef std::function<void (const etk::String& _origin, const etk::String& _status)> algoStatusFunction;
+		typedef etk::Function<void (const etk::String& _origin, const etk::String& _status)> algoStatusFunction;
 		class Algo : public ememory::EnableSharedFromThis<Algo> {
 			private:
 				etk::String m_name;

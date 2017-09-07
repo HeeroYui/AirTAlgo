@@ -109,7 +109,7 @@ void audio::drain::IOFormatInterface::configurationChange() {
 		m_ioChangeFunctor();
 	}
 }
-void audio::drain::IOFormatInterface::setCallback(const std::function<void()>& _functor) {
+void audio::drain::IOFormatInterface::setCallback(const etk::Function<void()>& _functor) {
 	m_ioChangeFunctor = _functor;
 }
 

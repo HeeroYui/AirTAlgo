@@ -7,12 +7,12 @@
 
 #include <audio/drain/EndPoint.hpp>
 #include <functional>
-#include <mutex>
+#include <ethread/Mutex.hpp>
 #include <audio/drain/CircularBuffer.hpp>
 
 namespace audio {
 	namespace drain{
-		typedef std::function<void (const audio::Time& _time,
+		typedef etk::Function<void (const audio::Time& _time,
 		                              size_t _nbChunk,
 		                              enum audio::format _format,
 		                              uint32_t _frequency,
@@ -21,7 +21,7 @@ namespace audio {
 			private:
 				audio::drain::CircularBuffer m_buffer;
 				playbackFunctionWrite m_function;
-				std::mutex m_mutex;
+				ethread::Mutex m_mutex;
 			protected:
 				/**
 				 * @brief Constructor

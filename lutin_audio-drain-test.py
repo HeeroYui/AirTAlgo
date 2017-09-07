@@ -35,7 +35,7 @@ def configure(target, my_module):
 		])
 	my_module.add_depend([
 	    'audio-drain',
-	    'gtest',
+	    'etest',
 	    'etk',
 	    'test-debug'
 	    ])
