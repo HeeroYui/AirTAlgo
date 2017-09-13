@@ -70,7 +70,7 @@ bool audio::drain::EndPointWrite::process(audio::Time& _time,
 	// set output pointer:
 	_outputNbChunk = m_outputData.size()/(m_formatSize*m_output.getMap().size());
 	_output = &m_outputData[0];
-	std::unique_lock<ethread::Mutex> lock(m_mutex);
+	ethread::UniqueLock lock(m_mutex);
 	// check if data in the tmpBuffer
 	if (m_buffer.getSize() == 0) {
 		if (m_bufferUnderFlowSize == 0) {
@@ -110,7 +110,7 @@ bool audio::drain::EndPointWrite::process(audio::Time& _time,
 }
 
 void audio::drain::EndPointWrite::write(const void* _value, size_t _nbChunk) {
-	std::unique_lock<ethread::Mutex> lock(m_mutex);
+	ethread::UniqueLock lock(m_mutex);
 	DRAIN_VERBOSE("[ASYNC] Write data : " << _nbChunk << " chunks" << " ==> " << m_output);
 	int32_t nbOverflow = m_buffer.write(_value, _nbChunk);
 	if (nbOverflow > 0) {

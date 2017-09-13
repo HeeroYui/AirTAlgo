@@ -4,7 +4,7 @@
  * @license MPL v2.0 (see license file)
  */
 #include <audio/drain/Algo.hpp>
-#include <functional>
+#include <etk/Function.hpp>
 #include "debug.hpp"
 
 audio::drain::Algo::Algo() :

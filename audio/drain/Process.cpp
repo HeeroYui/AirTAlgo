@@ -439,7 +439,7 @@ bool audio::drain::Process::processIn(void* _inData,
 	return false;
 }
 
-static void link(etk::FSNode& _node, const etk::String& _first, const etk::String& _op, const std::string& _second, bool _isLink=true) {
+static void link(etk::FSNode& _node, const etk::String& _first, const etk::String& _op, const etk::String& _second, bool _isLink=true) {
 	if (_op == "->") {
 		if (_isLink) {
 			_node << "			" << _first << " -> " << _second << ";\n";

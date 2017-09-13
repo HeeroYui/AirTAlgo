@@ -83,17 +83,17 @@ void appl::widget::DisplayFrequency::onRegenerateDisplay() {
 	bool displayLog = true;
 	for (size_t kkk=0; kkk<m_data.size(); kkk++) {
 		for (size_t iii=0; iii<m_data[kkk].size(); ++iii) {
-			if (std::abs(m_data[kkk][iii].second) != std::numeric_limits<float>::infinity()) {
+			if (etk::abs(m_data[kkk][iii].second) != std::numeric_limits<float>::infinity()) {
 				m_gainMax = etk::max(m_gainMax, m_data[kkk][iii].second);
 				m_gainMin = etk::min(m_gainMin, m_data[kkk][iii].second);
 			}
 			if (displayLog == false) {
-				if (std::abs(m_data[kkk][iii].first) != std::numeric_limits<float>::infinity()) {
+				if (etk::abs(m_data[kkk][iii].first) != std::numeric_limits<float>::infinity()) {
 					m_frequencyMax = etk::max(m_frequencyMax, m_data[kkk][iii].first);
 					m_frequencyMin = etk::min(m_frequencyMin, m_data[kkk][iii].first);
 				}
 			} else {
-				if (std::abs(m_data[kkk][iii].first) != std::numeric_limits<float>::infinity()) {
+				if (etk::abs(m_data[kkk][iii].first) != std::numeric_limits<float>::infinity()) {
 					if (m_data[kkk][iii].first == 0) {
 						continue;
 					}

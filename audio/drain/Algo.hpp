@@ -11,7 +11,7 @@
 #include <audio/format.hpp>
 #include <audio/channel.hpp>
 #include <chrono>
-#include <functional>
+#include <etk/Function.hpp>
 #include <ememory/memory.hpp>
 #include "AutoLogInOut.hpp"
 #include "IOFormatInterface.hpp"

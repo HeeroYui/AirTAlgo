@@ -6,7 +6,7 @@
 #pragma once
 
 #include <audio/drain/EndPoint.hpp>
-#include <functional>
+#include <etk/Function.hpp>
 #include <ethread/Mutex.hpp>
 #include <audio/drain/CircularBuffer.hpp>
 
