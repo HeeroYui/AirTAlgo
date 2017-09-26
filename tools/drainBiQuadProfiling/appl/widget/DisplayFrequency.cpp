@@ -83,23 +83,23 @@ void appl::widget::DisplayFrequency::onRegenerateDisplay() {
 	bool displayLog = true;
 	for (size_t kkk=0; kkk<m_data.size(); kkk++) {
 		for (size_t iii=0; iii<m_data[kkk].size(); ++iii) {
-			if (etk::abs(m_data[kkk][iii].second) != std::numeric_limits<float>::infinity()) {
+			if (isinf(etk::abs(m_data[kkk][iii].second)) == false) {
 				m_gainMax = etk::max(m_gainMax, m_data[kkk][iii].second);
 				m_gainMin = etk::min(m_gainMin, m_data[kkk][iii].second);
 			}
 			if (displayLog == false) {
-				if (etk::abs(m_data[kkk][iii].first) != std::numeric_limits<float>::infinity()) {
+				if (isinf(etk::abs(m_data[kkk][iii].first)) == false) {
 					m_frequencyMax = etk::max(m_frequencyMax, m_data[kkk][iii].first);
 					m_frequencyMin = etk::min(m_frequencyMin, m_data[kkk][iii].first);
 				}
 			} else {
-				if (etk::abs(m_data[kkk][iii].first) != std::numeric_limits<float>::infinity()) {
+				if (isinf(etk::abs(m_data[kkk][iii].first)) == false) {
 					if (m_data[kkk][iii].first == 0) {
 						continue;
 					}
-					m_frequencyMax = etk::max(m_frequencyMax, std::log(m_data[kkk][iii].first));
-					m_frequencyMin = etk::min(m_frequencyMin, std::log(m_data[kkk][iii].first));
-					APPL_INFO("plop " << m_data[kkk][iii].first << " " << std::log(m_data[kkk][iii].first));
+					m_frequencyMax = etk::max(m_frequencyMax, etk::log(m_data[kkk][iii].first));
+					m_frequencyMin = etk::min(m_frequencyMin, etk::log(m_data[kkk][iii].first));
+					APPL_INFO("plop " << m_data[kkk][iii].first << " " << etk::log(m_data[kkk][iii].first));
 				}
 			}
 		}
@@ -137,12 +137,12 @@ void appl::widget::DisplayFrequency::onRegenerateDisplay() {
 			}
 		} else {
 			m_draw.setPos(   m_borderSize
-			               + vec2(ratioX*(std::log(m_data[kkk][0].first) - m_frequencyMin),
+			               + vec2(ratioX*(etk::log(m_data[kkk][0].first) - m_frequencyMin),
 			                      ratioY*(m_data[kkk][0].second - m_gainMin)));
 			float baseX = 0;
 			for (size_t iii=1; iii<m_data[kkk].size(); ++iii) {
 				m_draw.lineTo(   m_borderSize
-				               + vec2(ratioX*(std::log(m_data[kkk][iii].first) - m_frequencyMin),
+				               + vec2(ratioX*(etk::log(m_data[kkk][iii].first) - m_frequencyMin),
 				                      ratioY*(m_data[kkk][iii].second - m_gainMin)));
 			}
 		}

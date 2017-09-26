@@ -5,7 +5,6 @@
  */
 
 #include <audio/drain/Resampler.hpp>
-#include <iostream>
 #include <audio/drain/debug.hpp>
 
 audio::drain::Resampler::Resampler() :
@@ -146,12 +145,12 @@ bool audio::drain::Resampler::process(audio::Time& _time,
 		_outputNbChunk = nbChunkOutput;
 		DRAIN_VERBOSE("                               process chunk=" << nbChunkInput << " out=" << nbChunkOutput);
 		audio::Duration outTime(0, (int64_t(_outputNbChunk)*1000000000LL) / int64_t(m_output.getFrequency()));
-		DRAIN_VERBOSE("convert " << _inputNbChunk << " ==> " << _outputNbChunk << "    " << inTime.count() << " => " << outTime.count());
+		DRAIN_VERBOSE("convert " << _inputNbChunk << " ==> " << _outputNbChunk << "    " << inTime << " => " << outTime);
 		// correct time :
 		m_residualTimeInResampler -= outTime;
 		/*
-		if (m_residualTimeInResampler.count() < 0) {
-			DRAIN_TODO("manage this case ... residual time in resampler : " << m_residualTimeInResampler.count() << "ns");
+		if (m_residualTimeInResampler.get() < 0) {
+			DRAIN_TODO("manage this case ... residual time in resampler : " << m_residualTimeInResampler << "ns");
 		}
 		*/
 		return true;

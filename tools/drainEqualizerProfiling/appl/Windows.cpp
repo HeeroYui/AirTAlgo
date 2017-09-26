@@ -212,7 +212,7 @@ void appl::Windows::onCallbackStart16() {
 		for (size_t iii=800; iii<outputNbChunk-200; ++iii) {
 			value = etk::max(value, output[iii]);
 		}
-		gain = 20.0 * std::log10(double(value)/32000.0);
+		gain = 20.0 * etk::log10(double(value)/32000.0);
 		APPL_VERBOSE("LEVEL " << iii << " out = " << value << " % : " << gain);
 		pratic.pushBack(etk::makePair<float, float>(float(freq),float(gain)));
 	}
@@ -253,7 +253,7 @@ void appl::Windows::onCallbackStartFloat() {
 		for (size_t iii=800; iii<outputNbChunk-200; ++iii) {
 			value = etk::max(value, output[iii]);
 		}
-		gain = 20.0 * std::log10(double(value)/1.0);
+		gain = 20.0 * etk::log10(double(value)/1.0);
 		APPL_VERBOSE("LEVEL " << iii << " out = " << value << " % : " << gain);
 		pratic.pushBack(etk::makePair<float, float>(float(freq),float(gain)));
 	}

@@ -7,11 +7,10 @@
 
 #include <etk/String.hpp>
 #include <etk/Vector.hpp>
-#include <cstdint>
 #include <audio/format.hpp>
 #include <audio/channel.hpp>
 #include <audio/drain/Algo.hpp>
-#include <chrono>
+#include <echrono/Steady.hpp>
 #include <ememory/memory.hpp>
 #include <etk/os/FSNode.hpp>
 
@@ -105,10 +104,10 @@ namespace audio {
 				size_t size() {
 					return m_listAlgo.size();
 				}
-				etk::Vector<ememory::SharedPtr<drain::Algo> >::iterator begin() {
+				etk::Vector<ememory::SharedPtr<drain::Algo>>::Iterator begin() {
 					return m_listAlgo.begin();
 				}
-				etk::Vector<ememory::SharedPtr<drain::Algo> >::iterator end() {
+				etk::Vector<ememory::SharedPtr<drain::Algo>>::Iterator end() {
 					return m_listAlgo.end();
 				}
 				ememory::SharedPtr<drain::Algo> operator[](int32_t _id) {

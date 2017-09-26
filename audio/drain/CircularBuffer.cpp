@@ -75,9 +75,9 @@ void audio::drain::CircularBuffer::setCapacity(size_t _capacity, size_t _chunkSi
 	m_write = &m_data[0];
 }
 
-void audio::drain::CircularBuffer::setCapacity(std::chrono::milliseconds _capacity, size_t _chunkSize, uint32_t _frequency) {
-	uint32_t nbSampleNeeded = _frequency*_capacity.count()/1000;
-	DRAIN_DEBUG("buffer setCapacity(" << _capacity.count() << "ms ," << _chunkSize << ")");
+void audio::drain::CircularBuffer::setCapacity(echrono::Duration _capacity, size_t _chunkSize, uint32_t _frequency) {
+	uint32_t nbSampleNeeded = _frequency*_capacity.get()/1000000000LL;
+	DRAIN_DEBUG("buffer setCapacity(" << _capacity << " ," << _chunkSize << ")");
 	setCapacity(nbSampleNeeded, _chunkSize, _frequency);
 }
 
@@ -191,11 +191,11 @@ size_t audio::drain::CircularBuffer::read(void* _data, size_t _nbChunk, const au
 	if (0 < m_size) {
 		// check the time of the read :
 		audio::Duration deltaTime = m_timeRead - _time;
-		if (deltaTime.count() == 0) {
+		if (deltaTime.get() == 0) {
 			// nothing to do ==> just copy data ...
-		} else if (deltaTime.count() > 0) {
+		} else if (deltaTime.get() > 0) {
 			// Add empty sample in the output buffer ...
-			size_t nbSampleEmpty = m_frequency*deltaTime.count()/100000000;
+			size_t nbSampleEmpty = m_frequency*deltaTime.get()/1000000000LL;
 			nbSampleEmpty = etk::min(nbSampleEmpty, _nbChunk);
 			DRAIN_WARNING("add Empty sample in the output buffer " << nbSampleEmpty << " / " << _nbChunk);
 			memset(_data, 0, nbSampleEmpty * m_sizeChunk);
@@ -212,7 +212,7 @@ size_t audio::drain::CircularBuffer::read(void* _data, size_t _nbChunk, const au
 			DRAIN_VERBOSE("crop nb sample : m_size=" << m_size << " _nbChunk=" << _nbChunk);
 			_nbChunk = m_size;
 		}
-		m_timeRead += std::chrono::microseconds(_nbChunk*1000000/m_frequency);
+		m_timeRead += echrono::microseconds(_nbChunk*1000000/m_frequency);
 		if (usedSizeBeforeEnd >= _nbChunk) {
 			// all Data will be copy
 			memcpy(_data, m_read, _nbChunk * m_sizeChunk);
@@ -257,11 +257,11 @@ void audio::drain::CircularBuffer::setReadPosition(const audio::Time& _time) {
 	if (0 < m_size) {
 		// check the time of the read :
 		audio::Duration deltaTime = _time - m_timeRead;
-		size_t nbSampleToRemove = int64_t(m_frequency)*int64_t(deltaTime.count())/1000000000LL;
+		size_t nbSampleToRemove = int64_t(m_frequency)*int64_t(deltaTime.get())/1000000000LL;
 		nbSampleToRemove = etk::min(nbSampleToRemove, m_size);
 		DRAIN_VERBOSE("Remove sample in the buffer " << nbSampleToRemove << " / " << m_size);
 		audio::Duration updateTime(0,(int64_t(nbSampleToRemove)*1000000000LL)/int64_t(m_frequency));
-		DRAIN_VERBOSE(" add time : " << updateTime.count() << "ns / " << deltaTime.count() << "ns");
+		DRAIN_VERBOSE(" add time : " << updateTime << " / " << deltaTime);
 		if (usedSizeBeforeEnd >= nbSampleToRemove) {
 			usedSizeBeforeEnd -= nbSampleToRemove;
 			m_size -= nbSampleToRemove;

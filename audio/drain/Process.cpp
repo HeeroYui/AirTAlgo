@@ -6,7 +6,6 @@
 
 #include <etk/String.hpp>
 #include <etk/Vector.hpp>
-#include <cstdint>
 #include <audio/format.hpp>
 #include <audio/channel.hpp>
 #include <audio/drain/Process.hpp>
@@ -39,24 +38,25 @@ bool audio::drain::Process::pull(audio::Time& _time,
                                  void* _data,
                                  size_t _nbChunk,
                                  size_t _chunkSize) {
-	while(m_data.size()<_nbChunk*_chunkSize) {
-		void* in = NULL;
+	//DRAIN_DEBUG("Execute:");
+	while(m_data.size() < _nbChunk*_chunkSize) {
+		void* in = nullptr;
 		size_t nbChunkIn = _nbChunk - m_data.size()/_chunkSize;
-		void* out = NULL;
+		void* out = nullptr;
 		size_t nbChunkOut;
 		if (nbChunkIn < 128) {
 			nbChunkIn = 128;
 		}
 		// TODO : maybe remove this for input data ...
 		for (int32_t iii=m_listAlgo.size()-1; iii >=0; --iii) {
-			if (m_listAlgo[iii] != NULL) {
+			if (m_listAlgo[iii] != nullptr) {
 				nbChunkIn = m_listAlgo[iii]->needInputData(nbChunkIn);
 			}
 		}
 		if (nbChunkIn < 32) {
 			nbChunkIn = 32;
 		}
-		
+		//DRAIN_DEBUG("    process:" << _time << " in=" << in << " nbChunkIn=" << nbChunkIn << " out=" << out << " nbChunkOut=" << nbChunkOut);
 		// get data from the upstream
 		process(_time, in, nbChunkIn, out, nbChunkOut);
 		if (nbChunkOut > 0) {
@@ -91,7 +91,7 @@ bool audio::drain::Process::process(audio::Time& _time,
 	}
 	DRAIN_VERBOSE(" process : " << m_listAlgo.size() << " algos nbChunk=" << _inNbChunk);
 	for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
-		//std::cout << "            Algo " << iii+1 << "/" << m_listAlgo.size() << std::endl;
+		DRAIN_VERBOSE("            Algo " << iii+1 << "/" << m_listAlgo.size());
 		if (m_listAlgo[iii] != nullptr) {
 			m_listAlgo[iii]->process(_time, _inData, _inNbChunk, _outData, _outNbChunk);
 			_inData = _outData;
@@ -103,18 +103,19 @@ bool audio::drain::Process::process(audio::Time& _time,
 
 void audio::drain::Process::pushBack(ememory::SharedPtr<audio::drain::Algo> _algo) {
 	removeAlgoDynamic();
-	_algo->setStatusFunction(std::bind(&audio::drain::Process::generateStatus, this, std::placeholders::_1, std::placeholders::_2));
+	_algo->setStatusFunction([=](const etk::String& _origin, const etk::String& _status) { generateStatus(_origin, _status);});
 	m_listAlgo.pushBack(_algo);
 }
 
 void audio::drain::Process::pushFront(ememory::SharedPtr<audio::drain::Algo> _algo) {
 	removeAlgoDynamic();
-	_algo->setStatusFunction(std::bind(&audio::drain::Process::generateStatus, this, std::placeholders::_1, std::placeholders::_2));
-	m_listAlgo.insert(m_listAlgo.begin(), _algo);
+	_algo->setStatusFunction([=](const etk::String& _origin, const etk::String& _status) { generateStatus(_origin, _status);});
+	m_listAlgo.pushFront(_algo);
 }
 
-template<typename T> etk::Vector<T> getUnion(const etk::Vector<T>& _out, const std::vector<T>& _in) {
-	etk::Vector<T> out;
+template<typename DRAIN_TYPE>
+etk::Vector<DRAIN_TYPE> getUnion(const etk::Vector<DRAIN_TYPE>& _out, const etk::Vector<DRAIN_TYPE>& _in) {
+	etk::Vector<DRAIN_TYPE> out;
 	if (_out.size() == 0) {
 		// Last is ok for all format
 		// ==> set the limit with the next element
@@ -203,7 +204,7 @@ void audio::drain::Process::updateAlgo(size_t _position) {
 		} else {
 			mapIn = m_listAlgo[_position]->getMapSupportedInput();
 		}
-		etk::Vector<etk::Vector<audio::channel> > map = getUnion<std::vector<audio::channel> >(mapOut, mapIn);
+		etk::Vector<etk::Vector<audio::channel> > map = getUnion<etk::Vector<audio::channel> >(mapOut, mapIn);
 		DRAIN_VERBOSE("        map out   :" << mapOut);
 		DRAIN_VERBOSE("        map in    :" << mapIn);
 		DRAIN_VERBOSE("        map union :" << map);
@@ -339,7 +340,7 @@ void audio::drain::Process::updateAlgo(size_t _position) {
 				algo->setInputFormat(out);
 				out.setFormat(audio::format_int16);
 				algo->setOutputFormat(out);
-				algo->setStatusFunction(std::bind(&audio::drain::Process::generateStatus, this, std::placeholders::_1, std::placeholders::_2));
+				algo->setStatusFunction([=](const etk::String& _origin, const etk::String& _status) { generateStatus(_origin, _status);});
 				m_listAlgo.insert(m_listAlgo.begin()+_position, algo);
 				DRAIN_VERBOSE("convert " << out.getFormat() << " -> " << in.getFormat());
 				_position++;
@@ -350,7 +351,7 @@ void audio::drain::Process::updateAlgo(size_t _position) {
 			algo->setInputFormat(out);
 			out.setFrequency(in.getFrequency());
 			algo->setOutputFormat(out);
-			algo->setStatusFunction(std::bind(&audio::drain::Process::generateStatus, this, std::placeholders::_1, std::placeholders::_2));
+			algo->setStatusFunction([=](const etk::String& _origin, const etk::String& _status) { generateStatus(_origin, _status);});
 			m_listAlgo.insert(m_listAlgo.begin()+_position, algo);
 			DRAIN_VERBOSE("convert " << out.getFrequency() << " -> " << in.getFrequency());
 			out.setFrequency(in.getFrequency());
@@ -363,7 +364,7 @@ void audio::drain::Process::updateAlgo(size_t _position) {
 			algo->setInputFormat(out);
 			out.setMap(in.getMap());
 			algo->setOutputFormat(out);
-			algo->setStatusFunction(std::bind(&audio::drain::Process::generateStatus, this, std::placeholders::_1, std::placeholders::_2));
+			algo->setStatusFunction([=](const etk::String& _origin, const etk::String& _status) { generateStatus(_origin, _status);});
 			m_listAlgo.insert(m_listAlgo.begin()+_position, algo);
 			DRAIN_VERBOSE("convert " << out.getMap() << " -> " << in.getMap());
 			_position++;
@@ -375,7 +376,7 @@ void audio::drain::Process::updateAlgo(size_t _position) {
 			algo->setInputFormat(out);
 			out.setFormat(in.getFormat());
 			algo->setOutputFormat(out);
-			algo->setStatusFunction(std::bind(&audio::drain::Process::generateStatus, this, std::placeholders::_1, std::placeholders::_2));
+			algo->setStatusFunction([=](const etk::String& _origin, const etk::String& _status) { generateStatus(_origin, _status);});
 			m_listAlgo.insert(m_listAlgo.begin()+_position, algo);
 			DRAIN_VERBOSE("convert " << out.getFormat() << " -> " << in.getFormat());
 			_position++;
@@ -486,7 +487,7 @@ void audio::drain::Process::generateDot(etk::FSNode& _node,
 			if (m_listAlgo[iii] == nullptr) {
 				continue;
 			}
-			etk::String connectStringSecond = "ALGO_" + etk::toString(_basicID) + "__" + etk::to_string(iii);
+			etk::String connectStringSecond = "ALGO_" + etk::toString(_basicID) + "__" + etk::toString(iii);
 			_node << "				" << connectStringSecond << " [label=\"ALGO\\ntype='" << m_listAlgo[iii]->getType() << "'";
 			if (m_listAlgo[iii]->getName() != "") {
 				_node << "\\nname='" << m_listAlgo[iii]->getName() << "'";
@@ -535,7 +536,7 @@ void audio::drain::Process::generateDot(etk::FSNode& _node,
 			if (m_listAlgo[iii] == nullptr) {
 				continue;
 			}
-			etk::String connectStringSecond = "ALGO_" + etk::toString(_basicID) + "__" + etk::to_string(iii);
+			etk::String connectStringSecond = "ALGO_" + etk::toString(_basicID) + "__" + etk::toString(iii);
 			_node << "				" << connectStringSecond << " [label=\"ALGO\\ntype='" << m_listAlgo[iii]->getType() << "'";
 			if (m_listAlgo[iii]->getName() != "") {
 				_node << "\\nname='" << m_listAlgo[iii]->getName() << "'";
@@ -592,7 +593,7 @@ void audio::drain::Process::generateDotProcess(etk::FSNode& _node, int32_t _offs
 			if (m_listAlgo[iii] == nullptr) {
 				continue;
 			}
-			etk::String connectStringSecond = "ALGO_" + etk::toString(_basicID) + "__" + etk::to_string(iii);
+			etk::String connectStringSecond = "ALGO_" + etk::toString(_basicID) + "__" + etk::toString(iii);
 			_node << "				" << connectStringSecond << " [label=\"ALGO\\ntype='" << m_listAlgo[iii]->getType() << "'";
 			if (m_listAlgo[iii]->getName() != "") {
 				_node << "\\nname='" << m_listAlgo[iii]->getName() << "'";
@@ -611,7 +612,7 @@ void audio::drain::Process::generateDotProcess(etk::FSNode& _node, int32_t _offs
 			if (m_listAlgo[iii] == nullptr) {
 				continue;
 			}
-			etk::String connectStringSecond = "ALGO_" + etk::toString(_basicID) + "__" + etk::to_string(iii);
+			etk::String connectStringSecond = "ALGO_" + etk::toString(_basicID) + "__" + etk::toString(iii);
 			_node << "				" << connectStringSecond << " [label=\"ALGO\\ntype='" << m_listAlgo[iii]->getType() << "'";
 			if (m_listAlgo[iii]->getName() != "") {
 				_node << "\\nname='" << m_listAlgo[iii]->getName() << "'";

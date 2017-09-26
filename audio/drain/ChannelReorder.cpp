@@ -5,7 +5,6 @@
  */
 
 #include <audio/drain/ChannelReorder.hpp>
-#include <iostream>
 #include "debug.hpp"
 
 

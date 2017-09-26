@@ -7,10 +7,9 @@
 
 #include <etk/String.hpp>
 #include <etk/Vector.hpp>
-#include <cstdint>
 #include <audio/format.hpp>
 #include <audio/channel.hpp>
-#include <chrono>
+#include <echrono/Steady.hpp>
 #include <etk/Function.hpp>
 #include <ememory/memory.hpp>
 #include "AutoLogInOut.hpp"

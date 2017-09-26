@@ -45,7 +45,7 @@ namespace audio {
 					m_function = _function;
 				}
 			protected:
-				std::chrono::microseconds m_bufferSizeMicroseconds; // 0 if m_bufferSizeChunk != 0
+				echrono::microseconds m_bufferSizeMicroseconds; // 0 if m_bufferSizeChunk != 0
 				size_t m_bufferSizeChunk; // 0 if m_bufferSizeMicroseconds != 0
 				size_t m_bufferUnderFlowSize; //!< Limit display of underflow in the write callback
 			public:
@@ -58,7 +58,7 @@ namespace audio {
 				 * @brief Set buffer size size of the buffer with the stored time in µs
 				 * @param[in] _time Time in microsecond of the buffer
 				 */
-				virtual void setBufferSize(const std::chrono::microseconds& _time);
+				virtual void setBufferSize(const echrono::microseconds& _time);
 				/**
 				 * @brief get buffer size in chunk number
 				 * @return Number of chunk that can be written in the buffer
@@ -68,7 +68,7 @@ namespace audio {
 				 * @brief Set buffer size size of the buffer with the stored time in µs
 				 * @return Time in microsecond that can be written in the buffer
 				 */
-				virtual std::chrono::microseconds getBufferSizeMicrosecond();
+				virtual echrono::microseconds getBufferSizeMicrosecond();
 				/**
 				 * @brief Get buffer size filled in chunk number
 				 * @return Number of chunk in the buffer (that might be read/write)
@@ -78,7 +78,7 @@ namespace audio {
 				 * @brief Set buffer size size of the buffer with the stored time in µs
 				 * @return Time in microsecond of the buffer (that might be read/write)
 				 */
-				virtual std::chrono::microseconds getBufferFillSizeMicrosecond();
+				virtual echrono::microseconds getBufferFillSizeMicrosecond();
 		};
 	}
 }

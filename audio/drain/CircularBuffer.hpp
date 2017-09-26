@@ -7,7 +7,7 @@
 
 #include <etk/types.hpp>
 #include <etk/Vector.hpp>
-#include <chrono>
+#include <echrono/Steady.hpp>
 #include <audio/Time.hpp>
 #include <audio/Duration.hpp>
 
@@ -71,14 +71,11 @@ namespace audio {
 				void setCapacity(size_t _capacity, size_t _chunkSize, uint32_t _frequency);
 				/**
 				 * @brief set the capacity of the circular buffer.
-				 * @param[in] _capacity time in millisecond stored in the buffer.
+				 * @param[in] _capacity Duration stored in the buffer.
 				 * @param[in] _chunkSize Size of one chunk.
 				 * @param[in] _frequency Frequency of the buffer
 				 */
-				void setCapacity(std::chrono::milliseconds _capacity, size_t _chunkSize, uint32_t _frequency);
-				void setCapacity(std::chrono::microseconds _capacity, size_t _chunkSize, uint32_t _frequency) {
-					setCapacity(std::chrono::milliseconds(_capacity.count()/1000), _chunkSize, _frequency);
-				}
+				void setCapacity(echrono::Duration _capacity, size_t _chunkSize, uint32_t _frequency);
 				/**
 				 * @brief get free size of the buffer.
 				 * @return Number of free chunk.

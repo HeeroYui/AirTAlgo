@@ -5,7 +5,6 @@
  */
 
 #include <audio/drain/FormatUpdate.hpp>
-#include <iostream>
 #include <audio/drain/debug.hpp>
 
 #ifndef INT16_MAX

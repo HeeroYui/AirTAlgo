@@ -8,7 +8,7 @@
 #include <etk/String.hpp>
 #include <audio/format.hpp>
 #include <audio/drain/channel.hpp>
-#include <chrono>
+#include <echrono/Steady.hpp>
 
 namespace audio {
 	namespace drain {

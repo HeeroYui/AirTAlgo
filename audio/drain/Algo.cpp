@@ -17,8 +17,8 @@ audio::drain::Algo::Algo() :
 
 void audio::drain::Algo::init() {
 	// set notification callback :
-	m_input.setCallback(std::bind(&audio::drain::Algo::configurationChangeLocal, this));
-	m_output.setCallback(std::bind(&audio::drain::Algo::configurationChangeLocal, this));
+	m_input.setCallback([=](){audio::drain::Algo::configurationChangeLocal();});
+	m_output.setCallback([=](){audio::drain::Algo::configurationChangeLocal();});
 	// first configure ==> update the internal parameters
 	configurationChange();
 }
@@ -62,13 +62,13 @@ void audio::drain::Algo::configurationChange() {
 etk::String audio::drain::Algo::getDotDesc() {
 	etk::String out;
 	if (m_input.getFormat() != m_output.getFormat()) {
-		out += "\\nformat: " + etk::toString(m_input.getFormat()) + "->" + etk::to_string(m_output.getFormat());
+		out += "\\nformat: " + etk::toString(m_input.getFormat()) + "->" + etk::toString(m_output.getFormat());
 	}
 	if (m_input.getMap() != m_output.getMap()) {
-		out += "\\nmap: " + etk::toString(m_input.getMap()) + "->" + etk::to_string(m_output.getMap());
+		out += "\\nmap: " + etk::toString(m_input.getMap()) + "->" + etk::toString(m_output.getMap());
 	}
 	if (m_input.getFrequency() != m_output.getFrequency()) {
-		out += "\\nsamplerate: " + etk::toString(m_input.getFrequency()) + "->" + etk::to_string(m_output.getFrequency());
+		out += "\\nsamplerate: " + etk::toString(m_input.getFrequency()) + "->" + etk::toString(m_output.getFrequency());
 	}
 	return out;
 }

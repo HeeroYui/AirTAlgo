@@ -5,8 +5,9 @@
  */
 
 #include <audio/drain/Volume.hpp>
-#include <iostream>
-#include <cmath>
+extern "C" {
+	#include <math.h>
+}
 #include <audio/drain/debug.hpp>
 
 audio::drain::Volume::Volume() :
@@ -180,7 +181,7 @@ void audio::drain::Volume::volumeChange() {
 	#if (defined(__STDCPP_LLVM__) || __cplusplus < 201103L)
 		m_volumeAppli = pow(10.0f, volumedB/20.0f);
 	#else
-		m_volumeAppli = std::pow(10.0f, volumedB/20.0f);
+		m_volumeAppli = etk::pow(10.0f, volumedB/20.0f);
 	#endif
 	switch (m_input.getFormat()) {
 		default:

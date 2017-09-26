@@ -43,7 +43,7 @@ void audio::drain::EndPointRead::setBufferSize(size_t _nbChunk) {
 	DRAIN_TODO("...");
 }
 
-void audio::drain::EndPointRead::setBufferSize(const std::chrono::microseconds& _time) {
+void audio::drain::EndPointRead::setBufferSize(const echrono::microseconds& _time) {
 	DRAIN_TODO("...");
 }
 
@@ -52,9 +52,9 @@ size_t audio::drain::EndPointRead::getBufferSize() {
 	return 0;
 }
 
-std::chrono::microseconds audio::drain::EndPointRead::getBufferSizeMicrosecond() {
+echrono::microseconds audio::drain::EndPointRead::getBufferSizeMicrosecond() {
 	DRAIN_TODO("...");
-	return std::chrono::microseconds(0);
+	return echrono::microseconds(0);
 }
 
 size_t audio::drain::EndPointRead::getBufferFillSize() {
@@ -62,8 +62,8 @@ size_t audio::drain::EndPointRead::getBufferFillSize() {
 	return 0;
 }
 
-std::chrono::microseconds audio::drain::EndPointRead::getBufferFillSizeMicrosecond() {
+echrono::microseconds audio::drain::EndPointRead::getBufferFillSizeMicrosecond() {
 	DRAIN_TODO("...");
-	return std::chrono::microseconds(0);
+	return echrono::microseconds(0);
 }
 

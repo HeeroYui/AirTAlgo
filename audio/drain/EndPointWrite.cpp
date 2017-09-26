@@ -37,7 +37,7 @@ void audio::drain::EndPointWrite::configurationChange() {
 	// update the buffer size ...
 	if (    audio::getFormatBytes(m_output.getFormat())*m_output.getMap().size() != 0
 	     && m_output.getFrequency() != 0) {
-		if (std::chrono::microseconds(0) != m_bufferSizeMicroseconds) {
+		if (m_bufferSizeMicroseconds.get() != 0) {
 			m_buffer.setCapacity(m_bufferSizeMicroseconds,
 			                     audio::getFormatBytes(m_output.getFormat())*m_output.getMap().size(),
 			                     m_output.getFrequency());
@@ -119,7 +119,7 @@ void audio::drain::EndPointWrite::write(const void* _value, size_t _nbChunk) {
 }
 
 void audio::drain::EndPointWrite::setBufferSize(size_t _nbChunk) {
-	m_bufferSizeMicroseconds = std::chrono::microseconds(0);
+	m_bufferSizeMicroseconds = echrono::microseconds(0);
 	m_bufferSizeChunk = _nbChunk;
 	if (    audio::getFormatBytes(m_output.getFormat())*m_output.getMap().size() != 0
 	     && m_output.getFrequency() != 0) {
@@ -129,7 +129,7 @@ void audio::drain::EndPointWrite::setBufferSize(size_t _nbChunk) {
 	}
 }
 
-void audio::drain::EndPointWrite::setBufferSize(const std::chrono::microseconds& _time) {
+void audio::drain::EndPointWrite::setBufferSize(const echrono::microseconds& _time) {
 	m_bufferSizeMicroseconds = _time;
 	m_bufferSizeChunk = 0;
 	m_buffer.setCapacity(_time,
@@ -141,20 +141,20 @@ size_t audio::drain::EndPointWrite::getBufferSize() {
 	if (m_bufferSizeChunk != 0) {
 		return m_bufferSizeChunk;
 	}
-	return (int64_t(m_output.getFrequency())*m_bufferSizeMicroseconds.count())/1000000LL;
+	return (int64_t(m_output.getFrequency())*m_bufferSizeMicroseconds.get())/1000000000LL;
 }
 
-std::chrono::microseconds audio::drain::EndPointWrite::getBufferSizeMicrosecond() {
-	if (m_bufferSizeMicroseconds != std::chrono::microseconds(0) ) {
+echrono::microseconds audio::drain::EndPointWrite::getBufferSizeMicrosecond() {
+	if (m_bufferSizeMicroseconds.get() != 0) {
 		return m_bufferSizeMicroseconds;
 	}
-	return std::chrono::microseconds(m_bufferSizeChunk*1000000LL/int64_t(m_output.getFrequency()));
+	return echrono::microseconds(m_bufferSizeChunk*1000000LL/int64_t(m_output.getFrequency()));
 }
 
 size_t audio::drain::EndPointWrite::getBufferFillSize() {
 	return m_buffer.getSize()/(audio::getFormatBytes(m_output.getFormat())*m_output.getMap().size());
 }
 
-std::chrono::microseconds audio::drain::EndPointWrite::getBufferFillSizeMicrosecond() {
-	return std::chrono::microseconds(getBufferFillSize()*1000000LL/int64_t(m_output.getFrequency()));
+echrono::microseconds audio::drain::EndPointWrite::getBufferFillSizeMicrosecond() {
+	return echrono::microseconds(getBufferFillSize()*1000000LL/int64_t(m_output.getFrequency()));
 }
