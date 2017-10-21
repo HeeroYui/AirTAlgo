@@ -26,13 +26,13 @@ void audio::drain::EndPointCallback::init(recordFunction _callback) {
 }
 
 ememory::SharedPtr<audio::drain::EndPointCallback> audio::drain::EndPointCallback::create(playbackFunction _callback) {
-	ememory::SharedPtr<audio::drain::EndPointCallback> tmp(new audio::drain::EndPointCallback());
+	ememory::SharedPtr<audio::drain::EndPointCallback> tmp(ETK_NEW(audio::drain::EndPointCallback));
 	tmp->init(_callback);
 	return tmp;
 }
 
 ememory::SharedPtr<audio::drain::EndPointCallback> audio::drain::EndPointCallback::create(recordFunction _callback) {
-	ememory::SharedPtr<audio::drain::EndPointCallback> tmp(new audio::drain::EndPointCallback());
+	ememory::SharedPtr<audio::drain::EndPointCallback> tmp(ETK_NEW(audio::drain::EndPointCallback));
 	tmp->init(_callback);
 	return tmp;
 }

@@ -24,7 +24,7 @@ void audio::drain::Resampler::init() {
 }
 
 ememory::SharedPtr<audio::drain::Resampler> audio::drain::Resampler::create() {
-	ememory::SharedPtr<audio::drain::Resampler> tmp(new audio::drain::Resampler());
+	ememory::SharedPtr<audio::drain::Resampler> tmp(ETK_NEW(audio::drain::Resampler));
 	tmp->init();
 	return tmp;
 }

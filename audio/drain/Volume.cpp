@@ -24,7 +24,7 @@ void audio::drain::Volume::init() {
 }
 
 ememory::SharedPtr<audio::drain::Volume> audio::drain::Volume::create() {
-	ememory::SharedPtr<audio::drain::Volume> tmp(new audio::drain::Volume());
+	ememory::SharedPtr<audio::drain::Volume> tmp(ETK_NEW(audio::drain::Volume));
 	tmp->init();
 	return tmp;
 }

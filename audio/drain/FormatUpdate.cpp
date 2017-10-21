@@ -133,7 +133,7 @@ void audio::drain::FormatUpdate::init() {
 }
 
 ememory::SharedPtr<audio::drain::FormatUpdate> audio::drain::FormatUpdate::create() {
-	ememory::SharedPtr<audio::drain::FormatUpdate> tmp(new audio::drain::FormatUpdate());
+	ememory::SharedPtr<audio::drain::FormatUpdate> tmp(ETK_NEW(audio::drain::FormatUpdate));
 	tmp->init();
 	return tmp;
 }

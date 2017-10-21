@@ -27,7 +27,7 @@ void audio::drain::EndPointWrite::init() {
 }
 
 ememory::SharedPtr<audio::drain::EndPointWrite> audio::drain::EndPointWrite::create() {
-	ememory::SharedPtr<audio::drain::EndPointWrite> tmp(new audio::drain::EndPointWrite());
+	ememory::SharedPtr<audio::drain::EndPointWrite> tmp(ETK_NEW(audio::drain::EndPointWrite));
 	tmp->init();
 	return tmp;
 }

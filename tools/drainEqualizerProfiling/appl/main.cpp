@@ -52,7 +52,7 @@ class MainApplication : public ewol::context::Application {
  * @return std IO
  */
 int main(int _argc, const char *_argv[]) {
-	return ewol::run(new MainApplication(), _argc, _argv);
+	return ewol::run(ETK_NEW(MainApplication), _argc, _argv);
 }
 
 
