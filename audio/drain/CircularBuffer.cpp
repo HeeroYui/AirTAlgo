@@ -9,8 +9,8 @@
 
 audio::drain::CircularBuffer::CircularBuffer(const audio::drain::CircularBuffer& _obj) :
   m_data(),
-  m_write(nullptr),
-  m_read(nullptr),
+  m_write(null),
+  m_read(null),
   m_timeRead(),
   m_capacity(0),
   m_sizeChunk(0),
@@ -27,8 +27,8 @@ audio::drain::CircularBuffer& audio::drain::CircularBuffer::operator=(const audi
 
 audio::drain::CircularBuffer::CircularBuffer() :
   m_data(),
-  m_write(nullptr),
-  m_read(nullptr),
+  m_write(null),
+  m_read(null),
   m_timeRead(),
   m_capacity(0),
   m_sizeChunk(0),
@@ -38,8 +38,8 @@ audio::drain::CircularBuffer::CircularBuffer() :
 
 audio::drain::CircularBuffer::~CircularBuffer() {
 	m_data.clear();
-	m_read = nullptr;
-	m_write = nullptr;
+	m_read = null;
+	m_write = null;
 }
 
 void audio::drain::CircularBuffer::setCapacity(size_t _capacity, size_t _chunkSize, uint32_t _frequency) {
@@ -58,8 +58,8 @@ void audio::drain::CircularBuffer::setCapacity(size_t _capacity, size_t _chunkSi
 		_chunkSize = 8;
 	}
 	m_data.clear();
-	m_write = nullptr;
-	m_read = nullptr;
+	m_write = null;
+	m_read = null;
 	m_frequency = _frequency;
 	m_capacity = _capacity;
 	m_sizeChunk = _chunkSize;

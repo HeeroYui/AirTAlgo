@@ -123,7 +123,7 @@ static void convert__float__to__int32(void* _input, void* _output, size_t _nbSam
 
 
 audio::drain::FormatUpdate::FormatUpdate() :
-  m_functionConvert(nullptr) {
+  m_functionConvert(null) {
 	
 }
 
@@ -251,7 +251,7 @@ bool audio::drain::FormatUpdate::process(audio::Time& _time,
 		_outputNbChunk = _inputNbChunk;
 		return true;
 	}
-	if (_input == nullptr) {
+	if (_input == null) {
 		_output = &(m_outputData[0]);
 		_outputNbChunk = 0;
 		DRAIN_ERROR("null pointer input ... ");
@@ -260,7 +260,7 @@ bool audio::drain::FormatUpdate::process(audio::Time& _time,
 	_outputNbChunk = _inputNbChunk;
 	m_outputData.resize(_outputNbChunk*m_input.getMap().size()*m_formatSize);
 	_output = &(m_outputData[0]);
-	if (m_functionConvert == nullptr) {
+	if (m_functionConvert == null) {
 		DRAIN_ERROR("null function ptr");
 		return false;
 	}

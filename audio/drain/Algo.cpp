@@ -117,7 +117,7 @@ void audio::drain::Algo::setStatusFunction(algoStatusFunction _newFunction) {
 }
 
 void audio::drain::Algo::generateStatus(const etk::String& _status) {
-	if (m_statusFunction != nullptr) {
+	if (m_statusFunction != null) {
 		if (m_name.size() == 0) {
 			m_statusFunction(m_type, _status);
 		} else {

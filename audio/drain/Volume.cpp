@@ -12,7 +12,7 @@ extern "C" {
 
 audio::drain::Volume::Volume() :
   m_volumeAppli(1.0f),
-  m_functionConvert(nullptr) {
+  m_functionConvert(null) {
 	
 }
 
@@ -162,7 +162,7 @@ void audio::drain::Volume::volumeChange() {
 	float volumedB = 0.0f;
 	bool mute = false;
 	for (size_t iii=0; iii<m_volumeList.size(); ++iii) {
-		if (m_volumeList[iii] == nullptr) {
+		if (m_volumeList[iii] == null) {
 			continue;
 		}
 		if (m_volumeList[iii]->getMute() == true) {
@@ -338,7 +338,7 @@ bool audio::drain::Volume::process(audio::Time& _time,
 		_outputNbChunk = _inputNbChunk;
 		return true;
 	}
-	if (_input == nullptr) {
+	if (_input == null) {
 		_output = &(m_outputData[0]);
 		_outputNbChunk = 0;
 		DRAIN_ERROR("null pointer input ... ");
@@ -347,7 +347,7 @@ bool audio::drain::Volume::process(audio::Time& _time,
 	_outputNbChunk = _inputNbChunk;
 	m_outputData.resize(_outputNbChunk*m_input.getMap().size()*m_formatSize);
 	_output = &(m_outputData[0]);
-	if (m_functionConvert == nullptr) {
+	if (m_functionConvert == null) {
 		DRAIN_ERROR("null function ptr");
 		return false;
 	}
@@ -357,11 +357,11 @@ bool audio::drain::Volume::process(audio::Time& _time,
 }
 
 void audio::drain::Volume::addVolumeStage(const ememory::SharedPtr<audio::drain::VolumeElement>& _volume) {
-	if (_volume == nullptr) {
+	if (_volume == null) {
 		return;
 	}
 	for (size_t iii=0; iii<m_volumeList.size(); ++iii) {
-		if (m_volumeList[iii] == nullptr) {
+		if (m_volumeList[iii] == null) {
 			continue;
 		}
 		if (m_volumeList[iii] == _volume) {
@@ -380,7 +380,7 @@ bool audio::drain::Volume::setParameter(const etk::String& _parameter, const etk
 	if (_parameter == "FLOW") {
 		// set Volume ...
 		for (auto &it : m_volumeList) {
-			if (it == nullptr) {
+			if (it == null) {
 				continue;
 			}
 			if (it->getName() == "FLOW") {
@@ -408,7 +408,7 @@ etk::String audio::drain::Volume::getParameter(const etk::String& _parameter) co
 	if (_parameter == "FLOW") {
 		// set Volume ...
 		for (auto &it : m_volumeList) {
-			if (it == nullptr) {
+			if (it == null) {
 				continue;
 			}
 			if (it->getName() == "FLOW") {
@@ -424,7 +424,7 @@ etk::String audio::drain::Volume::getParameterProperty(const etk::String& _param
 	if (_parameter == "FLOW") {
 		// set Volume ...
 		for (auto &it : m_volumeList) {
-			if (it == nullptr) {
+			if (it == null) {
 				continue;
 			}
 			if (it->getName() == "FLOW") {
@@ -439,7 +439,7 @@ etk::String audio::drain::Volume::getParameterProperty(const etk::String& _param
 etk::String audio::drain::Volume::getDotDesc() {
 	etk::String out = audio::drain::Algo::getDotDesc();
 	for (auto &it : m_volumeList) {
-		if (it == nullptr) {
+		if (it == null) {
 			continue;
 		}
 		out += "\\n" + it->getName() + "=" + etk::toString(it->getVolume()) + "dB";

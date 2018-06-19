@@ -56,7 +56,7 @@ bool audio::drain::ChannelReorder::process(audio::Time& _time,
 		_output = _input;
 		return true;
 	}
-	if (_input == nullptr) {
+	if (_input == null) {
 		_output = &(m_outputData[0]);
 		_outputNbChunk = 0;
 		DRAIN_ERROR("null pointer input ... ");

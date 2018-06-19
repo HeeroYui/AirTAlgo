@@ -9,8 +9,8 @@
 
 
 audio::drain::EndPointCallback::EndPointCallback() :
-  m_outputFunction(nullptr),
-  m_inputFunction(nullptr) {
+  m_outputFunction(null),
+  m_inputFunction(null) {
 	
 }
 
@@ -50,7 +50,7 @@ bool audio::drain::EndPointCallback::process(audio::Time& _time,
                                              void*& _output,
                                              size_t& _outputNbChunk){
 	audio::drain::AutoLogInOut tmpLog("EndPointCallback");
-	if (m_inputFunction != nullptr) {
+	if (m_inputFunction != null) {
 		// Call user ...
 		DRAIN_VERBOSE("call user set " << _inputNbChunk << "*" << m_input.getMap().size());
 		m_inputFunction(_input,
@@ -61,7 +61,7 @@ bool audio::drain::EndPointCallback::process(audio::Time& _time,
 		                m_output.getMap());
 		return true;
 	}
-	if (m_outputFunction != nullptr) {
+	if (m_outputFunction != null) {
 		// update buffer size ...
 		m_outputData.resize(_inputNbChunk*m_output.getMap().size()*m_formatSize);
 		// clean output to prevent errors ...

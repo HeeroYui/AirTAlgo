@@ -16,18 +16,18 @@
 
 define APPL_SAVE_FILE_MACRO(type,fileName,dataPointer,nbElement) \
 	do { \
-		static FILE *pointerOnFile = nullptr; \
+		static FILE *pointerOnFile = null; \
 		static bool errorOpen = false; \
-		if (pointerOnFile == nullptr) { \
+		if (pointerOnFile == null) { \
 			APPL_WARNING("open file '" << fileName << "' type=" << #type); \
 			pointerOnFile = fopen(fileName,"w"); \
 			if (    errorOpen == false \
-			     && pointerOnFile == nullptr) { \
+			     && pointerOnFile == null) { \
 				APPL_ERROR("ERROR OPEN file ... '" << fileName << "' type=" << #type); \
 				errorOpen=true; \
 			} \
 		} \
-		if (pointerOnFile != nullptr) { \
+		if (pointerOnFile != null) { \
 			fwrite((dataPointer), sizeof(type), (nbElement), pointerOnFile); \
 			/* fflush(pointerOnFile);*/ \
 		} \
@@ -67,7 +67,7 @@ void appl::Windows::init() {
 	setTitle("Drain Equalizer Profiler");
 	
 	m_gui = ewol::widget::Composer::create(ewol::widget::Composer::file, "DATA:gui.xml");
-	if (m_gui != nullptr) {
+	if (m_gui != null) {
 		setSubWidget(m_gui);
 	}
 	subBind(ewol::widget::Button, "sample-rate-low", signalPressed, sharedFromThis(), &appl::Windows::onCallbackSampleRateLow);
@@ -265,8 +265,8 @@ void appl::Windows::onCallbackStart16() {
 			}
 		}
 		// process
-		int16_t* output = nullptr;
-		void* outputVoid = nullptr;
+		int16_t* output = null;
+		void* outputVoid = null;
 		size_t outputNbChunk = 0;
 		APPL_SAVE_FILE_MACRO(int16_t,"aaa_test_INPUT_16.raw",&data[0],data.size());
 		bq.process(&data[0], &data[0], data.size(), 1, 1);

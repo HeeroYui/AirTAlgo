@@ -105,7 +105,7 @@ void audio::drain::IOFormatInterface::setFrequency(float _value) {
 }
 
 void audio::drain::IOFormatInterface::configurationChange() {
-	if (m_ioChangeFunctor != nullptr) {
+	if (m_ioChangeFunctor != null) {
 		m_ioChangeFunctor();
 	}
 }

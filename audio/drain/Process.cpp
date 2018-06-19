@@ -27,7 +27,7 @@ audio::drain::Process::~Process() {
 bool audio::drain::Process::push(audio::Time& _time,
                                  void* _data,
                                  size_t _nbChunk) {
-	void* out = nullptr;
+	void* out = null;
 	size_t nbChunkOut;
 	DRAIN_VERBOSE("        Process push");
 	process(_time, _data, _nbChunk, out, nbChunkOut);
@@ -40,16 +40,16 @@ bool audio::drain::Process::pull(audio::Time& _time,
                                  size_t _chunkSize) {
 	//DRAIN_DEBUG("Execute:");
 	while(m_data.size() < _nbChunk*_chunkSize) {
-		void* in = nullptr;
+		void* in = null;
 		size_t nbChunkIn = _nbChunk - m_data.size()/_chunkSize;
-		void* out = nullptr;
+		void* out = null;
 		size_t nbChunkOut;
 		if (nbChunkIn < 128) {
 			nbChunkIn = 128;
 		}
 		// TODO : maybe remove this for input data ...
 		for (int32_t iii=m_listAlgo.size()-1; iii >=0; --iii) {
-			if (m_listAlgo[iii] != nullptr) {
+			if (m_listAlgo[iii] != null) {
 				nbChunkIn = m_listAlgo[iii]->needInputData(nbChunkIn);
 			}
 		}
@@ -92,7 +92,7 @@ bool audio::drain::Process::process(audio::Time& _time,
 	DRAIN_VERBOSE(" process : " << m_listAlgo.size() << " algos nbChunk=" << _inNbChunk);
 	for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
 		DRAIN_VERBOSE("            Algo " << iii+1 << "/" << m_listAlgo.size());
-		if (m_listAlgo[iii] != nullptr) {
+		if (m_listAlgo[iii] != null) {
 			m_listAlgo[iii]->process(_time, _inData, _inNbChunk, _outData, _outNbChunk);
 			_inData = _outData;
 			_inNbChunk = _outNbChunk;
@@ -427,7 +427,7 @@ bool audio::drain::Process::processIn(void* _inData,
                                       size_t _inNbChunk,
                                       void* _outData,
                                       size_t _outNbChunk){
-	void* outData = nullptr;
+	void* outData = null;
 	size_t outSize = 0;
 	bool error = process(_inData, _inNbChunk, outData, outSize);
 	if (outSize != _outNbChunk) {
@@ -484,7 +484,7 @@ void audio::drain::Process::generateDot(etk::FSNode& _node,
 		// --       STEP 3     --
 		// ----------------------
 		for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
-			if (m_listAlgo[iii] == nullptr) {
+			if (m_listAlgo[iii] == null) {
 				continue;
 			}
 			etk::String connectStringSecond = "ALGO_" + etk::toString(_basicID) + "__" + etk::toString(iii);
@@ -533,7 +533,7 @@ void audio::drain::Process::generateDot(etk::FSNode& _node,
 		// ----------------------
 		for (int32_t iii=m_listAlgo.size()-1; iii>=0; --iii) {
 		//for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
-			if (m_listAlgo[iii] == nullptr) {
+			if (m_listAlgo[iii] == null) {
 				continue;
 			}
 			etk::String connectStringSecond = "ALGO_" + etk::toString(_basicID) + "__" + etk::toString(iii);
@@ -590,7 +590,7 @@ void audio::drain::Process::generateDotProcess(etk::FSNode& _node, int32_t _offs
 	_node << "				node [shape=box];\n";
 	if (_reserseGraph == false) {
 		for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
-			if (m_listAlgo[iii] == nullptr) {
+			if (m_listAlgo[iii] == null) {
 				continue;
 			}
 			etk::String connectStringSecond = "ALGO_" + etk::toString(_basicID) + "__" + etk::toString(iii);
@@ -609,7 +609,7 @@ void audio::drain::Process::generateDotProcess(etk::FSNode& _node, int32_t _offs
 	} else {
 		//for (int32_t iii=m_listAlgo.size()-1; iii>=0; --iii) {
 		for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
-			if (m_listAlgo[iii] == nullptr) {
+			if (m_listAlgo[iii] == null) {
 				continue;
 			}
 			etk::String connectStringSecond = "ALGO_" + etk::toString(_basicID) + "__" + etk::toString(iii);
@@ -648,7 +648,7 @@ void audio::drain::Process::generateDotProcess(etk::FSNode& _node, int32_t _offs
 
 
 void audio::drain::Process::generateStatus(const etk::String& _origin, const etk::String& _status) {
-	if (m_statusFunction != nullptr) {
+	if (m_statusFunction != null) {
 		m_statusFunction(_origin, _status);
 	}
 }

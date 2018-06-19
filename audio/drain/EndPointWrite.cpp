@@ -8,7 +8,7 @@
 
 
 audio::drain::EndPointWrite::EndPointWrite() :
-  m_function(nullptr),
+  m_function(null),
   m_bufferSizeMicroseconds(1000000),
   m_bufferSizeChunk(32),
   m_bufferUnderFlowSize(0) {
@@ -58,7 +58,7 @@ bool audio::drain::EndPointWrite::process(audio::Time& _time,
                                           size_t& _outputNbChunk){
 	audio::drain::AutoLogInOut tmpLog("EndPointWrite");
 	//DRAIN_INFO("                              nb Sample in buffer : " << m_buffer.size());
-	if (m_function != nullptr) {
+	if (m_function != null) {
 		// TODO : Rework this ...
 		if (m_buffer.getSize() <= 20000) {
 			m_function(_time, _inputNbChunk, m_output.getFormat(), m_output.getFrequency(), m_output.getMap());

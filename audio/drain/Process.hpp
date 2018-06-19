@@ -116,7 +116,7 @@ namespace audio {
 				
 				template<typename T> ememory::SharedPtr<T> get(const etk::String& _name) {
 					for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
-						if (m_listAlgo[iii] == nullptr) {
+						if (m_listAlgo[iii] == null) {
 							continue;
 						}
 						if (m_listAlgo[iii]->getName() == _name) {
@@ -127,7 +127,7 @@ namespace audio {
 				}
 				template<typename T> ememory::SharedPtr<const T> get(const etk::String& _name) const {
 					for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
-						if (m_listAlgo[iii] == nullptr) {
+						if (m_listAlgo[iii] == null) {
 							continue;
 						}
 						if (m_listAlgo[iii]->getName() == _name) {
@@ -142,7 +142,7 @@ namespace audio {
 				template<typename T> void removeIfFirst() {
 					if (m_listAlgo.size() > 0) {
 						ememory::SharedPtr<T> algoEP = get<T>(0);
-						if (algoEP != nullptr) {
+						if (algoEP != null) {
 							m_listAlgo.erase(m_listAlgo.begin());
 						}
 					}
@@ -150,7 +150,7 @@ namespace audio {
 				template<typename T> void removeIfLast() {
 					if (m_listAlgo.size() > 0) {
 						ememory::SharedPtr<T> algoEP = get<T>(m_listAlgo.size()-1);
-						if (algoEP != nullptr) {
+						if (algoEP != null) {
 							m_listAlgo.erase(m_listAlgo.begin()+m_listAlgo.size()-1);
 						}
 					}
@@ -158,7 +158,7 @@ namespace audio {
 				template<typename T> bool hasType() {
 					for (size_t iii=0; iii<m_listAlgo.size(); ++iii) {
 						ememory::SharedPtr<T> tmp = ememory::dynamicPointerCast<T>(m_listAlgo[iii]);
-						if (tmp != nullptr) {
+						if (tmp != null) {
 							return true;
 						}
 					}

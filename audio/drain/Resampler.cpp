@@ -9,7 +9,7 @@
 
 audio::drain::Resampler::Resampler() :
   #ifdef HAVE_SPEEX_DSP_RESAMPLE
-    m_speexResampler(nullptr),
+    m_speexResampler(null),
   #endif
   m_positionRead(0),
   m_positionWrite(0) {
@@ -31,9 +31,9 @@ ememory::SharedPtr<audio::drain::Resampler> audio::drain::Resampler::create() {
 
 audio::drain::Resampler::~Resampler() {
 	#ifdef HAVE_SPEEX_DSP_RESAMPLE
-		if (m_speexResampler != nullptr) {
+		if (m_speexResampler != null) {
 			speex_resampler_destroy(m_speexResampler);
-			m_speexResampler = nullptr;
+			m_speexResampler = null;
 		}
 	#endif
 }
@@ -64,9 +64,9 @@ void audio::drain::Resampler::configurationChange() {
 		return;
 	}
 	#ifdef HAVE_SPEEX_DSP_RESAMPLE
-		if (m_speexResampler != nullptr) {
+		if (m_speexResampler != null) {
 			speex_resampler_destroy(m_speexResampler);
-			m_speexResampler = nullptr;
+			m_speexResampler = null;
 		}
 		int err = 0;
 		DRAIN_WARNING("Create resampler for : " << m_input << " to " << m_output);
@@ -95,7 +95,7 @@ bool audio::drain::Resampler::process(audio::Time& _time,
 		_outputNbChunk = _inputNbChunk;
 		return true;
 	}
-	if (_input == nullptr) {
+	if (_input == null) {
 		_output = &(m_outputData[0]);
 		_outputNbChunk = 0;
 		DRAIN_ERROR("null pointer input ... ");
@@ -118,7 +118,7 @@ bool audio::drain::Resampler::process(audio::Time& _time,
 		
 		m_outputData.resize(_outputNbChunk*m_output.getMap().size()*m_formatSize*16);
 		_output = &(m_outputData[0]);
-		if (m_speexResampler == nullptr) {
+		if (m_speexResampler == null) {
 			DRAIN_ERROR("                               No speex resampler");
 			return false;
 		}

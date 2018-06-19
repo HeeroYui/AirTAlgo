@@ -45,7 +45,7 @@ bool audio::drain::Equalizer::process(audio::Time& _time,
                                       size_t& _outputNbChunk) {
 	_outputNbChunk = _inputNbChunk;
 	_output = _input;
-	if (_input == nullptr) {
+	if (_input == null) {
 		return false;
 	}
 	m_algo.process(_output, _input, _inputNbChunk);
