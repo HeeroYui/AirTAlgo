@@ -7,12 +7,12 @@
 
 #include <etk/String.hpp>
 #include <etk/Vector.hpp>
+#include <etk/io/Interface.hpp>
 #include <audio/format.hpp>
 #include <audio/channel.hpp>
 #include <audio/drain/Algo.hpp>
 #include <echrono/Steady.hpp>
 #include <ememory/memory.hpp>
-#include <etk/os/FSNode.hpp>
 
 namespace audio {
 	namespace drain{
@@ -178,9 +178,9 @@ namespace audio {
 				void displayAlgo();
 				void updateAlgo(size_t _position);
 			public:
-				void generateDot(etk::FSNode& _node, int32_t _offset, int32_t _basicID, etk::String& _nameIn, etk::String& _nameOut, bool _reserseGraph);
+				void generateDot(ememory::SharedPtr<etk::io::Interface>& _io, int32_t _offset, int32_t _basicID, etk::String& _nameIn, etk::String& _nameOut, bool _reserseGraph);
 				// TODO : Remove this one when we find a good way to do it ...
-				void generateDotProcess(etk::FSNode& _node, int32_t _offset, int32_t _basicID, etk::String& _nameIn, etk::String& _nameOut, bool _reserseGraph);
+				void generateDotProcess(ememory::SharedPtr<etk::io::Interface>& _io, int32_t _offset, int32_t _basicID, etk::String& _nameIn, etk::String& _nameOut, bool _reserseGraph);
 		};
 	}
 }

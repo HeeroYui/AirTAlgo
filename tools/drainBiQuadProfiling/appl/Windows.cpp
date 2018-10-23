@@ -66,7 +66,7 @@ void appl::Windows::init() {
 	ewol::widget::Windows::init();
 	setTitle("Drain Equalizer Profiler");
 	
-	m_gui = ewol::widget::Composer::create(ewol::widget::Composer::file, "DATA:gui.xml");
+	m_gui = ewol::widget::Composer::create(ewol::widget::Composer::file, "DATA:///gui.xml");
 	if (m_gui != null) {
 		setSubWidget(m_gui);
 	}
